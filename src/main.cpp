@@ -28,7 +28,7 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
         }
         .container {
             max-width: 1400px;
-            margin: 40px auto;
+            margin: 20px auto;
             padding: 20px;
             background: white;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
