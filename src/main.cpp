@@ -362,6 +362,104 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
         </div>
     </div>
 
+        <div class="container collapsed" id="ms1Container">
+        <!-- Tıklanabilir Başlık -->
+        <div class="header" onclick="toggleContainer('ms1Container', 'ms1Content', 'ms1vArrow')">
+            MOTOR_STARTUP1
+            <span class="arrow" id="ms1Arrow">▼</span>
+        </div>
+
+        <!-- İçerik -->
+        <div class="content" id="ms1Content" style="display: none;">
+            <div class="table-container">
+                <table>
+                    <tr>
+                        <th title="Open loop acceleration coefficient A1 during reverse drive">REV_DRV_OPEN_LOOP_ACCEL_A1</th>
+                        <th title="Open loop acceleration coefficient A2 during reverse drive">REV_DRV_OPEN_LOOP_ACCEL_A2</th>
+                        <th title="Bus current limit during active braking">ACTIVE_BRAKE_CURRENT_LIMIT</th>
+                        <th title="10-bit value for active braking loop Kp. Kp = ACTIVE_BRAKE_KP / 2^7">ACTIVE_BRAKE_KP</th>
+                        <th title="10-bit value for active braking loop Ki. Ki = ACTIVE_BRAKE_KI / 2^9">ACTIVE_BRAKE_KI</th>
+                        <th>Read/Write</th>
+                    </tr>
+                    <tr>
+                        <td><input type="text" id="REV_DRV_OPEN_LOOP_ACCEL_A1" readonly></td>
+                        <td><input type="text" id="REV_DRV_OPEN_LOOP_ACCEL_A2" readonly></td>
+                        <td><input type="text" id="ACTIVE_BRAKE_CURRENT_LIMIT" readonly></td>
+                        <td><input type="text" id="ACTIVE_BRAKE_KP" readonly></td>
+                        <td><input type="text" id="ACTIVE_BRAKE_KI" readonly></td>
+                        <td><button onclick="ReadRevDriveConfig()">Read</button></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <select id="REV_DRV_OPEN_LOOP_ACCEL_A1_SELECT">
+                                <option value="0">0 = 0.01 Hz/s</option>
+                                <option value="1">1 = 0.05 Hz/s</option>
+                                <option value="2">2 = 1 Hz/s</option>
+                                <option value="3">3 = 2.5 Hz/s</option>
+                                <option value="4">4 = 5 Hz/s</option>
+                                <option value="5">5 = 10 Hz/s</option>
+                                <option value="6">6 = 25 Hz/s</option>
+                                <option value="7">7 = 50 Hz/s</option>
+                                <option value="8">8 = 75 Hz/s</option>
+                                <option value="9">9 = 100 Hz/s</option>
+                                <option value="A">A = 250 Hz/s</option>
+                                <option value="B">B = 500 Hz/s</option>
+                                <option value="C">C = 750 Hz/s</option>
+                                <option value="D">D = 1000 Hz/s</option>
+                                <option value="E">E = 5000 Hz/s</option>
+                                <option value="F">F = 10000 Hz/s</option>
+                            </select>
+                        </td>
+
+                        <td>
+                            <select id="REV_DRV_OPEN_LOOP_ACCEL_A2_SELECT">
+                                <option value="0">0 = 0.0 Hz/s²</option>
+                                <option value="1">1 = 0.05 Hz/s²</option>
+                                <option value="2">2 = 1 Hz/s²</option>
+                                <option value="3">3 = 2.5 Hz/s²</option>
+                                <option value="4">4 = 5 Hz/s²</option>
+                                <option value="5">5 = 10 Hz/s²</option>
+                                <option value="6">6 = 25 Hz/s²</option>
+                                <option value="7">7 = 50 Hz/s²</option>
+                                <option value="8">8 = 75 Hz/s²</option>
+                                <option value="9">9 = 100 Hz/s²</option>
+                                <option value="A">A = 250 Hz/s²</option>
+                                <option value="B">B = 500 Hz/s²</option>
+                                <option value="C">C = 750 Hz/s²</option>
+                                <option value="D">D = 1000 Hz/s²</option>
+                                <option value="E">E = 5000 Hz/s²</option>
+                                <option value="F">F = 10000 Hz/s²</option>
+                            </select>
+                        </td>
+
+                        <td>
+                            <select id="ACTIVE_BRAKE_CURRENT_LIMIT_SELECT">
+                                <option value="0">0 = 0.5 A</option>
+                                <option value="1">1 = 1 A</option>
+                                <option value="2">2 = 2 A</option>
+                                <option value="3">3 = 3 A</option>
+                                <option value="4">4 = 4 A</option>
+                                <option value="5">5 = 5 A</option>
+                                <option value="6">6 = 6 A</option>
+                                <option value="7">7 = 7 A</option>
+                            </select>
+                        </td>
+
+                        <td>
+                            <input type="text" id="ACTIVE_BRAKE_KP_INPUT" value="0">
+                        </td>
+
+                        <td>
+                            <input type="text" id="ACTIVE_BRAKE_KI_INPUT" value="0">
+                        </td>
+
+                        <td><button onclick="WriteRevDriveConfig()">Write</button></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
     <script>
         
         function toggleContainer(containerId, contentId, arrowId) {
