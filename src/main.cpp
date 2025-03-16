@@ -3,6 +3,7 @@
 #include <Wire.h>
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
+#include <ArduinoJson.h>
 #include <pgmspace.h>
 
 const char *ssid = "byte_sender_2.4GHz";
@@ -795,16 +796,37 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
 
     <div class="container collapsed" id="controlContainer">
         <div class="header" onclick="toggleContainer('controlContainer', 'controlContent', 'controlArrow')">
-            DEV_CTRL
+            Read | Write | Other Functions
             <span class="arrow" id="controlArrow">▼</span>
         </div>
 
         <div class="content" id="controlContent" style="display: none;">
             <div class="table-container">
                 <table>
+
                     <tr>
-                        <th><button onclick="ReadAlgorithmState()">Read Algorithm State</button></th>
+                        <th title="Register Address">Register Address</th>
+                        <th title="Register Value">Register Value</th>
+                        <th title="Read / Write">Read / Write</th>
+                        <th title="Other Functions">Other Functions</th>
+
                     </tr>
+
+                    <tr>
+                        <td><input type="text" id="ReadRegAddress" value="0x"></td>
+                        <td><input type="text" id="ReadRegValue" readonly></td>
+                        <th><button onclick="ReadRegister()">Read Register</button></th>
+                        <th><button onclick="ReadAlgorithmState()">Read Algorithm State</button></th>
+
+                    </tr>
+
+                    <tr>
+                        <td><input type="text" id="WriteRegAddress" value="0x"></td>
+                        <td><input type="text" id="WriteRegValue" value="0x"></td>
+                        <th><button onclick="WriteRegister()">Write Register</button></th>
+                        <th><button onclick="WriteEEPROM()">Write EEPROM</button></th>
+                    </tr>
+
                 </table>
             </div>
         </div>
@@ -1140,6 +1162,40 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
             .catch(error => console.error('EEPROM yazma hatası:', error));
     }
 
+    function ReadRegister() {
+        let address = document.getElementById('ReadRegAddress').value;
+        
+        if (!address.startsWith("0x")) {
+            alert("Lütfen geçerli bir adres girin (0x ile başlamalıdır)");
+            return;
+        }
+
+        fetch(`/ReadRegister?address=${address}`, { method: 'GET' })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('ReadRegValue').value = data.value;
+            })
+            .catch(error => console.error('Register okuma hatası:', error));
+    }
+
+    function WriteRegister() {
+        let data = {
+            address: document.getElementById('WriteRegAddress').value,
+            value: document.getElementById('WriteRegValue').value
+        };
+
+        fetch('/WriteRegister', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.text())
+        .then(response => console.log("Yazma başarılı:", response))
+        .catch(error => console.error('Yazma hatası:', error));
+    }
+
+
+
 
     </script>
 
@@ -1183,6 +1239,8 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
 #define DEV_CTRL_REG 0x000000EA
 
 unsigned long register_value = 0;
+
+JsonDocument jsonDoc;
 
 #define READ_BITS(value, high, low) ((value >> low) & ((1 << (high - low + 1)) - 1))
 #define WRITE_BITS(target, value, high, low) (target |= ((value & ((1 << (high - low + 1)) - 1)) << low))
@@ -1738,9 +1796,61 @@ void WriteEEPROM()
     server.send(200, "application/json", "{\"status\":\"success\"}");
 }
 
-void ReadAlgorithmState(){
+void ReadRegister()
+{
+    if (server.hasArg("address"))
+    {
+        String addressStr = server.arg("address");
+        uint32_t address = strtoul(addressStr.c_str(), NULL, 16);
+
+        register_value = 0;
+        read32(address);
+
+        // ArduinoJson kullanarak JSON oluştur
+        JsonDocument jsonDoc;
+        jsonDoc["value"] = String("0x") + String(register_value, HEX); // HEX formatında kaydet
+
+        String response;
+        serializeJson(jsonDoc, response); // JSON verisini stringe çevir
+        server.send(200, "application/json", response);
+    }
+    else
+    {
+        JsonDocument errorDoc;
+        errorDoc["error"] = "Bad Request";
+
+        String response;
+        serializeJson(errorDoc, response);
+        server.send(400, "application/json", response);
+    }
+}
+
+
+void WriteRegister()
+{
+    if (!server.hasArg("plain"))
+    {
+        server.send(400, "application/json", "{\"error\":\"Bad Request\"}");
+        return;
+    }
+
+    jsonDoc.clear();  
+    deserializeJson(jsonDoc, server.arg("plain"));
+
+    uint32_t address = strtoul(jsonDoc["address"].as<String>().c_str(), NULL, 16);
+    uint32_t value = strtoul(jsonDoc["value"].as<String>().c_str(), NULL, 16);
+
+    write32(address, value);
+
+    server.send(200, "application/json", "{\"status\":\"success\"}");
+}
+
+
+void ReadAlgorithmState()
+{
     read32(0x210);
-} 
+    server.send(200, "application/json", "{\"status\":\"success\"}");
+}
 
 void default_settings()
 {
@@ -1788,7 +1898,7 @@ void setup()
     Serial.print("ESP'nin IP Adresi: ");
     Serial.println(WiFi.localIP());
 
-    //default_settings();
+    // default_settings();
 
     server.on("/", handleRoot);
     server.on("/ReadISDConfig", HTTP_GET, ReadISDConfig);
@@ -1813,6 +1923,10 @@ void setup()
 
     server.on("/ReadAlgorithmState", HTTP_GET, ReadAlgorithmState);
 
+    server.on("/ReadRegister", HTTP_GET, ReadRegister);
+    server.on("/WriteRegister", HTTP_POST, WriteRegister);
+
+
     server.begin();
 }
 
@@ -1820,4 +1934,3 @@ void loop()
 {
     server.handleClient();
 }
-
