@@ -634,6 +634,167 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
         </div>
     </div>
 
+    <div class="container collapsed" id="algoCtrl1Container">
+        <div class="header" onclick="toggleContainer('algoCtrl1Container', 'algoCtrl1Content', 'algoCtrl1Arrow')">
+            ALGO_CTRL1
+            <span class="arrow" id="algoCtrl1Arrow">▼</span>
+        </div>
+
+        <div class="content" id="algoCtrl1Content" style="display: none;">
+            <div class="table-container">
+                <table>
+                    <tr>
+                        <th title="Use to control the SPD_CTRL bits. If OVERRIDE = 1b, speed command can be written by the user through serial interface.">OVERRIDE</th>
+                        <th title="Digital speed control If OVERRIDE = 1b, then SPEED_CMD is control using DIGITAL_SPEED_CTRL">DIGITAL_SPEED_CTRL</th>
+                        <th title="Use to disable closed loop">CLOSED_LOOP_DIS</th>
+                        <th title="Force align state enable">FORCE_ALIGN_EN</th>
+                        <th title="Force slow first cycle enable">FORCE_SLOW_FIRST_CYCLE_EN</th>
+                        <th title="Force IPD enable">FORCE_IPD_EN</th>
+                        <th title="Force ISD enable">FORCE_ISD_EN</th>
+                        <th title="Force align angle state source select">FORCE_ALIGN_ANGLE_SRC_SEL</th>
+                        <th title="Sets Iq_ref when speed loop is disabled">FORCE_IQ_REF_SPEED_LOOP_DIS</th>
+                        <th>Read/Write</th>
+                    </tr>
+
+                    <tr>
+                        <td><input type="text" id="OVERRIDE" readonly></td>
+                        <td><input type="text" id="DIGITAL_SPEED_CTRL" readonly></td>
+                        <td><input type="text" id="CLOSED_LOOP_DIS" readonly></td>
+                        <td><input type="text" id="FORCE_ALIGN_EN" readonly></td>
+                        <td><input type="text" id="FORCE_SLOW_FIRST_CYCLE_EN" readonly></td>
+                        <td><input type="text" id="FORCE_IPD_EN" readonly></td>
+                        <td><input type="text" id="FORCE_ISD_EN" readonly></td>
+                        <td><input type="text" id="FORCE_ALIGN_ANGLE_SRC_SEL" readonly></td>
+                        <td><input type="text" id="FORCE_IQ_REF_SPEED_LOOP_DIS" readonly></td>
+                        <td><button onclick="ReadAlgoCtrl1()">Read</button></td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <select id="OVERRIDE_SELECT">
+                                <option value="0">0 = SPEED_CMD using Analog/PWM/Freq mode</option>
+                                <option value="1">1 = SPEED_CMD using SPD_CTRL[14:0]</option>
+                            </select>
+                        </td>
+                        <td><input type="text" id="DIGITAL_SPEED_CTRL_SELECT" value="0"></td>
+                        <td>
+                            <select id="CLOSED_LOOP_DIS_SELECT">
+                                <option value="0">0 = Enable Closed Loop</option>
+                                <option value="1">1 = Disable Closed Loop</option>
+                            </select>
+                        </td>
+                        <td>
+                            <select id="FORCE_ALIGN_EN_SELECT">
+                                <option value="0">0 = Disable Force Align state</option>
+                                <option value="1">1 = Enable Force Align state</option>
+                            </select>
+                        </td>
+                        <td>
+                            <select id="FORCE_SLOW_FIRST_CYCLE_EN_SELECT">
+                                <option value="0">0 = Disable Force Slow First Cycle</option>
+                                <option value="1">1 = Enable Force Slow First Cycle</option>
+                            </select>
+                        </td>
+                        <td>
+                            <select id="FORCE_IPD_EN_SELECT">
+                                <option value="0">0 = Disable Force IPD state</option>
+                                <option value="1">1 = Enable Force IPD state</option>
+                            </select>
+                        </td>
+                        <td>
+                            <select id="FORCE_ISD_EN_SELECT">
+                                <option value="0">0 = Disable Force ISD state</option>
+                                <option value="1">1 = Enable Force ISD state</option>
+                            </select>
+                        </td>
+                        <td>
+                            <select id="FORCE_ALIGN_ANGLE_SRC_SEL_SELECT">
+                                <option value="0">0 = Force Align Angle defined by ALIGN_ANGLE</option>
+                                <option value="1">1 = Force Align Angle defined by FORCED_ALIGN_ANGLE</option>
+                            </select>
+                        </td>
+                        <td><input type="text" id="FORCE_IQ_REF_SPEED_LOOP_DIS_SELECT" value="0"></td>
+                        <td><button onclick="WriteAlgoCtrl1()">Write</button></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="container collapsed" id="devCtrlContainer">
+        <div class="header" onclick="toggleContainer('devCtrlContainer', 'devCtrlContent', 'devCtrlArrow')">
+            DEV_CTRL
+            <span class="arrow" id="devCtrlArrow">▼</span>
+        </div>
+
+        <div class="content" id="devCtrlContent" style="display: none;">
+            <div class="table-container">
+                <table>
+                    <tr>
+                        <th title="Write the configuration to EEPROM">EEPROM_WRT</th>
+                        <th title="Read the default configuration from EEPROM">EEPROM_READ</th>
+                        <th title="Clears all faults">CLR_FLT</th>
+                        <th title="Clears fault retry count">CLR_FLT_RETRY_COUNT</th>
+                        <th title="EEPROM write access key">EEPROM_WRITE_ACCESS_KEY</th>
+                        <th title="9-bit value used during forced align state">FORCED_ALIGN_ANGLE</th>
+                        <th title="RAM bit to tickle watchdog in I2C mode">WATCHDOG_TICKLE</th>
+                        <th>Read/Write</th>
+                    </tr>
+
+                    <tr>
+                        <td><input type="text" id="EEPROM_WRT" readonly></td>
+                        <td><input type="text" id="EEPROM_READ" readonly></td>
+                        <td><input type="text" id="CLR_FLT" readonly></td>
+                        <td><input type="text" id="CLR_FLT_RETRY_COUNT" readonly></td>
+                        <td><input type="text" id="EEPROM_WRITE_ACCESS_KEY" readonly></td>
+                        <td><input type="text" id="FORCED_ALIGN_ANGLE" readonly></td>
+                        <td><input type="text" id="WATCHDOG_TICKLE" readonly></td>
+                        <td><button onclick="ReadDevCtrl()">Read</button></td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <select id="EEPROM_WRT_SELECT">
+                                <option value="0">0 = Do not write to EEPROM</option>
+                                <option value="1">1 = Write configuration to EEPROM</option>
+                            </select>
+                        </td>
+                        <td>
+                            <select id="EEPROM_READ_SELECT">
+                                <option value="0">0 = Do not read EEPROM</option>
+                                <option value="1">1 = Read default configuration from EEPROM</option>
+                            </select>
+                        </td>
+                        <td>
+                            <select id="CLR_FLT_SELECT">
+                                <option value="0">0 = Do not clear faults</option>
+                                <option value="1">1 = Clear all faults</option>
+                            </select>
+                        </td>
+                        <td>
+                            <select id="CLR_FLT_RETRY_COUNT_SELECT">
+                                <option value="0">0 = Do not clear retry count</option>
+                                <option value="1">1 = Clear fault retry count</option>
+                            </select>
+                        </td>
+                        <td><input type="text" id="EEPROM_WRITE_ACCESS_KEY_SELECT" value="0"></td>
+                        <td><input type="text" id="FORCED_ALIGN_ANGLE_SELECT" value="0"></td>
+                        <td>
+                            <select id="WATCHDOG_TICKLE_SELECT">
+                                <option value="0">0 = Do not tickle watchdog</option>
+                                <option value="1">1 = Tickle watchdog in I2C mode</option>
+                            </select>
+                        </td>
+                        <td><button onclick="WriteDevCtrl()">Write</button></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+
+
     <script>
         
         function toggleContainer(containerId, contentId, arrowId) {
@@ -853,6 +1014,105 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
             .catch(error => console.error('Yazma hatası:', error));
         }
 
+    function ReadAlgoCtrl1() {
+        fetch('/ReadAlgoCtrl1', { method: 'GET' })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('OVERRIDE').value = data.OVERRIDE;
+            document.getElementById('DIGITAL_SPEED_CTRL').value = data.DIGITAL_SPEED_CTRL;
+            document.getElementById('CLOSED_LOOP_DIS').value = data.CLOSED_LOOP_DIS;
+            document.getElementById('FORCE_ALIGN_EN').value = data.FORCE_ALIGN_EN;
+            document.getElementById('FORCE_SLOW_FIRST_CYCLE_EN').value = data.FORCE_SLOW_FIRST_CYCLE_EN;
+            document.getElementById('FORCE_IPD_EN').value = data.FORCE_IPD_EN;
+            document.getElementById('FORCE_ISD_EN').value = data.FORCE_ISD_EN;
+            document.getElementById('FORCE_ALIGN_ANGLE_SRC_SEL').value = data.FORCE_ALIGN_ANGLE_SRC_SEL;
+            document.getElementById('FORCE_IQ_REF_SPEED_LOOP_DIS').value = data.FORCE_IQ_REF_SPEED_LOOP_DIS;
+
+            // Açılır kutulara da aynı verileri yazalım
+            document.getElementById('OVERRIDE_SELECT').value = data.OVERRIDE;
+            document.getElementById('DIGITAL_SPEED_CTRL_SELECT').value = data.DIGITAL_SPEED_CTRL;
+            document.getElementById('CLOSED_LOOP_DIS_SELECT').value = data.CLOSED_LOOP_DIS;
+            document.getElementById('FORCE_ALIGN_EN_SELECT').value = data.FORCE_ALIGN_EN;
+            document.getElementById('FORCE_SLOW_FIRST_CYCLE_EN_SELECT').value = data.FORCE_SLOW_FIRST_CYCLE_EN;
+            document.getElementById('FORCE_IPD_EN_SELECT').value = data.FORCE_IPD_EN;
+            document.getElementById('FORCE_ISD_EN_SELECT').value = data.FORCE_ISD_EN;
+            document.getElementById('FORCE_ALIGN_ANGLE_SRC_SEL_SELECT').value = data.FORCE_ALIGN_ANGLE_SRC_SEL;
+            document.getElementById('FORCE_IQ_REF_SPEED_LOOP_DIS_SELECT').value = data.FORCE_IQ_REF_SPEED_LOOP_DIS;
+        })
+        .catch(error => console.error('Hata:', error));
+    }
+
+    function WriteAlgoCtrl1() {
+        let data = {
+            OVERRIDE: document.getElementById('OVERRIDE_SELECT').value,
+            DIGITAL_SPEED_CTRL: document.getElementById('DIGITAL_SPEED_CTRL_SELECT').value,
+            CLOSED_LOOP_DIS: document.getElementById('CLOSED_LOOP_DIS_SELECT').value,
+            FORCE_ALIGN_EN: document.getElementById('FORCE_ALIGN_EN_SELECT').value,
+            FORCE_SLOW_FIRST_CYCLE_EN: document.getElementById('FORCE_SLOW_FIRST_CYCLE_EN_SELECT').value,
+            FORCE_IPD_EN: document.getElementById('FORCE_IPD_EN_SELECT').value,
+            FORCE_ISD_EN: document.getElementById('FORCE_ISD_EN_SELECT').value,
+            FORCE_ALIGN_ANGLE_SRC_SEL: document.getElementById('FORCE_ALIGN_ANGLE_SRC_SEL_SELECT').value,
+            FORCE_IQ_REF_SPEED_LOOP_DIS: document.getElementById('FORCE_IQ_REF_SPEED_LOOP_DIS_SELECT').value
+        };
+
+        fetch('/WriteAlgoCtrl1', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.text())
+        .then(response => console.log("Yazma başarılı:", response))
+        .catch(error => console.error('Yazma hatası:', error));
+    }
+
+    function ReadDevCtrl() {
+        fetch('/ReadDevCtrl', { method: 'GET' })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('EEPROM_WRT').value = data.EEPROM_WRT;
+                document.getElementById('EEPROM_READ').value = data.EEPROM_READ;
+                document.getElementById('CLR_FLT').value = data.CLR_FLT;
+                document.getElementById('CLR_FLT_RETRY_COUNT').value = data.CLR_FLT_RETRY_COUNT;
+                document.getElementById('EEPROM_WRITE_ACCESS_KEY').value = data.EEPROM_WRITE_ACCESS_KEY;
+                document.getElementById('FORCED_ALIGN_ANGLE').value = data.FORCED_ALIGN_ANGLE;
+                document.getElementById('WATCHDOG_TICKLE').value = data.WATCHDOG_TICKLE;
+                document.getElementById('RESERVED').value = data.RESERVED;
+
+                // Açılır kutulara da aynı verileri yazalım
+                document.getElementById('EEPROM_WRT_SELECT').value = data.EEPROM_WRT;
+                document.getElementById('EEPROM_READ_SELECT').value = data.EEPROM_READ;
+                document.getElementById('CLR_FLT_SELECT').value = data.CLR_FLT;
+                document.getElementById('CLR_FLT_RETRY_COUNT_SELECT').value = data.CLR_FLT_RETRY_COUNT;
+                document.getElementById('EEPROM_WRITE_ACCESS_KEY_SELECT').value = data.EEPROM_WRITE_ACCESS_KEY;
+                document.getElementById('FORCED_ALIGN_ANGLE_SELECT').value = data.FORCED_ALIGN_ANGLE;
+                document.getElementById('WATCHDOG_TICKLE_SELECT').value = data.WATCHDOG_TICKLE;
+                document.getElementById('RESERVED_SELECT').value = data.RESERVED;
+            })
+            .catch(error => console.error('Hata:', error));
+    }
+
+    function WriteDevCtrl() {
+        let data = {
+            EEPROM_WRT: document.getElementById('EEPROM_WRT_SELECT').value,
+            EEPROM_READ: document.getElementById('EEPROM_READ_SELECT').value,
+            CLR_FLT: document.getElementById('CLR_FLT_SELECT').value,
+            CLR_FLT_RETRY_COUNT: document.getElementById('CLR_FLT_RETRY_COUNT_SELECT').value,
+            EEPROM_WRITE_ACCESS_KEY: document.getElementById('EEPROM_WRITE_ACCESS_KEY_SELECT').value,
+            FORCED_ALIGN_ANGLE: document.getElementById('FORCED_ALIGN_ANGLE_SELECT').value,
+            WATCHDOG_TICKLE: document.getElementById('WATCHDOG_TICKLE_SELECT').value,
+            RESERVED: document.getElementById('RESERVED_SELECT').value
+        };
+
+        fetch('/WriteDevCtrl', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        })
+            .then(response => response.text())
+            .then(response => console.log("Yazma başarılı:", response))
+            .catch(error => console.error('Yazma hatası:', error));
+    }
+
 
     </script>
 
@@ -891,6 +1151,7 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
 #define ALGO_CTRL1_REG 0x000000EA
 #define INT_ALGO_1_REG 0x000000A0
 #define INT_ALGO_2_REG 0x000000A2
+#define DEV_CTRL_REG 0x000000EA
 
 unsigned long register_value = 0;
 
@@ -918,8 +1179,8 @@ struct REVDRIVECONFIG
     byte REV_DRV_OPEN_LOOP_ACCEL_A1;
     byte REV_DRV_OPEN_LOOP_ACCEL_A2;
     byte ACTIVE_BRAKE_CURRENT_LIMIT;
-    uint16_t ACTIVE_BRAKE_KP;
-    uint16_t ACTIVE_BRAKE_KI;
+    byte ACTIVE_BRAKE_KP;
+    byte ACTIVE_BRAKE_KI;
 };
 
 struct MOTORSTARTUP1
@@ -960,12 +1221,24 @@ struct ALGOCTRL1
     uint16_t FORCE_IQ_REF_SPEED_LOOP_DIS;
 };
 
+struct DEVCTRL
+{
+    byte EEPROM_WRT;                  // Bit 31: Write the configuration to EEPROM
+    byte EEPROM_READ;                 // Bit 30: Read the default configuration from EEPROM
+    byte CLR_FLT;                     // Bit 29: Clears all faults
+    byte CLR_FLT_RETRY_COUNT;         // Bit 28: Clears fault retry count
+    byte EEPROM_WRITE_ACCESS_KEY;     // Bit 27-20: EEPROM write access key (8-bit)
+    uint16_t FORCED_ALIGN_ANGLE;      // Bit 19-11: Forced align angle (9-bit)
+    byte WATCHDOG_TICKLE;             // Bit 10: RAM bit to tickle watchdog in I2C mode
+};
+
 
 ISDCONFIG ISD_CONFIG;
 REVDRIVECONFIG REV_DRIVE_CONFIG;
 MOTORSTARTUP1 MOTOR_STARTUP1;
 PINCONFIG PIN_CONFIG;
 ALGOCTRL1 ALGO_CTRL1;
+DEVCTRL DEV_CTRL;
 
 byte getJsonHexValue(String json, String key)
 {
@@ -1304,6 +1577,132 @@ void WritePinConfig()
     }
 }
 
+void ReadAlgoCtrl1()
+{
+    register_value = 0;
+    read32(ALGO_CTRL1_REG);
+
+    ALGO_CTRL1.OVERRIDE = READ_BITS(register_value, 31, 31);
+    ALGO_CTRL1.DIGITAL_SPEED_CTRL = READ_BITS(register_value, 30, 16);
+    ALGO_CTRL1.CLOSED_LOOP_DIS = READ_BITS(register_value, 15, 15);
+    ALGO_CTRL1.FORCE_ALIGN_EN = READ_BITS(register_value, 14, 14);
+    ALGO_CTRL1.FORCE_SLOW_FIRST_CYCLE_EN = READ_BITS(register_value, 13, 13);
+    ALGO_CTRL1.FORCE_IPD_EN = READ_BITS(register_value, 12, 12);
+    ALGO_CTRL1.FORCE_ISD_EN = READ_BITS(register_value, 11, 11);
+    ALGO_CTRL1.FORCE_ALIGN_ANGLE_SRC_SEL = READ_BITS(register_value, 10, 10);
+    ALGO_CTRL1.FORCE_IQ_REF_SPEED_LOOP_DIS = READ_BITS(register_value, 9, 0);
+
+    String json = "{ \"OVERRIDE\": \"" + toUpperCaseHex(ALGO_CTRL1.OVERRIDE) +
+                  "\", \"DIGITAL_SPEED_CTRL\": \"" + toUpperCaseHex(ALGO_CTRL1.DIGITAL_SPEED_CTRL) +
+                  "\", \"CLOSED_LOOP_DIS\": \"" + toUpperCaseHex(ALGO_CTRL1.CLOSED_LOOP_DIS) +
+                  "\", \"FORCE_ALIGN_EN\": \"" + toUpperCaseHex(ALGO_CTRL1.FORCE_ALIGN_EN) +
+                  "\", \"FORCE_SLOW_FIRST_CYCLE_EN\": \"" + toUpperCaseHex(ALGO_CTRL1.FORCE_SLOW_FIRST_CYCLE_EN) +
+                  "\", \"FORCE_IPD_EN\": \"" + toUpperCaseHex(ALGO_CTRL1.FORCE_IPD_EN) +
+                  "\", \"FORCE_ISD_EN\": \"" + toUpperCaseHex(ALGO_CTRL1.FORCE_ISD_EN) +
+                  "\", \"FORCE_ALIGN_ANGLE_SRC_SEL\": \"" + toUpperCaseHex(ALGO_CTRL1.FORCE_ALIGN_ANGLE_SRC_SEL) +
+                  "\", \"FORCE_IQ_REF_SPEED_LOOP_DIS\": \"" + toUpperCaseHex(ALGO_CTRL1.FORCE_IQ_REF_SPEED_LOOP_DIS) + "\" }";
+
+    server.send(200, "application/json", json);
+}
+
+void WriteAlgoCtrl1()
+{
+    if (server.hasArg("plain"))
+    {
+        String body = server.arg("plain");
+
+        ALGO_CTRL1.OVERRIDE = getJsonHexValue(body, "OVERRIDE");
+        ALGO_CTRL1.DIGITAL_SPEED_CTRL = getJsonHexValue(body, "DIGITAL_SPEED_CTRL");
+        ALGO_CTRL1.CLOSED_LOOP_DIS = getJsonHexValue(body, "CLOSED_LOOP_DIS");
+        ALGO_CTRL1.FORCE_ALIGN_EN = getJsonHexValue(body, "FORCE_ALIGN_EN");
+        ALGO_CTRL1.FORCE_SLOW_FIRST_CYCLE_EN = getJsonHexValue(body, "FORCE_SLOW_FIRST_CYCLE_EN");
+        ALGO_CTRL1.FORCE_IPD_EN = getJsonHexValue(body, "FORCE_IPD_EN");
+        ALGO_CTRL1.FORCE_ISD_EN = getJsonHexValue(body, "FORCE_ISD_EN");
+        ALGO_CTRL1.FORCE_ALIGN_ANGLE_SRC_SEL = getJsonHexValue(body, "FORCE_ALIGN_ANGLE_SRC_SEL");
+        ALGO_CTRL1.FORCE_IQ_REF_SPEED_LOOP_DIS = getJsonHexValue(body, "FORCE_IQ_REF_SPEED_LOOP_DIS");
+
+        register_value = 0;
+        WRITE_BITS(register_value, ALGO_CTRL1.OVERRIDE, 31, 31);
+        WRITE_BITS(register_value, ALGO_CTRL1.DIGITAL_SPEED_CTRL, 30, 16);
+        WRITE_BITS(register_value, ALGO_CTRL1.CLOSED_LOOP_DIS, 15, 15);
+        WRITE_BITS(register_value, ALGO_CTRL1.FORCE_ALIGN_EN, 14, 14);
+        WRITE_BITS(register_value, ALGO_CTRL1.FORCE_SLOW_FIRST_CYCLE_EN, 13, 13);
+        WRITE_BITS(register_value, ALGO_CTRL1.FORCE_IPD_EN, 12, 12);
+        WRITE_BITS(register_value, ALGO_CTRL1.FORCE_ISD_EN, 11, 11);
+        WRITE_BITS(register_value, ALGO_CTRL1.FORCE_ALIGN_ANGLE_SRC_SEL, 10, 10);
+        WRITE_BITS(register_value, ALGO_CTRL1.FORCE_IQ_REF_SPEED_LOOP_DIS, 9, 0);
+
+        write32(ALGO_CTRL1_REG, register_value);
+
+        server.send(200, "application/json", "{\"status\":\"success\"}");
+    }
+    else
+    {
+        server.send(400, "application/json", "{\"error\":\"Bad Request\"}");
+    }
+}
+
+void ReadDevCtrl()
+{
+    register_value = 0;
+    read32(DEV_CTRL_REG);
+
+    DEV_CTRL.EEPROM_WRT = READ_BITS(register_value, 31, 31);
+    DEV_CTRL.EEPROM_READ = READ_BITS(register_value, 30, 30);
+    DEV_CTRL.CLR_FLT = READ_BITS(register_value, 29, 29);
+    DEV_CTRL.CLR_FLT_RETRY_COUNT = READ_BITS(register_value, 28, 28);
+    DEV_CTRL.EEPROM_WRITE_ACCESS_KEY = READ_BITS(register_value, 27, 20);
+    DEV_CTRL.FORCED_ALIGN_ANGLE = READ_BITS(register_value, 19, 11);
+    DEV_CTRL.WATCHDOG_TICKLE = READ_BITS(register_value, 10, 10);
+
+
+    String json = "{ \"EEPROM_WRT\": \"" + toUpperCaseHex(DEV_CTRL.EEPROM_WRT) +
+                  "\", \"EEPROM_READ\": \"" + toUpperCaseHex(DEV_CTRL.EEPROM_READ) +
+                  "\", \"CLR_FLT\": \"" + toUpperCaseHex(DEV_CTRL.CLR_FLT) +
+                  "\", \"CLR_FLT_RETRY_COUNT\": \"" + toUpperCaseHex(DEV_CTRL.CLR_FLT_RETRY_COUNT) +
+                  "\", \"EEPROM_WRITE_ACCESS_KEY\": \"" + toUpperCaseHex(DEV_CTRL.EEPROM_WRITE_ACCESS_KEY) +
+                  "\", \"FORCED_ALIGN_ANGLE\": \"" + toUpperCaseHex(DEV_CTRL.FORCED_ALIGN_ANGLE) +
+                  "\", \"WATCHDOG_TICKLE\": \"" + toUpperCaseHex(DEV_CTRL.WATCHDOG_TICKLE) + "\" }";
+
+
+    server.send(200, "application/json", json);
+}
+
+void WriteDevCtrl()
+{
+    if (server.hasArg("plain"))
+    {
+        String body = server.arg("plain");
+
+        DEV_CTRL.EEPROM_WRT = getJsonHexValue(body, "EEPROM_WRT");
+        DEV_CTRL.EEPROM_READ = getJsonHexValue(body, "EEPROM_READ");
+        DEV_CTRL.CLR_FLT = getJsonHexValue(body, "CLR_FLT");
+        DEV_CTRL.CLR_FLT_RETRY_COUNT = getJsonHexValue(body, "CLR_FLT_RETRY_COUNT");
+        DEV_CTRL.EEPROM_WRITE_ACCESS_KEY = getJsonHexValue(body, "EEPROM_WRITE_ACCESS_KEY");
+        DEV_CTRL.FORCED_ALIGN_ANGLE = getJsonHexValue(body, "FORCED_ALIGN_ANGLE");
+        DEV_CTRL.WATCHDOG_TICKLE = getJsonHexValue(body, "WATCHDOG_TICKLE");
+
+        register_value = 0;
+        WRITE_BITS(register_value, DEV_CTRL.EEPROM_WRT, 31, 31);
+        WRITE_BITS(register_value, DEV_CTRL.EEPROM_READ, 30, 30);
+        WRITE_BITS(register_value, DEV_CTRL.CLR_FLT, 29, 29);
+        WRITE_BITS(register_value, DEV_CTRL.CLR_FLT_RETRY_COUNT, 28, 28);
+        WRITE_BITS(register_value, DEV_CTRL.EEPROM_WRITE_ACCESS_KEY, 27, 20);
+        WRITE_BITS(register_value, DEV_CTRL.FORCED_ALIGN_ANGLE, 19, 11);
+        WRITE_BITS(register_value, DEV_CTRL.WATCHDOG_TICKLE, 10, 10);
+        //WRITE_BITS(register_value, 0, 9, 0);
+
+        write32(DEV_CTRL_REG, register_value);
+
+        server.send(200, "application/json", "{\"status\":\"success\"}");
+    }
+    else
+    {
+        server.send(400, "application/json", "{\"error\":\"Bad Request\"}");
+    }
+}
+
+
 
 void setup()
 {
@@ -1324,12 +1723,22 @@ void setup()
     server.on("/", handleRoot);
     server.on("/ReadISDConfig", HTTP_GET, ReadISDConfig);
     server.on("/WriteISDConfig", HTTP_POST, WriteISDConfig);
+
     server.on("/ReadRevDriveConfig", HTTP_GET, ReadRevDriveConfig);
     server.on("/WriteRevDriveConfig", HTTP_POST, WriteRevDriveConfig);
+
     server.on("/ReadMotorStartup1", HTTP_GET, ReadMotorStartup1);
     server.on("/WriteMotorStartup1", HTTP_POST, WriteMotorStartup1);
+
     server.on("/ReadPinConfig", HTTP_GET, ReadPinConfig);
     server.on("/WritePinConfig", HTTP_POST, WritePinConfig);
+
+    server.on("/ReadAlgoCtrl1", HTTP_GET, ReadAlgoCtrl1);
+    server.on("/WriteAlgoCtrl1", HTTP_POST, WriteAlgoCtrl1);
+
+    server.on("/ReadDevCtrl", HTTP_GET, ReadDevCtrl);
+    server.on("/WriteDevCtrl", HTTP_POST, WriteDevCtrl);
+
     server.begin();
 }
 
