@@ -1164,11 +1164,6 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
 
     function ReadRegister() {
         let address = document.getElementById('ReadRegAddress').value;
-        
-        if (!address.startsWith("0x")) {
-            alert("Lütfen geçerli bir adres girin (0x ile başlamalıdır)");
-            return;
-        }
 
         fetch(`/ReadRegister?address=${address}`, { method: 'GET' })
             .then(response => response.json())
@@ -1240,7 +1235,7 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
 
 unsigned long register_value = 0;
 
-JsonDocument jsonDoc;
+JsonDocument doc;
 
 #define READ_BITS(value, high, low) ((value >> low) & ((1 << (high - low + 1)) - 1))
 #define WRITE_BITS(target, value, high, low) (target |= ((value & ((1 << (high - low + 1)) - 1)) << low))
@@ -1798,33 +1793,26 @@ void WriteEEPROM()
 
 void ReadRegister()
 {
-    if (server.hasArg("address"))
+    if (!server.hasArg("address"))
     {
-        String addressStr = server.arg("address");
-        uint32_t address = strtoul(addressStr.c_str(), NULL, 16);
-
-        register_value = 0;
-        read32(address);
-
-        // ArduinoJson kullanarak JSON oluştur
-        JsonDocument jsonDoc;
-        jsonDoc["value"] = String("0x") + String(register_value, HEX); // HEX formatında kaydet
-
-        String response;
-        serializeJson(jsonDoc, response); // JSON verisini stringe çevir
-        server.send(200, "application/json", response);
+        server.send(400, "application/json", "{\"error\":\"Bad Request\"}");
+        return;
     }
-    else
-    {
-        JsonDocument errorDoc;
-        errorDoc["error"] = "Bad Request";
 
-        String response;
-        serializeJson(errorDoc, response);
-        server.send(400, "application/json", response);
-    }
+    doc.clear();  // 📌 JSON nesnesini temizle
+    String addressStr = server.arg("address");
+    uint32_t address = strtoul(addressStr.c_str(), NULL, 16);
+
+    register_value = 0;
+    read32(address);
+
+    doc["address"] = addressStr;  // JSON nesnesine adresi ekle
+    doc["value"] = "0x" + String(register_value, HEX);  // JSON nesnesine okunan değeri ekle
+
+    String response;
+    serializeJson(doc, response);  // JSON'u string olarak hazırla
+    server.send(200, "application/json", response);
 }
-
 
 void WriteRegister()
 {
@@ -1834,17 +1822,22 @@ void WriteRegister()
         return;
     }
 
-    jsonDoc.clear();  
-    deserializeJson(jsonDoc, server.arg("plain"));
+    doc.clear();  // 📌 JSON nesnesini temizle
+    DeserializationError error = deserializeJson(doc, server.arg("plain"));
 
-    uint32_t address = strtoul(jsonDoc["address"].as<String>().c_str(), NULL, 16);
-    uint32_t value = strtoul(jsonDoc["value"].as<String>().c_str(), NULL, 16);
+    if (error)
+    {
+        server.send(400, "application/json", "{\"error\":\"JSON Parse Failed\"}");
+        return;
+    }
+
+    uint32_t address = strtoul(doc["address"].as<String>().c_str(), NULL, 16);
+    uint32_t value = strtoul(doc["value"].as<String>().c_str(), NULL, 16);
 
     write32(address, value);
 
     server.send(200, "application/json", "{\"status\":\"success\"}");
 }
-
 
 void ReadAlgorithmState()
 {
