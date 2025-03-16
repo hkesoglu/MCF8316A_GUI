@@ -1915,6 +1915,7 @@ void WriteRegister()
 
 void ReadAlgorithmState()
 {
+    register_value = 0;
     read32(0x210);
     server.send(200, "application/json", "{\"status\":\"success\"}");
 }
