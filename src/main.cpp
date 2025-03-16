@@ -1859,8 +1859,8 @@ void WriteEEPROM()
 {
     delay(500);
     write32(0x0000EA, 0x8A500000);
-    delay(1000);
-    write32(0x0000EA, 0x80000000);
+    //delay(1000);
+    //write32(0x0000EA, 0x80000000);
 
     server.send(200, "application/json", "{\"status\":\"success\"}");
 }
