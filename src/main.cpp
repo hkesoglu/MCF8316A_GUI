@@ -738,7 +738,7 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
                         <th title="EEPROM write access key">EEPROM_WRITE_ACCESS_KEY</th>
                         <th title="9-bit value used during forced align state">FORCED_ALIGN_ANGLE</th>
                         <th title="RAM bit to tickle watchdog in I2C mode">WATCHDOG_TICKLE</th>
-                        <th>Read/Write</th>
+                        <th><button onclick="WriteEEPROM()">Write EEPROM</button></th>
                     </tr>
 
                     <tr>
@@ -793,6 +793,22 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
     </div>
 
 
+    <div class="container collapsed" id="controlContainer">
+        <div class="header" onclick="toggleContainer('controlContainer', 'controlContent', 'controlArrow')">
+            DEV_CTRL
+            <span class="arrow" id="controlArrow">▼</span>
+        </div>
+
+        <div class="content" id="controlContent" style="display: none;">
+            <div class="table-container">
+                <table>
+                    <tr>
+                        <th><button onclick="ReadAlgorithmState()">Read Algorithm State</button></th>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
 
 
     <script>
@@ -1076,7 +1092,6 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
                 document.getElementById('EEPROM_WRITE_ACCESS_KEY').value = data.EEPROM_WRITE_ACCESS_KEY;
                 document.getElementById('FORCED_ALIGN_ANGLE').value = data.FORCED_ALIGN_ANGLE;
                 document.getElementById('WATCHDOG_TICKLE').value = data.WATCHDOG_TICKLE;
-                document.getElementById('RESERVED').value = data.RESERVED;
 
                 // Açılır kutulara da aynı verileri yazalım
                 document.getElementById('EEPROM_WRT_SELECT').value = data.EEPROM_WRT;
@@ -1086,7 +1101,6 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
                 document.getElementById('EEPROM_WRITE_ACCESS_KEY_SELECT').value = data.EEPROM_WRITE_ACCESS_KEY;
                 document.getElementById('FORCED_ALIGN_ANGLE_SELECT').value = data.FORCED_ALIGN_ANGLE;
                 document.getElementById('WATCHDOG_TICKLE_SELECT').value = data.WATCHDOG_TICKLE;
-                document.getElementById('RESERVED_SELECT').value = data.RESERVED;
             })
             .catch(error => console.error('Hata:', error));
     }
@@ -1100,7 +1114,6 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
             EEPROM_WRITE_ACCESS_KEY: document.getElementById('EEPROM_WRITE_ACCESS_KEY_SELECT').value,
             FORCED_ALIGN_ANGLE: document.getElementById('FORCED_ALIGN_ANGLE_SELECT').value,
             WATCHDOG_TICKLE: document.getElementById('WATCHDOG_TICKLE_SELECT').value,
-            RESERVED: document.getElementById('RESERVED_SELECT').value
         };
 
         fetch('/WriteDevCtrl', {
@@ -1111,6 +1124,20 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
             .then(response => response.text())
             .then(response => console.log("Yazma başarılı:", response))
             .catch(error => console.error('Yazma hatası:', error));
+    }
+
+    function WriteEEPROM() {
+        fetch('/WriteEEPROM', { method: 'GET' })
+            .then(response => response.json())
+            .then(data => console.log("EEPROM yazma başarılı:", data))
+            .catch(error => console.error('EEPROM yazma hatası:', error));
+    }
+
+    function ReadAlgorithmState() {
+        fetch('/ReadAlgorithmState', { method: 'GET' })
+            .then(response => response.json())
+            .then(data => console.log("EEPROM yazma başarılı:", data))
+            .catch(error => console.error('EEPROM yazma hatası:', error));
     }
 
 
@@ -1124,6 +1151,8 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
 )rawliteral";
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+#define MCF8316A_ADDRESS 0x01
 
 // Register Address Definitions
 #define ISD_CONFIG_REG 0x00000080
@@ -1148,7 +1177,7 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
 #define PERI_CONFIG1_REG 0x000000AA
 #define GD_CONFIG1_REG 0x000000AC
 #define GD_CONFIG2_REG 0x000000AE
-#define ALGO_CTRL1_REG 0x000000EA
+#define ALGO_CTRL1_REG 0x000000EC
 #define INT_ALGO_1_REG 0x000000A0
 #define INT_ALGO_2_REG 0x000000A2
 #define DEV_CTRL_REG 0x000000EA
@@ -1223,15 +1252,14 @@ struct ALGOCTRL1
 
 struct DEVCTRL
 {
-    byte EEPROM_WRT;                  // Bit 31: Write the configuration to EEPROM
-    byte EEPROM_READ;                 // Bit 30: Read the default configuration from EEPROM
-    byte CLR_FLT;                     // Bit 29: Clears all faults
-    byte CLR_FLT_RETRY_COUNT;         // Bit 28: Clears fault retry count
-    byte EEPROM_WRITE_ACCESS_KEY;     // Bit 27-20: EEPROM write access key (8-bit)
-    uint16_t FORCED_ALIGN_ANGLE;      // Bit 19-11: Forced align angle (9-bit)
-    byte WATCHDOG_TICKLE;             // Bit 10: RAM bit to tickle watchdog in I2C mode
+    byte EEPROM_WRT;              // Bit 31: Write the configuration to EEPROM
+    byte EEPROM_READ;             // Bit 30: Read the default configuration from EEPROM
+    byte CLR_FLT;                 // Bit 29: Clears all faults
+    byte CLR_FLT_RETRY_COUNT;     // Bit 28: Clears fault retry count
+    byte EEPROM_WRITE_ACCESS_KEY; // Bit 27-20: EEPROM write access key (8-bit)
+    uint16_t FORCED_ALIGN_ANGLE;  // Bit 19-11: Forced align angle (9-bit)
+    byte WATCHDOG_TICKLE;         // Bit 10: RAM bit to tickle watchdog in I2C mode
 };
-
 
 ISDCONFIG ISD_CONFIG;
 REVDRIVECONFIG REV_DRIVE_CONFIG;
@@ -1272,11 +1300,11 @@ void read32(int reg_addr)
 
     const byte control_word[] = {0x90, reg_addr_H, reg_addr_L};
 
-    Wire.beginTransmission(0x01);
+    Wire.beginTransmission(MCF8316A_ADDRESS);
     Wire.write(control_word, 3);
     Wire.endTransmission();
 
-    Wire.requestFrom(0x01, 4);
+    Wire.requestFrom(MCF8316A_ADDRESS, 4);
 
     for (int i = 0; i < 4; i++)
     {
@@ -1303,7 +1331,7 @@ void write32(int reg_addr, unsigned long writedata)
         data[i] = ((writedata & (((unsigned long)0xFF) << (i * 8))) >> (i * 8));
     }
 
-    Wire.beginTransmission(0x01);
+    Wire.beginTransmission(MCF8316A_ADDRESS);
     Wire.write(control_word, 3);
     Wire.write(data, 4);
     Wire.endTransmission();
@@ -1560,8 +1588,8 @@ void WritePinConfig()
         PIN_CONFIG.SPEED_MODE = getJsonHexValue(body, "SPEED_MODE");
 
         register_value = 0;
-        //WRITE_BITS(0, PIN_CONFIG.PARITY, 31, 31);
-        //WRITE_BITS(register_value, PIN_CONFIG.RESERVED, 30, 6);
+        // WRITE_BITS(0, PIN_CONFIG.PARITY, 31, 31);
+        // WRITE_BITS(register_value, PIN_CONFIG.RESERVED, 30, 6);
         WRITE_BITS(register_value, PIN_CONFIG.BRAKE_PIN_MODE, 5, 5);
         WRITE_BITS(register_value, PIN_CONFIG.ALIGN_BRAKE_ANGLE_SEL, 4, 4);
         WRITE_BITS(register_value, PIN_CONFIG.BRAKE_INPUT, 3, 2);
@@ -1655,7 +1683,6 @@ void ReadDevCtrl()
     DEV_CTRL.FORCED_ALIGN_ANGLE = READ_BITS(register_value, 19, 11);
     DEV_CTRL.WATCHDOG_TICKLE = READ_BITS(register_value, 10, 10);
 
-
     String json = "{ \"EEPROM_WRT\": \"" + toUpperCaseHex(DEV_CTRL.EEPROM_WRT) +
                   "\", \"EEPROM_READ\": \"" + toUpperCaseHex(DEV_CTRL.EEPROM_READ) +
                   "\", \"CLR_FLT\": \"" + toUpperCaseHex(DEV_CTRL.CLR_FLT) +
@@ -1663,7 +1690,6 @@ void ReadDevCtrl()
                   "\", \"EEPROM_WRITE_ACCESS_KEY\": \"" + toUpperCaseHex(DEV_CTRL.EEPROM_WRITE_ACCESS_KEY) +
                   "\", \"FORCED_ALIGN_ANGLE\": \"" + toUpperCaseHex(DEV_CTRL.FORCED_ALIGN_ANGLE) +
                   "\", \"WATCHDOG_TICKLE\": \"" + toUpperCaseHex(DEV_CTRL.WATCHDOG_TICKLE) + "\" }";
-
 
     server.send(200, "application/json", json);
 }
@@ -1690,7 +1716,7 @@ void WriteDevCtrl()
         WRITE_BITS(register_value, DEV_CTRL.EEPROM_WRITE_ACCESS_KEY, 27, 20);
         WRITE_BITS(register_value, DEV_CTRL.FORCED_ALIGN_ANGLE, 19, 11);
         WRITE_BITS(register_value, DEV_CTRL.WATCHDOG_TICKLE, 10, 10);
-        //WRITE_BITS(register_value, 0, 9, 0);
+        // WRITE_BITS(register_value, 0, 9, 0);
 
         write32(DEV_CTRL_REG, register_value);
 
@@ -1702,7 +1728,49 @@ void WriteDevCtrl()
     }
 }
 
+void WriteEEPROM()
+{
+    delay(500);
+    write32(0x0000EA, 0x8A500000);
+    delay(1000);
+    write32(0x0000EA, 0x80000000);
 
+    server.send(200, "application/json", "{\"status\":\"success\"}");
+}
+
+void ReadAlgorithmState(){
+    read32(0x210);
+} 
+
+void default_settings()
+{
+    write32(0x00000080, 0x64738C20);
+    write32(0x00000082, 0x28200000);
+    write32(0x00000084, 0x0B6807D0);
+    write32(0x00000086, 0x2306600C);
+    write32(0x00000088, 0x0D3201B5);
+    write32(0x0000008A, 0x1BAD0000);
+    write32(0x0000008C, 0x00000000);
+    write32(0x0000008E, 0x00000000);
+    write32(0x00000094, 0x00000000);
+    write32(0x00000096, 0x00000000);
+    write32(0x00000098, 0x00000000);
+    write32(0x0000009A, 0x00000000);
+    write32(0x0000009C, 0x00000000);
+    write32(0x0000009E, 0x00000000);
+    write32(0x00000090, 0x3EC80106);
+    write32(0x00000092, 0x70DC0888);
+    write32(0x000000A4, 0x00000088);
+    write32(0x000000A6, 0x00101462);
+    write32(0x000000A8, 0x4000F00F);
+    write32(0x000000AA, 0x41C01F00);
+    write32(0x000000AC, 0x1C450100);
+    write32(0x000000AE, 0x00200000);
+    write32(0x000000A0, 0x2433407D);
+    write32(0x000000A2, 0x000001A7);
+
+    WriteEEPROM();
+}
 
 void setup()
 {
@@ -1719,6 +1787,8 @@ void setup()
     Serial.println("\nWiFi Bağlandı!");
     Serial.print("ESP'nin IP Adresi: ");
     Serial.println(WiFi.localIP());
+
+    //default_settings();
 
     server.on("/", handleRoot);
     server.on("/ReadISDConfig", HTTP_GET, ReadISDConfig);
@@ -1739,6 +1809,10 @@ void setup()
     server.on("/ReadDevCtrl", HTTP_GET, ReadDevCtrl);
     server.on("/WriteDevCtrl", HTTP_POST, WriteDevCtrl);
 
+    server.on("/WriteEEPROM", HTTP_GET, WriteEEPROM);
+
+    server.on("/ReadAlgorithmState", HTTP_GET, ReadAlgorithmState);
+
     server.begin();
 }
 
@@ -1746,3 +1820,4 @@ void loop()
 {
     server.handleClient();
 }
+
