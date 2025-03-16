@@ -573,6 +573,67 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
         </div>
     </div>
 
+    <div class="container collapsed" id="pinConfigContainer">
+        <div class="header" onclick="toggleContainer('pinConfigContainer', 'pinConfigContent', 'pinConfigArrow')">
+            PIN_CONFIG
+            <span class="arrow" id="pinConfigArrow">▼</span>
+        </div>
+
+        <div class="content" id="pinConfigContent" style="display: none;">
+            <div class="table-container">
+                <table>
+                    <tr>
+                        <th title="Brake pin mode">BRAKE_PIN_MODE</th>
+                        <th title="Align brake angle select">ALIGN_BRAKE_ANGLE_SEL</th>
+                        <th title="Brake pin override">BRAKE_INPUT</th>
+                        <th title="Configure speed control mode from speed pin">SPEED_MODE</th>
+                        <th>Read/Write</th>
+                    </tr>
+
+                    <tr>
+                        <td><input type="text" id="BRAKE_PIN_MODE" readonly></td>
+                        <td><input type="text" id="ALIGN_BRAKE_ANGLE_SEL" readonly></td>
+                        <td><input type="text" id="BRAKE_INPUT" readonly></td>
+                        <td><input type="text" id="SPEED_MODE" readonly></td>
+                        <td><button onclick="ReadPinConfig()">Read</button></td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <select id="BRAKE_PIN_MODE_SELECT">
+                                <option value="0">0 = Low side Brake</option>
+                                <option value="1">1 = Align Brake</option>
+                            </select>
+                        </td>
+                        <td>
+                            <select id="ALIGN_BRAKE_ANGLE_SEL_SELECT">
+                                <option value="0">0 = Use last commutation angle before entering align braking</option>
+                                <option value="1">1 = Use ALIGN_ANGLE configuration for align braking</option>
+                            </select>
+                        </td>
+                        <td>
+                            <select id="BRAKE_INPUT_SELECT">
+                                <option value="0">0 = Hardware Pin BRAKE</option>
+                                <option value="1">1 = Override pin and brake/align according to BRAKE_PIN_MODE</option>
+                                <option value="2">2 = Override pin and do not brake/align</option>
+                                <option value="3">3 = Hardware Pin BRAKE</option>
+                            </select>
+                        </td>
+                        <td>
+                            <select id="SPEED_MODE_SELECT">
+                                <option value="0">0 = Analog Mode</option>
+                                <option value="1">1 = Controlled by Duty Cycle of SPEED Input Pin</option>
+                                <option value="2">2 = Register Override mode</option>
+                                <option value="3">3 = Controlled by Frequency of SPEED Input Pin</option>
+                            </select>
+                        </td>
+                        <td><button onclick="WritePinConfig()">Write</button></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
     <script>
         
         function toggleContainer(containerId, contentId, arrowId) {
@@ -756,6 +817,42 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
             .catch(error => console.error('Yazma hatası:', error));
         }
 
+        function ReadPinConfig() {
+            fetch('/ReadPinConfig', { method: 'GET' })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('BRAKE_PIN_MODE').value = data.BRAKE_PIN_MODE;
+                document.getElementById('ALIGN_BRAKE_ANGLE_SEL').value = data.ALIGN_BRAKE_ANGLE_SEL;
+                document.getElementById('BRAKE_INPUT').value = data.BRAKE_INPUT;
+                document.getElementById('SPEED_MODE').value = data.SPEED_MODE;
+
+                // Açılır kutulara da aynı verileri yazalım
+                document.getElementById('BRAKE_PIN_MODE_SELECT').value = data.BRAKE_PIN_MODE;
+                document.getElementById('ALIGN_BRAKE_ANGLE_SEL_SELECT').value = data.ALIGN_BRAKE_ANGLE_SEL;
+                document.getElementById('BRAKE_INPUT_SELECT').value = data.BRAKE_INPUT;
+                document.getElementById('SPEED_MODE_SELECT').value = data.SPEED_MODE;
+            })
+            .catch(error => console.error('Hata:', error));
+        }
+
+        function WritePinConfig() {
+            let data = {
+                BRAKE_PIN_MODE: document.getElementById('BRAKE_PIN_MODE_SELECT').value,
+                ALIGN_BRAKE_ANGLE_SEL: document.getElementById('ALIGN_BRAKE_ANGLE_SEL_SELECT').value,
+                BRAKE_INPUT: document.getElementById('BRAKE_INPUT_SELECT').value,
+                SPEED_MODE: document.getElementById('SPEED_MODE_SELECT').value
+            };
+
+            fetch('/WritePinConfig', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.text())
+            .then(response => console.log("Yazma başarılı:", response))
+            .catch(error => console.error('Yazma hatası:', error));
+        }
+
 
     </script>
 
@@ -795,7 +892,6 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
 #define INT_ALGO_1_REG 0x000000A0
 #define INT_ALGO_2_REG 0x000000A2
 
-
 unsigned long register_value = 0;
 
 #define READ_BITS(value, high, low) ((value >> low) & ((1 << (high - low + 1)) - 1))
@@ -822,8 +918,8 @@ struct REVDRIVECONFIG
     byte REV_DRV_OPEN_LOOP_ACCEL_A1;
     byte REV_DRV_OPEN_LOOP_ACCEL_A2;
     byte ACTIVE_BRAKE_CURRENT_LIMIT;
-    byte ACTIVE_BRAKE_KP;
-    byte ACTIVE_BRAKE_KI;
+    uint16_t ACTIVE_BRAKE_KP;
+    uint16_t ACTIVE_BRAKE_KI;
 };
 
 struct MOTORSTARTUP1
@@ -843,9 +939,33 @@ struct MOTORSTARTUP1
     byte REV_DRV_CONFIG;
 };
 
+struct PINCONFIG
+{
+    byte BRAKE_PIN_MODE;
+    byte ALIGN_BRAKE_ANGLE_SEL;
+    byte BRAKE_INPUT;
+    byte SPEED_MODE;
+};
+
+struct ALGOCTRL1
+{
+    byte OVERRIDE;
+    uint16_t DIGITAL_SPEED_CTRL;
+    byte CLOSED_LOOP_DIS;
+    byte FORCE_ALIGN_EN;
+    byte FORCE_SLOW_FIRST_CYCLE_EN;
+    byte FORCE_IPD_EN;
+    byte FORCE_ISD_EN;
+    byte FORCE_ALIGN_ANGLE_SRC_SEL;
+    uint16_t FORCE_IQ_REF_SPEED_LOOP_DIS;
+};
+
+
 ISDCONFIG ISD_CONFIG;
 REVDRIVECONFIG REV_DRIVE_CONFIG;
 MOTORSTARTUP1 MOTOR_STARTUP1;
+PINCONFIG PIN_CONFIG;
+ALGOCTRL1 ALGO_CTRL1;
 
 byte getJsonHexValue(String json, String key)
 {
@@ -1137,6 +1257,54 @@ void WriteMotorStartup1()
     }
 }
 
+void ReadPinConfig()
+{
+    register_value = 0;
+    read32(PIN_CONFIG_REG);
+
+    PIN_CONFIG.BRAKE_PIN_MODE = READ_BITS(register_value, 5, 5);
+    PIN_CONFIG.ALIGN_BRAKE_ANGLE_SEL = READ_BITS(register_value, 4, 4);
+    PIN_CONFIG.BRAKE_INPUT = READ_BITS(register_value, 3, 2);
+    PIN_CONFIG.SPEED_MODE = READ_BITS(register_value, 1, 0);
+
+    String json = "{  \"BRAKE_PIN_MODE\": \"" + toUpperCaseHex(PIN_CONFIG.BRAKE_PIN_MODE) +
+                  "\", \"ALIGN_BRAKE_ANGLE_SEL\": \"" + toUpperCaseHex(PIN_CONFIG.ALIGN_BRAKE_ANGLE_SEL) +
+                  "\", \"BRAKE_INPUT\": \"" + toUpperCaseHex(PIN_CONFIG.BRAKE_INPUT) +
+                  "\", \"SPEED_MODE\": \"" + toUpperCaseHex(PIN_CONFIG.SPEED_MODE) + "\" }";
+
+    server.send(200, "application/json", json);
+}
+
+void WritePinConfig()
+{
+    if (server.hasArg("plain"))
+    {
+        String body = server.arg("plain");
+
+        PIN_CONFIG.BRAKE_PIN_MODE = getJsonHexValue(body, "BRAKE_PIN_MODE");
+        PIN_CONFIG.ALIGN_BRAKE_ANGLE_SEL = getJsonHexValue(body, "ALIGN_BRAKE_ANGLE_SEL");
+        PIN_CONFIG.BRAKE_INPUT = getJsonHexValue(body, "BRAKE_INPUT");
+        PIN_CONFIG.SPEED_MODE = getJsonHexValue(body, "SPEED_MODE");
+
+        register_value = 0;
+        //WRITE_BITS(0, PIN_CONFIG.PARITY, 31, 31);
+        //WRITE_BITS(register_value, PIN_CONFIG.RESERVED, 30, 6);
+        WRITE_BITS(register_value, PIN_CONFIG.BRAKE_PIN_MODE, 5, 5);
+        WRITE_BITS(register_value, PIN_CONFIG.ALIGN_BRAKE_ANGLE_SEL, 4, 4);
+        WRITE_BITS(register_value, PIN_CONFIG.BRAKE_INPUT, 3, 2);
+        WRITE_BITS(register_value, PIN_CONFIG.SPEED_MODE, 1, 0);
+
+        write32(PIN_CONFIG_REG, register_value);
+
+        server.send(200, "application/json", "{\"status\":\"success\"}");
+    }
+    else
+    {
+        server.send(400, "application/json", "{\"error\":\"Bad Request\"}");
+    }
+}
+
+
 void setup()
 {
     Serial.begin(115200);
@@ -1160,6 +1328,8 @@ void setup()
     server.on("/WriteRevDriveConfig", HTTP_POST, WriteRevDriveConfig);
     server.on("/ReadMotorStartup1", HTTP_GET, ReadMotorStartup1);
     server.on("/WriteMotorStartup1", HTTP_POST, WriteMotorStartup1);
+    server.on("/ReadPinConfig", HTTP_GET, ReadPinConfig);
+    server.on("/WritePinConfig", HTTP_POST, WritePinConfig);
     server.begin();
 }
 
