@@ -1261,8 +1261,8 @@ struct REVDRIVECONFIG
     byte REV_DRV_OPEN_LOOP_ACCEL_A1;
     byte REV_DRV_OPEN_LOOP_ACCEL_A2;
     byte ACTIVE_BRAKE_CURRENT_LIMIT;
-    byte ACTIVE_BRAKE_KP;
-    byte ACTIVE_BRAKE_KI;
+    uint16_t ACTIVE_BRAKE_KP;
+    uint16_t ACTIVE_BRAKE_KI;
 };
 
 struct MOTORSTARTUP1
@@ -1321,25 +1321,7 @@ PINCONFIG PIN_CONFIG;
 ALGOCTRL1 ALGO_CTRL1;
 DEVCTRL DEV_CTRL;
 
-byte getJsonHexValue(String json, String key)
-{
-    int startIndex = json.indexOf("\"" + key + "\":");
-    if (startIndex == -1)
-        return 0; // Eğer bulunamazsa, 0 döndür
-
-    startIndex += key.length() + 3; // "KEY": sonrası başlama noktası
-    int endIndex = json.indexOf(",", startIndex);
-    if (endIndex == -1)
-        endIndex = json.indexOf("}", startIndex); // Son eleman için "}" ile bitiyor
-
-    String hexValue = json.substring(startIndex, endIndex);
-    hexValue.trim();            // Boşlukları temizle
-    hexValue.replace("\"", ""); // Eğer çift tırnak varsa temizle
-
-    return (byte)strtol(hexValue.c_str(), NULL, 16); // HEX formatında ayrıştır
-}
-
-String toUpperCaseHex(byte value)
+String toUpperCaseHex(uint16_t value)
 {
     String hexString = String(value, HEX); // HEX string'e çevir
     hexString.toUpperCase();               // Büyük harfe çevir
@@ -1405,78 +1387,86 @@ void ReadISDConfig()
     register_value = 0;
     read32(ISD_CONFIG_REG);
 
-    ISD_CONFIG.ISD_EN = READ_BITS(register_value, 30, 30);
-    ISD_CONFIG.BRAKE_EN = READ_BITS(register_value, 29, 29);
-    ISD_CONFIG.HIZ_EN = READ_BITS(register_value, 28, 28);
-    ISD_CONFIG.RVS_DR_EN = READ_BITS(register_value, 27, 27);
-    ISD_CONFIG.RESYNC_EN = READ_BITS(register_value, 26, 26);
-    ISD_CONFIG.FW_DRV_RESYN_THR = READ_BITS(register_value, 25, 22);
-    ISD_CONFIG.BRK_MODE = READ_BITS(register_value, 21, 21);
-    ISD_CONFIG.BRK_TIME = READ_BITS(register_value, 16, 13);
-    ISD_CONFIG.HIZ_TIME = READ_BITS(register_value, 12, 9);
-    ISD_CONFIG.STAT_DETECT_THR = READ_BITS(register_value, 8, 6);
-    ISD_CONFIG.REV_DRV_HANDOFF_THR = READ_BITS(register_value, 5, 2);
-    ISD_CONFIG.REV_DRV_OPEN_LOOP_CURRENT = READ_BITS(register_value, 1, 0);
+    // 📌 JSON nesnesini temizle
+    doc.clear();
 
-    String json = "{ \"ISD_EN\": \"" + toUpperCaseHex(ISD_CONFIG.ISD_EN) +
-                  "\", \"BRAKE_EN\": \"" + toUpperCaseHex(ISD_CONFIG.BRAKE_EN) +
-                  "\", \"HIZ_EN\": \"" + toUpperCaseHex(ISD_CONFIG.HIZ_EN) +
-                  "\", \"RVS_DR_EN\": \"" + toUpperCaseHex(ISD_CONFIG.RVS_DR_EN) +
-                  "\", \"RESYNC_EN\": \"" + toUpperCaseHex(ISD_CONFIG.RESYNC_EN) +
-                  "\", \"FW_DRV_RESYN_THR\": \"" + toUpperCaseHex(ISD_CONFIG.FW_DRV_RESYN_THR) +
-                  "\", \"BRK_MODE\": \"" + toUpperCaseHex(ISD_CONFIG.BRK_MODE) +
-                  "\", \"BRK_TIME\": \"" + toUpperCaseHex(ISD_CONFIG.BRK_TIME) +
-                  "\", \"HIZ_TIME\": \"" + toUpperCaseHex(ISD_CONFIG.HIZ_TIME) +
-                  "\", \"STAT_DETECT_THR\": \"" + toUpperCaseHex(ISD_CONFIG.STAT_DETECT_THR) +
-                  "\", \"REV_DRV_HANDOFF_THR\": \"" + toUpperCaseHex(ISD_CONFIG.REV_DRV_HANDOFF_THR) +
-                  "\", \"REV_DRV_OPEN_LOOP_CURRENT\": \"" + toUpperCaseHex(ISD_CONFIG.REV_DRV_OPEN_LOOP_CURRENT) + "\" }";
+    // 📌 Register bitlerini JSON nesnesine **sade HEX formatında** ekle
+    doc["ISD_EN"] = toUpperCaseHex(READ_BITS(register_value, 30, 30));
+    doc["BRAKE_EN"] = toUpperCaseHex(READ_BITS(register_value, 29, 29));
+    doc["HIZ_EN"] = toUpperCaseHex(READ_BITS(register_value, 28, 28));
+    doc["RVS_DR_EN"] = toUpperCaseHex(READ_BITS(register_value, 27, 27));
+    doc["RESYNC_EN"] = toUpperCaseHex(READ_BITS(register_value, 26, 26));
+    doc["FW_DRV_RESYN_THR"] = toUpperCaseHex(READ_BITS(register_value, 25, 22));
+    doc["BRK_MODE"] = toUpperCaseHex(READ_BITS(register_value, 21, 21));
+    doc["BRK_TIME"] = toUpperCaseHex(READ_BITS(register_value, 16, 13));
+    doc["HIZ_TIME"] = toUpperCaseHex(READ_BITS(register_value, 12, 9));
+    doc["STAT_DETECT_THR"] = toUpperCaseHex(READ_BITS(register_value, 8, 6));
+    doc["REV_DRV_HANDOFF_THR"] = toUpperCaseHex(READ_BITS(register_value, 5, 2));
+    doc["REV_DRV_OPEN_LOOP_CURRENT"] = toUpperCaseHex(READ_BITS(register_value, 1, 0));
 
-    server.send(200, "application/json", json);
+    // 📌 JSON'u string olarak hazırla
+    String response;
+    serializeJson(doc, response);
+
+    // 📌 JSON formatında yanıt gönder
+    server.send(200, "application/json", response);
 }
 
 void WriteISDConfig()
 {
-    if (server.hasArg("plain"))
-    {
-        String body = server.arg("plain");
-
-        ISD_CONFIG.ISD_EN = getJsonHexValue(body, "ISD_EN");
-        ISD_CONFIG.BRAKE_EN = getJsonHexValue(body, "BRAKE_EN");
-        ISD_CONFIG.HIZ_EN = getJsonHexValue(body, "HIZ_EN");
-        ISD_CONFIG.RVS_DR_EN = getJsonHexValue(body, "RVS_DR_EN");
-        ISD_CONFIG.RESYNC_EN = getJsonHexValue(body, "RESYNC_EN");
-        ISD_CONFIG.FW_DRV_RESYN_THR = getJsonHexValue(body, "FW_DRV_RESYN_THR");
-        ISD_CONFIG.BRK_MODE = getJsonHexValue(body, "BRK_MODE");
-        ISD_CONFIG.BRK_TIME = getJsonHexValue(body, "BRK_TIME");
-        ISD_CONFIG.HIZ_TIME = getJsonHexValue(body, "HIZ_TIME");
-        ISD_CONFIG.STAT_DETECT_THR = getJsonHexValue(body, "STAT_DETECT_THR");
-        ISD_CONFIG.REV_DRV_HANDOFF_THR = getJsonHexValue(body, "REV_DRV_HANDOFF_THR");
-        ISD_CONFIG.REV_DRV_OPEN_LOOP_CURRENT = getJsonHexValue(body, "REV_DRV_OPEN_LOOP_CURRENT");
-
-        register_value = 0;
-        WRITE_BITS(register_value, 0, 31, 31);
-        WRITE_BITS(register_value, ISD_CONFIG.ISD_EN, 30, 30);
-        WRITE_BITS(register_value, ISD_CONFIG.BRAKE_EN, 29, 29);
-        WRITE_BITS(register_value, ISD_CONFIG.HIZ_EN, 28, 28);
-        WRITE_BITS(register_value, ISD_CONFIG.RVS_DR_EN, 27, 27);
-        WRITE_BITS(register_value, ISD_CONFIG.RESYNC_EN, 26, 26);
-        WRITE_BITS(register_value, ISD_CONFIG.FW_DRV_RESYN_THR, 25, 22);
-        WRITE_BITS(register_value, ISD_CONFIG.BRK_MODE, 21, 21);
-        WRITE_BITS(register_value, 9, 20, 17);
-        WRITE_BITS(register_value, ISD_CONFIG.BRK_TIME, 16, 13);
-        WRITE_BITS(register_value, ISD_CONFIG.HIZ_TIME, 12, 9);
-        WRITE_BITS(register_value, ISD_CONFIG.STAT_DETECT_THR, 8, 6);
-        WRITE_BITS(register_value, ISD_CONFIG.REV_DRV_HANDOFF_THR, 5, 2);
-        WRITE_BITS(register_value, ISD_CONFIG.REV_DRV_OPEN_LOOP_CURRENT, 1, 0);
-
-        write32(ISD_CONFIG_REG, register_value);
-
-        server.send(200, "application/json", "{\"status\":\"success\"}");
-    }
-    else
+    if (!server.hasArg("plain"))
     {
         server.send(400, "application/json", "{\"error\":\"Bad Request\"}");
+        return;
     }
+
+    // 📌 JSON nesnesini temizle
+    doc.clear();
+
+    // 📌 JSON stringini deserialize et
+    DeserializationError error = deserializeJson(doc, server.arg("plain"));
+    if (error)
+    {
+        server.send(400, "application/json", "{\"error\":\"JSON Parse Failed\"}");
+        return;
+    }
+
+    // 📌 JSON içindeki değerleri al
+    ISD_CONFIG.ISD_EN = strtoul(doc["ISD_EN"].as<String>().c_str(), NULL, 16);
+    ISD_CONFIG.BRAKE_EN = strtoul(doc["BRAKE_EN"].as<String>().c_str(), NULL, 16);
+    ISD_CONFIG.HIZ_EN = strtoul(doc["HIZ_EN"].as<String>().c_str(), NULL, 16);
+    ISD_CONFIG.RVS_DR_EN = strtoul(doc["RVS_DR_EN"].as<String>().c_str(), NULL, 16);
+    ISD_CONFIG.RESYNC_EN = strtoul(doc["RESYNC_EN"].as<String>().c_str(), NULL, 16);
+    ISD_CONFIG.FW_DRV_RESYN_THR = strtoul(doc["FW_DRV_RESYN_THR"].as<String>().c_str(), NULL, 16);
+    ISD_CONFIG.BRK_MODE = strtoul(doc["BRK_MODE"].as<String>().c_str(), NULL, 16);
+    ISD_CONFIG.BRK_TIME = strtoul(doc["BRK_TIME"].as<String>().c_str(), NULL, 16);
+    ISD_CONFIG.HIZ_TIME = strtoul(doc["HIZ_TIME"].as<String>().c_str(), NULL, 16);
+    ISD_CONFIG.STAT_DETECT_THR = strtoul(doc["STAT_DETECT_THR"].as<String>().c_str(), NULL, 16);
+    ISD_CONFIG.REV_DRV_HANDOFF_THR = strtoul(doc["REV_DRV_HANDOFF_THR"].as<String>().c_str(), NULL, 16);
+    ISD_CONFIG.REV_DRV_OPEN_LOOP_CURRENT = strtoul(doc["REV_DRV_OPEN_LOOP_CURRENT"].as<String>().c_str(), NULL, 16);
+
+    // 📌 Register değerini oluştur
+    register_value = 0;
+    WRITE_BITS(register_value, 0, 31, 31);
+    WRITE_BITS(register_value, ISD_CONFIG.ISD_EN, 30, 30);
+    WRITE_BITS(register_value, ISD_CONFIG.BRAKE_EN, 29, 29);
+    WRITE_BITS(register_value, ISD_CONFIG.HIZ_EN, 28, 28);
+    WRITE_BITS(register_value, ISD_CONFIG.RVS_DR_EN, 27, 27);
+    WRITE_BITS(register_value, ISD_CONFIG.RESYNC_EN, 26, 26);
+    WRITE_BITS(register_value, ISD_CONFIG.FW_DRV_RESYN_THR, 25, 22);
+    WRITE_BITS(register_value, ISD_CONFIG.BRK_MODE, 21, 21);
+    WRITE_BITS(register_value, 9, 20, 17);
+    WRITE_BITS(register_value, ISD_CONFIG.BRK_TIME, 16, 13);
+    WRITE_BITS(register_value, ISD_CONFIG.HIZ_TIME, 12, 9);
+    WRITE_BITS(register_value, ISD_CONFIG.STAT_DETECT_THR, 8, 6);
+    WRITE_BITS(register_value, ISD_CONFIG.REV_DRV_HANDOFF_THR, 5, 2);
+    WRITE_BITS(register_value, ISD_CONFIG.REV_DRV_OPEN_LOOP_CURRENT, 1, 0);
+
+    // 📌 Register'a yaz
+    write32(ISD_CONFIG_REG, register_value);
+
+    // 📌 Başarı mesajı gönder
+    server.send(200, "application/json", "{\"status\":\"success\"}");
 }
 
 void ReadRevDriveConfig()
@@ -1484,49 +1474,69 @@ void ReadRevDriveConfig()
     register_value = 0;
     read32(REV_DRIVE_CONFIG_REG);
 
-    REV_DRIVE_CONFIG.REV_DRV_OPEN_LOOP_ACCEL_A1 = READ_BITS(register_value, 30, 27);
-    REV_DRIVE_CONFIG.REV_DRV_OPEN_LOOP_ACCEL_A2 = READ_BITS(register_value, 26, 23);
-    REV_DRIVE_CONFIG.ACTIVE_BRAKE_CURRENT_LIMIT = READ_BITS(register_value, 22, 20);
-    REV_DRIVE_CONFIG.ACTIVE_BRAKE_KP = READ_BITS(register_value, 19, 10);
-    REV_DRIVE_CONFIG.ACTIVE_BRAKE_KI = READ_BITS(register_value, 9, 0);
+    // 📌 JSON nesnesini temizle
+    doc.clear();
 
-    String json = "{ \"REV_DRV_OPEN_LOOP_ACCEL_A1\": \"" + toUpperCaseHex(REV_DRIVE_CONFIG.REV_DRV_OPEN_LOOP_ACCEL_A1) +
-                  "\", \"REV_DRV_OPEN_LOOP_ACCEL_A2\": \"" + toUpperCaseHex(REV_DRIVE_CONFIG.REV_DRV_OPEN_LOOP_ACCEL_A2) +
-                  "\", \"ACTIVE_BRAKE_CURRENT_LIMIT\": \"" + toUpperCaseHex(REV_DRIVE_CONFIG.ACTIVE_BRAKE_CURRENT_LIMIT) +
-                  "\", \"ACTIVE_BRAKE_KP\": \"" + toUpperCaseHex(REV_DRIVE_CONFIG.ACTIVE_BRAKE_KP) +
-                  "\", \"ACTIVE_BRAKE_KI\": \"" + toUpperCaseHex(REV_DRIVE_CONFIG.ACTIVE_BRAKE_KI) + "\" }";
+    // 📌 Register bitlerini çıkar ve JSON nesnesine ekle
+    doc["REV_DRV_OPEN_LOOP_ACCEL_A1"] = toUpperCaseHex(READ_BITS(register_value, 30, 27));
+    doc["REV_DRV_OPEN_LOOP_ACCEL_A2"] = toUpperCaseHex(READ_BITS(register_value, 26, 23));
+    doc["ACTIVE_BRAKE_CURRENT_LIMIT"] = toUpperCaseHex(READ_BITS(register_value, 22, 20));
+    doc["ACTIVE_BRAKE_KP"] = toUpperCaseHex(READ_BITS(register_value, 19, 10));
+    doc["ACTIVE_BRAKE_KI"] = toUpperCaseHex(READ_BITS(register_value, 9, 0));
 
-    server.send(200, "application/json", json);
+    // 📌 JSON string olarak oluştur
+    String response;
+    serializeJson(doc, response);
+
+    // 📌 JSON formatında yanıt gönder
+    server.send(200, "application/json", response);
 }
 
 void WriteRevDriveConfig()
 {
-    if (server.hasArg("plain"))
-    {
-        String body = server.arg("plain");
-
-        REV_DRIVE_CONFIG.REV_DRV_OPEN_LOOP_ACCEL_A1 = getJsonHexValue(body, "REV_DRV_OPEN_LOOP_ACCEL_A1");
-        REV_DRIVE_CONFIG.REV_DRV_OPEN_LOOP_ACCEL_A2 = getJsonHexValue(body, "REV_DRV_OPEN_LOOP_ACCEL_A2");
-        REV_DRIVE_CONFIG.ACTIVE_BRAKE_CURRENT_LIMIT = getJsonHexValue(body, "ACTIVE_BRAKE_CURRENT_LIMIT");
-        REV_DRIVE_CONFIG.ACTIVE_BRAKE_KP = getJsonHexValue(body, "ACTIVE_BRAKE_KP");
-        REV_DRIVE_CONFIG.ACTIVE_BRAKE_KI = getJsonHexValue(body, "ACTIVE_BRAKE_KI");
-
-        register_value = 0;
-        WRITE_BITS(register_value, 0, 31, 31);
-        WRITE_BITS(register_value, REV_DRIVE_CONFIG.REV_DRV_OPEN_LOOP_ACCEL_A1, 30, 27);
-        WRITE_BITS(register_value, REV_DRIVE_CONFIG.REV_DRV_OPEN_LOOP_ACCEL_A2, 26, 23);
-        WRITE_BITS(register_value, REV_DRIVE_CONFIG.ACTIVE_BRAKE_CURRENT_LIMIT, 22, 20);
-        WRITE_BITS(register_value, REV_DRIVE_CONFIG.ACTIVE_BRAKE_KP, 19, 10);
-        WRITE_BITS(register_value, REV_DRIVE_CONFIG.ACTIVE_BRAKE_KI, 9, 0);
-
-        write32(REV_DRIVE_CONFIG_REG, register_value);
-
-        server.send(200, "application/json", "{\"status\":\"success\"}");
-    }
-    else
+    if (!server.hasArg("plain"))
     {
         server.send(400, "application/json", "{\"error\":\"Bad Request\"}");
+        return;
     }
+
+    // 📌 JSON nesnesini temizle
+    doc.clear();
+
+    // 📌 JSON stringini parse et
+    DeserializationError error = deserializeJson(doc, server.arg("plain"));
+    if (error)
+    {
+        server.send(400, "application/json", "{\"error\":\"JSON Parse Failed\"}");
+        return;
+    }
+
+    // 📌 JSON içindeki değerleri çek ve **HEX formatında çevir**
+    REV_DRIVE_CONFIG.REV_DRV_OPEN_LOOP_ACCEL_A1 = strtoul(doc["REV_DRV_OPEN_LOOP_ACCEL_A1"].as<String>().c_str(), NULL, 16);
+    REV_DRIVE_CONFIG.REV_DRV_OPEN_LOOP_ACCEL_A2 = strtoul(doc["REV_DRV_OPEN_LOOP_ACCEL_A2"].as<String>().c_str(), NULL, 16);
+    REV_DRIVE_CONFIG.ACTIVE_BRAKE_CURRENT_LIMIT = strtoul(doc["ACTIVE_BRAKE_CURRENT_LIMIT"].as<String>().c_str(), NULL, 16);
+    REV_DRIVE_CONFIG.ACTIVE_BRAKE_KP = strtoul(doc["ACTIVE_BRAKE_KP"].as<String>().c_str(), NULL, 16);
+    REV_DRIVE_CONFIG.ACTIVE_BRAKE_KI = strtoul(doc["ACTIVE_BRAKE_KI"].as<String>().c_str(), NULL, 16);
+
+    // 📌 Register değerini sıfırla ve yeni değerleri yaz
+    register_value = 0;
+    WRITE_BITS(register_value, 0, 31, 31);
+    WRITE_BITS(register_value, REV_DRIVE_CONFIG.REV_DRV_OPEN_LOOP_ACCEL_A1, 30, 27);
+    WRITE_BITS(register_value, REV_DRIVE_CONFIG.REV_DRV_OPEN_LOOP_ACCEL_A2, 26, 23);
+    WRITE_BITS(register_value, REV_DRIVE_CONFIG.ACTIVE_BRAKE_CURRENT_LIMIT, 22, 20);
+    WRITE_BITS(register_value, REV_DRIVE_CONFIG.ACTIVE_BRAKE_KP, 19, 10); // 📌 10-bitlik değer
+    WRITE_BITS(register_value, REV_DRIVE_CONFIG.ACTIVE_BRAKE_KI, 9, 0);   // 📌 10-bitlik değer
+
+    // 📌 I2C register'a yaz
+    write32(REV_DRIVE_CONFIG_REG, register_value);
+
+    // 📌 JSON formatında başarı mesajı gönder
+    doc.clear();
+    doc["status"] = "success";
+
+    String response;
+    serializeJson(doc, response);
+    server.send(200, "application/json", response);
 }
 
 void ReadMotorStartup1()
@@ -1534,81 +1544,93 @@ void ReadMotorStartup1()
     register_value = 0;
     read32(MOTOR_STARTUP1_REG);
 
-    MOTOR_STARTUP1.MTR_STARTUP = READ_BITS(register_value, 30, 29);
-    MOTOR_STARTUP1.ALIGN_SLOW_RAMP_RATE = READ_BITS(register_value, 28, 25);
-    MOTOR_STARTUP1.ALIGN_TIME = READ_BITS(register_value, 24, 21);
-    MOTOR_STARTUP1.ALIGN_OR_SLOW_CURRENT_ILIMIT = READ_BITS(register_value, 20, 17);
-    MOTOR_STARTUP1.IPD_CLK_FREQ = READ_BITS(register_value, 16, 14);
-    MOTOR_STARTUP1.IPD_CURR_THR = READ_BITS(register_value, 13, 9);
-    MOTOR_STARTUP1.IPD_RLS_MODE = READ_BITS(register_value, 8, 8);
-    MOTOR_STARTUP1.IPD_ADV_ANGLE = READ_BITS(register_value, 7, 6);
-    MOTOR_STARTUP1.IPD_REPEAT = READ_BITS(register_value, 5, 4);
-    MOTOR_STARTUP1.OL_ILIMIT_CONFIG = READ_BITS(register_value, 3, 3);
-    MOTOR_STARTUP1.IQ_RAMP_EN = READ_BITS(register_value, 2, 2);
-    MOTOR_STARTUP1.ACTIVE_BRAKE_EN = READ_BITS(register_value, 1, 1);
-    MOTOR_STARTUP1.REV_DRV_CONFIG = READ_BITS(register_value, 0, 0);
+    // 📌 JSON nesnesini temizle
+    doc.clear();
 
-    String json = "{ \"MTR_STARTUP\": \"" + toUpperCaseHex(MOTOR_STARTUP1.MTR_STARTUP) +
-                  "\", \"ALIGN_SLOW_RAMP_RATE\": \"" + toUpperCaseHex(MOTOR_STARTUP1.ALIGN_SLOW_RAMP_RATE) +
-                  "\", \"ALIGN_TIME\": \"" + toUpperCaseHex(MOTOR_STARTUP1.ALIGN_TIME) +
-                  "\", \"ALIGN_OR_SLOW_CURRENT_ILIMIT\": \"" + toUpperCaseHex(MOTOR_STARTUP1.ALIGN_OR_SLOW_CURRENT_ILIMIT) +
-                  "\", \"IPD_CLK_FREQ\": \"" + toUpperCaseHex(MOTOR_STARTUP1.IPD_CLK_FREQ) +
-                  "\", \"IPD_CURR_THR\": \"" + toUpperCaseHex(MOTOR_STARTUP1.IPD_CURR_THR) +
-                  "\", \"IPD_RLS_MODE\": \"" + toUpperCaseHex(MOTOR_STARTUP1.IPD_RLS_MODE) +
-                  "\", \"IPD_ADV_ANGLE\": \"" + toUpperCaseHex(MOTOR_STARTUP1.IPD_ADV_ANGLE) +
-                  "\", \"IPD_REPEAT\": \"" + toUpperCaseHex(MOTOR_STARTUP1.IPD_REPEAT) +
-                  "\", \"OL_ILIMIT_CONFIG\": \"" + toUpperCaseHex(MOTOR_STARTUP1.OL_ILIMIT_CONFIG) +
-                  "\", \"IQ_RAMP_EN\": \"" + toUpperCaseHex(MOTOR_STARTUP1.IQ_RAMP_EN) +
-                  "\", \"ACTIVE_BRAKE_EN\": \"" + toUpperCaseHex(MOTOR_STARTUP1.ACTIVE_BRAKE_EN) +
-                  "\", \"REV_DRV_CONFIG\": \"" + toUpperCaseHex(MOTOR_STARTUP1.REV_DRV_CONFIG) + "\" }";
+    // 📌 Register bitlerini JSON nesnesine **hex formatında** ekle
+    doc["MTR_STARTUP"] = toUpperCaseHex(READ_BITS(register_value, 30, 29));
+    doc["ALIGN_SLOW_RAMP_RATE"] = toUpperCaseHex(READ_BITS(register_value, 28, 25));
+    doc["ALIGN_TIME"] = toUpperCaseHex(READ_BITS(register_value, 24, 21));
+    doc["ALIGN_OR_SLOW_CURRENT_ILIMIT"] = toUpperCaseHex(READ_BITS(register_value, 20, 17));
+    doc["IPD_CLK_FREQ"] = toUpperCaseHex(READ_BITS(register_value, 16, 14));
+    doc["IPD_CURR_THR"] = toUpperCaseHex(READ_BITS(register_value, 13, 9));
+    doc["IPD_RLS_MODE"] = toUpperCaseHex(READ_BITS(register_value, 8, 8));
+    doc["IPD_ADV_ANGLE"] = toUpperCaseHex(READ_BITS(register_value, 7, 6));
+    doc["IPD_REPEAT"] = toUpperCaseHex(READ_BITS(register_value, 5, 4));
+    doc["OL_ILIMIT_CONFIG"] = toUpperCaseHex(READ_BITS(register_value, 3, 3));
+    doc["IQ_RAMP_EN"] = toUpperCaseHex(READ_BITS(register_value, 2, 2));
+    doc["ACTIVE_BRAKE_EN"] = toUpperCaseHex(READ_BITS(register_value, 1, 1));
+    doc["REV_DRV_CONFIG"] = toUpperCaseHex(READ_BITS(register_value, 0, 0));
 
-    server.send(200, "application/json", json);
+    // 📌 JSON string olarak oluştur
+    String response;
+    serializeJson(doc, response);
+
+    // 📌 JSON formatında yanıt gönder
+    server.send(200, "application/json", response);
 }
 
 void WriteMotorStartup1()
 {
-    if (server.hasArg("plain"))
-    {
-        String body = server.arg("plain");
-
-        MOTOR_STARTUP1.MTR_STARTUP = getJsonHexValue(body, "MTR_STARTUP");
-        MOTOR_STARTUP1.ALIGN_SLOW_RAMP_RATE = getJsonHexValue(body, "ALIGN_SLOW_RAMP_RATE");
-        MOTOR_STARTUP1.ALIGN_TIME = getJsonHexValue(body, "ALIGN_TIME");
-        MOTOR_STARTUP1.ALIGN_OR_SLOW_CURRENT_ILIMIT = getJsonHexValue(body, "ALIGN_OR_SLOW_CURRENT_ILIMIT");
-        MOTOR_STARTUP1.IPD_CLK_FREQ = getJsonHexValue(body, "IPD_CLK_FREQ");
-        MOTOR_STARTUP1.IPD_CURR_THR = getJsonHexValue(body, "IPD_CURR_THR");
-        MOTOR_STARTUP1.IPD_RLS_MODE = getJsonHexValue(body, "IPD_RLS_MODE");
-        MOTOR_STARTUP1.IPD_ADV_ANGLE = getJsonHexValue(body, "IPD_ADV_ANGLE");
-        MOTOR_STARTUP1.IPD_REPEAT = getJsonHexValue(body, "IPD_REPEAT");
-        MOTOR_STARTUP1.OL_ILIMIT_CONFIG = getJsonHexValue(body, "OL_ILIMIT_CONFIG");
-        MOTOR_STARTUP1.IQ_RAMP_EN = getJsonHexValue(body, "IQ_RAMP_EN");
-        MOTOR_STARTUP1.ACTIVE_BRAKE_EN = getJsonHexValue(body, "ACTIVE_BRAKE_EN");
-        MOTOR_STARTUP1.REV_DRV_CONFIG = getJsonHexValue(body, "REV_DRV_CONFIG");
-
-        register_value = 0;
-        WRITE_BITS(register_value, 0, 31, 31);
-        WRITE_BITS(register_value, MOTOR_STARTUP1.MTR_STARTUP, 30, 29);
-        WRITE_BITS(register_value, MOTOR_STARTUP1.ALIGN_SLOW_RAMP_RATE, 28, 25);
-        WRITE_BITS(register_value, MOTOR_STARTUP1.ALIGN_TIME, 24, 21);
-        WRITE_BITS(register_value, MOTOR_STARTUP1.ALIGN_OR_SLOW_CURRENT_ILIMIT, 20, 17);
-        WRITE_BITS(register_value, MOTOR_STARTUP1.IPD_CLK_FREQ, 16, 14);
-        WRITE_BITS(register_value, MOTOR_STARTUP1.IPD_CURR_THR, 13, 9);
-        WRITE_BITS(register_value, MOTOR_STARTUP1.IPD_RLS_MODE, 8, 8);
-        WRITE_BITS(register_value, MOTOR_STARTUP1.IPD_ADV_ANGLE, 7, 6);
-        WRITE_BITS(register_value, MOTOR_STARTUP1.IPD_REPEAT, 5, 4);
-        WRITE_BITS(register_value, MOTOR_STARTUP1.OL_ILIMIT_CONFIG, 3, 3);
-        WRITE_BITS(register_value, MOTOR_STARTUP1.IQ_RAMP_EN, 2, 2);
-        WRITE_BITS(register_value, MOTOR_STARTUP1.ACTIVE_BRAKE_EN, 1, 1);
-        WRITE_BITS(register_value, MOTOR_STARTUP1.REV_DRV_CONFIG, 0, 0);
-
-        write32(MOTOR_STARTUP1_REG, register_value);
-
-        server.send(200, "application/json", "{\"status\":\"success\"}");
-    }
-    else
+    if (!server.hasArg("plain"))
     {
         server.send(400, "application/json", "{\"error\":\"Bad Request\"}");
+        return;
     }
+
+    // 📌 JSON nesnesini temizle
+    doc.clear();
+
+    // 📌 JSON stringini parse et
+    DeserializationError error = deserializeJson(doc, server.arg("plain"));
+    if (error)
+    {
+        server.send(400, "application/json", "{\"error\":\"JSON Parse Failed\"}");
+        return;
+    }
+
+    // 📌 JSON içindeki değerleri çek ve **HEX formatında çevir**
+    MOTOR_STARTUP1.MTR_STARTUP = strtoul(doc["MTR_STARTUP"].as<String>().c_str(), NULL, 16);
+    MOTOR_STARTUP1.ALIGN_SLOW_RAMP_RATE = strtoul(doc["ALIGN_SLOW_RAMP_RATE"].as<String>().c_str(), NULL, 16);
+    MOTOR_STARTUP1.ALIGN_TIME = strtoul(doc["ALIGN_TIME"].as<String>().c_str(), NULL, 16);
+    MOTOR_STARTUP1.ALIGN_OR_SLOW_CURRENT_ILIMIT = strtoul(doc["ALIGN_OR_SLOW_CURRENT_ILIMIT"].as<String>().c_str(), NULL, 16);
+    MOTOR_STARTUP1.IPD_CLK_FREQ = strtoul(doc["IPD_CLK_FREQ"].as<String>().c_str(), NULL, 16);
+    MOTOR_STARTUP1.IPD_CURR_THR = strtoul(doc["IPD_CURR_THR"].as<String>().c_str(), NULL, 16);
+    MOTOR_STARTUP1.IPD_RLS_MODE = strtoul(doc["IPD_RLS_MODE"].as<String>().c_str(), NULL, 16);
+    MOTOR_STARTUP1.IPD_ADV_ANGLE = strtoul(doc["IPD_ADV_ANGLE"].as<String>().c_str(), NULL, 16);
+    MOTOR_STARTUP1.IPD_REPEAT = strtoul(doc["IPD_REPEAT"].as<String>().c_str(), NULL, 16);
+    MOTOR_STARTUP1.OL_ILIMIT_CONFIG = strtoul(doc["OL_ILIMIT_CONFIG"].as<String>().c_str(), NULL, 16);
+    MOTOR_STARTUP1.IQ_RAMP_EN = strtoul(doc["IQ_RAMP_EN"].as<String>().c_str(), NULL, 16);
+    MOTOR_STARTUP1.ACTIVE_BRAKE_EN = strtoul(doc["ACTIVE_BRAKE_EN"].as<String>().c_str(), NULL, 16);
+    MOTOR_STARTUP1.REV_DRV_CONFIG = strtoul(doc["REV_DRV_CONFIG"].as<String>().c_str(), NULL, 16);
+
+    // 📌 Register değerini sıfırla ve yeni değerleri yaz
+    register_value = 0;
+    WRITE_BITS(register_value, 0, 31, 31);
+    WRITE_BITS(register_value, MOTOR_STARTUP1.MTR_STARTUP, 30, 29);
+    WRITE_BITS(register_value, MOTOR_STARTUP1.ALIGN_SLOW_RAMP_RATE, 28, 25);
+    WRITE_BITS(register_value, MOTOR_STARTUP1.ALIGN_TIME, 24, 21);
+    WRITE_BITS(register_value, MOTOR_STARTUP1.ALIGN_OR_SLOW_CURRENT_ILIMIT, 20, 17);
+    WRITE_BITS(register_value, MOTOR_STARTUP1.IPD_CLK_FREQ, 16, 14);
+    WRITE_BITS(register_value, MOTOR_STARTUP1.IPD_CURR_THR, 13, 9);
+    WRITE_BITS(register_value, MOTOR_STARTUP1.IPD_RLS_MODE, 8, 8);
+    WRITE_BITS(register_value, MOTOR_STARTUP1.IPD_ADV_ANGLE, 7, 6);
+    WRITE_BITS(register_value, MOTOR_STARTUP1.IPD_REPEAT, 5, 4);
+    WRITE_BITS(register_value, MOTOR_STARTUP1.OL_ILIMIT_CONFIG, 3, 3);
+    WRITE_BITS(register_value, MOTOR_STARTUP1.IQ_RAMP_EN, 2, 2);
+    WRITE_BITS(register_value, MOTOR_STARTUP1.ACTIVE_BRAKE_EN, 1, 1);
+    WRITE_BITS(register_value, MOTOR_STARTUP1.REV_DRV_CONFIG, 0, 0);
+
+    // 📌 I2C register'a yaz
+    write32(MOTOR_STARTUP1_REG, register_value);
+
+    // 📌 JSON formatında başarı mesajı gönder
+    doc.clear();
+    doc["status"] = "success";
+
+    String response;
+    serializeJson(doc, response);
+    server.send(200, "application/json", response);
 }
 
 void ReadPinConfig()
@@ -1616,46 +1638,65 @@ void ReadPinConfig()
     register_value = 0;
     read32(PIN_CONFIG_REG);
 
-    PIN_CONFIG.BRAKE_PIN_MODE = READ_BITS(register_value, 5, 5);
-    PIN_CONFIG.ALIGN_BRAKE_ANGLE_SEL = READ_BITS(register_value, 4, 4);
-    PIN_CONFIG.BRAKE_INPUT = READ_BITS(register_value, 3, 2);
-    PIN_CONFIG.SPEED_MODE = READ_BITS(register_value, 1, 0);
+    // 📌 JSON nesnesini temizle
+    doc.clear();
 
-    String json = "{  \"BRAKE_PIN_MODE\": \"" + toUpperCaseHex(PIN_CONFIG.BRAKE_PIN_MODE) +
-                  "\", \"ALIGN_BRAKE_ANGLE_SEL\": \"" + toUpperCaseHex(PIN_CONFIG.ALIGN_BRAKE_ANGLE_SEL) +
-                  "\", \"BRAKE_INPUT\": \"" + toUpperCaseHex(PIN_CONFIG.BRAKE_INPUT) +
-                  "\", \"SPEED_MODE\": \"" + toUpperCaseHex(PIN_CONFIG.SPEED_MODE) + "\" }";
+    // 📌 Register bitlerini JSON nesnesine **hex formatında** ekle
+    doc["BRAKE_PIN_MODE"] = toUpperCaseHex(READ_BITS(register_value, 5, 5));
+    doc["ALIGN_BRAKE_ANGLE_SEL"] = toUpperCaseHex(READ_BITS(register_value, 4, 4));
+    doc["BRAKE_INPUT"] = toUpperCaseHex(READ_BITS(register_value, 3, 2));
+    doc["SPEED_MODE"] = toUpperCaseHex(READ_BITS(register_value, 1, 0));
 
-    server.send(200, "application/json", json);
+    // 📌 JSON string olarak oluştur
+    String response;
+    serializeJson(doc, response);
+
+    // 📌 JSON formatında yanıt gönder
+    server.send(200, "application/json", response);
 }
 
 void WritePinConfig()
 {
-    if (server.hasArg("plain"))
-    {
-        String body = server.arg("plain");
-
-        PIN_CONFIG.BRAKE_PIN_MODE = getJsonHexValue(body, "BRAKE_PIN_MODE");
-        PIN_CONFIG.ALIGN_BRAKE_ANGLE_SEL = getJsonHexValue(body, "ALIGN_BRAKE_ANGLE_SEL");
-        PIN_CONFIG.BRAKE_INPUT = getJsonHexValue(body, "BRAKE_INPUT");
-        PIN_CONFIG.SPEED_MODE = getJsonHexValue(body, "SPEED_MODE");
-
-        register_value = 0;
-        // WRITE_BITS(0, PIN_CONFIG.PARITY, 31, 31);
-        // WRITE_BITS(register_value, PIN_CONFIG.RESERVED, 30, 6);
-        WRITE_BITS(register_value, PIN_CONFIG.BRAKE_PIN_MODE, 5, 5);
-        WRITE_BITS(register_value, PIN_CONFIG.ALIGN_BRAKE_ANGLE_SEL, 4, 4);
-        WRITE_BITS(register_value, PIN_CONFIG.BRAKE_INPUT, 3, 2);
-        WRITE_BITS(register_value, PIN_CONFIG.SPEED_MODE, 1, 0);
-
-        write32(PIN_CONFIG_REG, register_value);
-
-        server.send(200, "application/json", "{\"status\":\"success\"}");
-    }
-    else
+    if (!server.hasArg("plain"))
     {
         server.send(400, "application/json", "{\"error\":\"Bad Request\"}");
+        return;
     }
+
+    // 📌 JSON nesnesini temizle
+    doc.clear();
+
+    // 📌 JSON stringini parse et
+    DeserializationError error = deserializeJson(doc, server.arg("plain"));
+    if (error)
+    {
+        server.send(400, "application/json", "{\"error\":\"JSON Parse Failed\"}");
+        return;
+    }
+
+    // 📌 JSON içindeki değerleri çek ve **HEX formatında çevir**
+    PIN_CONFIG.BRAKE_PIN_MODE = strtoul(doc["BRAKE_PIN_MODE"].as<String>().c_str(), NULL, 16);
+    PIN_CONFIG.ALIGN_BRAKE_ANGLE_SEL = strtoul(doc["ALIGN_BRAKE_ANGLE_SEL"].as<String>().c_str(), NULL, 16);
+    PIN_CONFIG.BRAKE_INPUT = strtoul(doc["BRAKE_INPUT"].as<String>().c_str(), NULL, 16);
+    PIN_CONFIG.SPEED_MODE = strtoul(doc["SPEED_MODE"].as<String>().c_str(), NULL, 16);
+
+    // 📌 Register değerini sıfırla ve yeni değerleri yaz
+    register_value = 0;
+    WRITE_BITS(register_value, PIN_CONFIG.BRAKE_PIN_MODE, 5, 5);
+    WRITE_BITS(register_value, PIN_CONFIG.ALIGN_BRAKE_ANGLE_SEL, 4, 4);
+    WRITE_BITS(register_value, PIN_CONFIG.BRAKE_INPUT, 3, 2);
+    WRITE_BITS(register_value, PIN_CONFIG.SPEED_MODE, 1, 0);
+
+    // 📌 I2C register'a yaz
+    write32(PIN_CONFIG_REG, register_value);
+
+    // 📌 JSON formatında başarı mesajı gönder
+    doc.clear();
+    doc["status"] = "success";
+
+    String response;
+    serializeJson(doc, response);
+    server.send(200, "application/json", response);
 }
 
 void ReadAlgoCtrl1()
@@ -1663,64 +1704,80 @@ void ReadAlgoCtrl1()
     register_value = 0;
     read32(ALGO_CTRL1_REG);
 
-    ALGO_CTRL1.OVERRIDE = READ_BITS(register_value, 31, 31);
-    ALGO_CTRL1.DIGITAL_SPEED_CTRL = READ_BITS(register_value, 30, 16);
-    ALGO_CTRL1.CLOSED_LOOP_DIS = READ_BITS(register_value, 15, 15);
-    ALGO_CTRL1.FORCE_ALIGN_EN = READ_BITS(register_value, 14, 14);
-    ALGO_CTRL1.FORCE_SLOW_FIRST_CYCLE_EN = READ_BITS(register_value, 13, 13);
-    ALGO_CTRL1.FORCE_IPD_EN = READ_BITS(register_value, 12, 12);
-    ALGO_CTRL1.FORCE_ISD_EN = READ_BITS(register_value, 11, 11);
-    ALGO_CTRL1.FORCE_ALIGN_ANGLE_SRC_SEL = READ_BITS(register_value, 10, 10);
-    ALGO_CTRL1.FORCE_IQ_REF_SPEED_LOOP_DIS = READ_BITS(register_value, 9, 0);
+    // 📌 JSON nesnesini temizle
+    doc.clear();
 
-    String json = "{ \"OVERRIDE\": \"" + toUpperCaseHex(ALGO_CTRL1.OVERRIDE) +
-                  "\", \"DIGITAL_SPEED_CTRL\": \"" + toUpperCaseHex(ALGO_CTRL1.DIGITAL_SPEED_CTRL) +
-                  "\", \"CLOSED_LOOP_DIS\": \"" + toUpperCaseHex(ALGO_CTRL1.CLOSED_LOOP_DIS) +
-                  "\", \"FORCE_ALIGN_EN\": \"" + toUpperCaseHex(ALGO_CTRL1.FORCE_ALIGN_EN) +
-                  "\", \"FORCE_SLOW_FIRST_CYCLE_EN\": \"" + toUpperCaseHex(ALGO_CTRL1.FORCE_SLOW_FIRST_CYCLE_EN) +
-                  "\", \"FORCE_IPD_EN\": \"" + toUpperCaseHex(ALGO_CTRL1.FORCE_IPD_EN) +
-                  "\", \"FORCE_ISD_EN\": \"" + toUpperCaseHex(ALGO_CTRL1.FORCE_ISD_EN) +
-                  "\", \"FORCE_ALIGN_ANGLE_SRC_SEL\": \"" + toUpperCaseHex(ALGO_CTRL1.FORCE_ALIGN_ANGLE_SRC_SEL) +
-                  "\", \"FORCE_IQ_REF_SPEED_LOOP_DIS\": \"" + toUpperCaseHex(ALGO_CTRL1.FORCE_IQ_REF_SPEED_LOOP_DIS) + "\" }";
+    // 📌 Register bitlerini JSON nesnesine **hex formatında** ekle
+    doc["OVERRIDE"] = toUpperCaseHex(READ_BITS(register_value, 31, 31));
+    doc["DIGITAL_SPEED_CTRL"] = toUpperCaseHex(READ_BITS(register_value, 30, 16));
+    doc["CLOSED_LOOP_DIS"] = toUpperCaseHex(READ_BITS(register_value, 15, 15));
+    doc["FORCE_ALIGN_EN"] = toUpperCaseHex(READ_BITS(register_value, 14, 14));
+    doc["FORCE_SLOW_FIRST_CYCLE_EN"] = toUpperCaseHex(READ_BITS(register_value, 13, 13));
+    doc["FORCE_IPD_EN"] = toUpperCaseHex(READ_BITS(register_value, 12, 12));
+    doc["FORCE_ISD_EN"] = toUpperCaseHex(READ_BITS(register_value, 11, 11));
+    doc["FORCE_ALIGN_ANGLE_SRC_SEL"] = toUpperCaseHex(READ_BITS(register_value, 10, 10));
+    doc["FORCE_IQ_REF_SPEED_LOOP_DIS"] = toUpperCaseHex(READ_BITS(register_value, 9, 0));
 
-    server.send(200, "application/json", json);
+    // 📌 JSON string olarak oluştur
+    String response;
+    serializeJson(doc, response);
+
+    // 📌 JSON formatında yanıt gönder
+    server.send(200, "application/json", response);
 }
 
 void WriteAlgoCtrl1()
 {
-    if (server.hasArg("plain"))
-    {
-        String body = server.arg("plain");
-
-        ALGO_CTRL1.OVERRIDE = getJsonHexValue(body, "OVERRIDE");
-        ALGO_CTRL1.DIGITAL_SPEED_CTRL = getJsonHexValue(body, "DIGITAL_SPEED_CTRL");
-        ALGO_CTRL1.CLOSED_LOOP_DIS = getJsonHexValue(body, "CLOSED_LOOP_DIS");
-        ALGO_CTRL1.FORCE_ALIGN_EN = getJsonHexValue(body, "FORCE_ALIGN_EN");
-        ALGO_CTRL1.FORCE_SLOW_FIRST_CYCLE_EN = getJsonHexValue(body, "FORCE_SLOW_FIRST_CYCLE_EN");
-        ALGO_CTRL1.FORCE_IPD_EN = getJsonHexValue(body, "FORCE_IPD_EN");
-        ALGO_CTRL1.FORCE_ISD_EN = getJsonHexValue(body, "FORCE_ISD_EN");
-        ALGO_CTRL1.FORCE_ALIGN_ANGLE_SRC_SEL = getJsonHexValue(body, "FORCE_ALIGN_ANGLE_SRC_SEL");
-        ALGO_CTRL1.FORCE_IQ_REF_SPEED_LOOP_DIS = getJsonHexValue(body, "FORCE_IQ_REF_SPEED_LOOP_DIS");
-
-        register_value = 0;
-        WRITE_BITS(register_value, ALGO_CTRL1.OVERRIDE, 31, 31);
-        WRITE_BITS(register_value, ALGO_CTRL1.DIGITAL_SPEED_CTRL, 30, 16);
-        WRITE_BITS(register_value, ALGO_CTRL1.CLOSED_LOOP_DIS, 15, 15);
-        WRITE_BITS(register_value, ALGO_CTRL1.FORCE_ALIGN_EN, 14, 14);
-        WRITE_BITS(register_value, ALGO_CTRL1.FORCE_SLOW_FIRST_CYCLE_EN, 13, 13);
-        WRITE_BITS(register_value, ALGO_CTRL1.FORCE_IPD_EN, 12, 12);
-        WRITE_BITS(register_value, ALGO_CTRL1.FORCE_ISD_EN, 11, 11);
-        WRITE_BITS(register_value, ALGO_CTRL1.FORCE_ALIGN_ANGLE_SRC_SEL, 10, 10);
-        WRITE_BITS(register_value, ALGO_CTRL1.FORCE_IQ_REF_SPEED_LOOP_DIS, 9, 0);
-
-        write32(ALGO_CTRL1_REG, register_value);
-
-        server.send(200, "application/json", "{\"status\":\"success\"}");
-    }
-    else
+    if (!server.hasArg("plain"))
     {
         server.send(400, "application/json", "{\"error\":\"Bad Request\"}");
+        return;
     }
+
+    // 📌 JSON nesnesini temizle
+    doc.clear();
+
+    // 📌 JSON stringini parse et
+    DeserializationError error = deserializeJson(doc, server.arg("plain"));
+    if (error)
+    {
+        server.send(400, "application/json", "{\"error\":\"JSON Parse Failed\"}");
+        return;
+    }
+
+    // 📌 JSON içindeki değerleri çek ve **HEX formatında çevir**
+    ALGO_CTRL1.OVERRIDE = strtoul(doc["OVERRIDE"].as<String>().c_str(), NULL, 16);
+    ALGO_CTRL1.DIGITAL_SPEED_CTRL = strtoul(doc["DIGITAL_SPEED_CTRL"].as<String>().c_str(), NULL, 16);
+    ALGO_CTRL1.CLOSED_LOOP_DIS = strtoul(doc["CLOSED_LOOP_DIS"].as<String>().c_str(), NULL, 16);
+    ALGO_CTRL1.FORCE_ALIGN_EN = strtoul(doc["FORCE_ALIGN_EN"].as<String>().c_str(), NULL, 16);
+    ALGO_CTRL1.FORCE_SLOW_FIRST_CYCLE_EN = strtoul(doc["FORCE_SLOW_FIRST_CYCLE_EN"].as<String>().c_str(), NULL, 16);
+    ALGO_CTRL1.FORCE_IPD_EN = strtoul(doc["FORCE_IPD_EN"].as<String>().c_str(), NULL, 16);
+    ALGO_CTRL1.FORCE_ISD_EN = strtoul(doc["FORCE_ISD_EN"].as<String>().c_str(), NULL, 16);
+    ALGO_CTRL1.FORCE_ALIGN_ANGLE_SRC_SEL = strtoul(doc["FORCE_ALIGN_ANGLE_SRC_SEL"].as<String>().c_str(), NULL, 16);
+    ALGO_CTRL1.FORCE_IQ_REF_SPEED_LOOP_DIS = strtoul(doc["FORCE_IQ_REF_SPEED_LOOP_DIS"].as<String>().c_str(), NULL, 16);
+
+    // 📌 Register değerini sıfırla ve yeni değerleri yaz
+    register_value = 0;
+    WRITE_BITS(register_value, ALGO_CTRL1.OVERRIDE, 31, 31);
+    WRITE_BITS(register_value, ALGO_CTRL1.DIGITAL_SPEED_CTRL, 30, 16);
+    WRITE_BITS(register_value, ALGO_CTRL1.CLOSED_LOOP_DIS, 15, 15);
+    WRITE_BITS(register_value, ALGO_CTRL1.FORCE_ALIGN_EN, 14, 14);
+    WRITE_BITS(register_value, ALGO_CTRL1.FORCE_SLOW_FIRST_CYCLE_EN, 13, 13);
+    WRITE_BITS(register_value, ALGO_CTRL1.FORCE_IPD_EN, 12, 12);
+    WRITE_BITS(register_value, ALGO_CTRL1.FORCE_ISD_EN, 11, 11);
+    WRITE_BITS(register_value, ALGO_CTRL1.FORCE_ALIGN_ANGLE_SRC_SEL, 10, 10);
+    WRITE_BITS(register_value, ALGO_CTRL1.FORCE_IQ_REF_SPEED_LOOP_DIS, 9, 0);
+
+    // 📌 I2C register'a yaz
+    write32(ALGO_CTRL1_REG, register_value);
+
+    // 📌 JSON formatında başarı mesajı gönder
+    doc.clear();
+    doc["status"] = "success";
+
+    String response;
+    serializeJson(doc, response);
+    server.send(200, "application/json", response);
 }
 
 void ReadDevCtrl()
@@ -1728,57 +1785,74 @@ void ReadDevCtrl()
     register_value = 0;
     read32(DEV_CTRL_REG);
 
-    DEV_CTRL.EEPROM_WRT = READ_BITS(register_value, 31, 31);
-    DEV_CTRL.EEPROM_READ = READ_BITS(register_value, 30, 30);
-    DEV_CTRL.CLR_FLT = READ_BITS(register_value, 29, 29);
-    DEV_CTRL.CLR_FLT_RETRY_COUNT = READ_BITS(register_value, 28, 28);
-    DEV_CTRL.EEPROM_WRITE_ACCESS_KEY = READ_BITS(register_value, 27, 20);
-    DEV_CTRL.FORCED_ALIGN_ANGLE = READ_BITS(register_value, 19, 11);
-    DEV_CTRL.WATCHDOG_TICKLE = READ_BITS(register_value, 10, 10);
+    // 📌 JSON nesnesini temizle
+    doc.clear();
 
-    String json = "{ \"EEPROM_WRT\": \"" + toUpperCaseHex(DEV_CTRL.EEPROM_WRT) +
-                  "\", \"EEPROM_READ\": \"" + toUpperCaseHex(DEV_CTRL.EEPROM_READ) +
-                  "\", \"CLR_FLT\": \"" + toUpperCaseHex(DEV_CTRL.CLR_FLT) +
-                  "\", \"CLR_FLT_RETRY_COUNT\": \"" + toUpperCaseHex(DEV_CTRL.CLR_FLT_RETRY_COUNT) +
-                  "\", \"EEPROM_WRITE_ACCESS_KEY\": \"" + toUpperCaseHex(DEV_CTRL.EEPROM_WRITE_ACCESS_KEY) +
-                  "\", \"FORCED_ALIGN_ANGLE\": \"" + toUpperCaseHex(DEV_CTRL.FORCED_ALIGN_ANGLE) +
-                  "\", \"WATCHDOG_TICKLE\": \"" + toUpperCaseHex(DEV_CTRL.WATCHDOG_TICKLE) + "\" }";
+    // 📌 Register bitlerini JSON nesnesine **hex formatında** ekle
+    doc["EEPROM_WRT"] = toUpperCaseHex(READ_BITS(register_value, 31, 31));
+    doc["EEPROM_READ"] = toUpperCaseHex(READ_BITS(register_value, 30, 30));
+    doc["CLR_FLT"] = toUpperCaseHex(READ_BITS(register_value, 29, 29));
+    doc["CLR_FLT_RETRY_COUNT"] = toUpperCaseHex(READ_BITS(register_value, 28, 28));
+    doc["EEPROM_WRITE_ACCESS_KEY"] = toUpperCaseHex(READ_BITS(register_value, 27, 20));
+    doc["FORCED_ALIGN_ANGLE"] = toUpperCaseHex(READ_BITS(register_value, 19, 11));
+    doc["WATCHDOG_TICKLE"] = toUpperCaseHex(READ_BITS(register_value, 10, 10));
 
-    server.send(200, "application/json", json);
+    // 📌 JSON string olarak oluştur
+    String response;
+    serializeJson(doc, response);
+
+    // 📌 JSON formatında yanıt gönder
+    server.send(200, "application/json", response);
 }
 
 void WriteDevCtrl()
 {
-    if (server.hasArg("plain"))
-    {
-        String body = server.arg("plain");
-
-        DEV_CTRL.EEPROM_WRT = getJsonHexValue(body, "EEPROM_WRT");
-        DEV_CTRL.EEPROM_READ = getJsonHexValue(body, "EEPROM_READ");
-        DEV_CTRL.CLR_FLT = getJsonHexValue(body, "CLR_FLT");
-        DEV_CTRL.CLR_FLT_RETRY_COUNT = getJsonHexValue(body, "CLR_FLT_RETRY_COUNT");
-        DEV_CTRL.EEPROM_WRITE_ACCESS_KEY = getJsonHexValue(body, "EEPROM_WRITE_ACCESS_KEY");
-        DEV_CTRL.FORCED_ALIGN_ANGLE = getJsonHexValue(body, "FORCED_ALIGN_ANGLE");
-        DEV_CTRL.WATCHDOG_TICKLE = getJsonHexValue(body, "WATCHDOG_TICKLE");
-
-        register_value = 0;
-        WRITE_BITS(register_value, DEV_CTRL.EEPROM_WRT, 31, 31);
-        WRITE_BITS(register_value, DEV_CTRL.EEPROM_READ, 30, 30);
-        WRITE_BITS(register_value, DEV_CTRL.CLR_FLT, 29, 29);
-        WRITE_BITS(register_value, DEV_CTRL.CLR_FLT_RETRY_COUNT, 28, 28);
-        WRITE_BITS(register_value, DEV_CTRL.EEPROM_WRITE_ACCESS_KEY, 27, 20);
-        WRITE_BITS(register_value, DEV_CTRL.FORCED_ALIGN_ANGLE, 19, 11);
-        WRITE_BITS(register_value, DEV_CTRL.WATCHDOG_TICKLE, 10, 10);
-        // WRITE_BITS(register_value, 0, 9, 0);
-
-        write32(DEV_CTRL_REG, register_value);
-
-        server.send(200, "application/json", "{\"status\":\"success\"}");
-    }
-    else
+    if (!server.hasArg("plain"))
     {
         server.send(400, "application/json", "{\"error\":\"Bad Request\"}");
+        return;
     }
+
+    // 📌 JSON nesnesini temizle
+    doc.clear();
+
+    // 📌 JSON stringini parse et
+    DeserializationError error = deserializeJson(doc, server.arg("plain"));
+    if (error)
+    {
+        server.send(400, "application/json", "{\"error\":\"JSON Parse Failed\"}");
+        return;
+    }
+
+    // 📌 JSON içindeki değerleri çek ve **HEX formatında çevir**
+    DEV_CTRL.EEPROM_WRT = strtoul(doc["EEPROM_WRT"].as<String>().c_str(), NULL, 16);
+    DEV_CTRL.EEPROM_READ = strtoul(doc["EEPROM_READ"].as<String>().c_str(), NULL, 16);
+    DEV_CTRL.CLR_FLT = strtoul(doc["CLR_FLT"].as<String>().c_str(), NULL, 16);
+    DEV_CTRL.CLR_FLT_RETRY_COUNT = strtoul(doc["CLR_FLT_RETRY_COUNT"].as<String>().c_str(), NULL, 16);
+    DEV_CTRL.EEPROM_WRITE_ACCESS_KEY = strtoul(doc["EEPROM_WRITE_ACCESS_KEY"].as<String>().c_str(), NULL, 16);
+    DEV_CTRL.FORCED_ALIGN_ANGLE = strtoul(doc["FORCED_ALIGN_ANGLE"].as<String>().c_str(), NULL, 16);
+    DEV_CTRL.WATCHDOG_TICKLE = strtoul(doc["WATCHDOG_TICKLE"].as<String>().c_str(), NULL, 16);
+
+    // 📌 Register değerini sıfırla ve yeni değerleri yaz
+    register_value = 0;
+    WRITE_BITS(register_value, DEV_CTRL.EEPROM_WRT, 31, 31);
+    WRITE_BITS(register_value, DEV_CTRL.EEPROM_READ, 30, 30);
+    WRITE_BITS(register_value, DEV_CTRL.CLR_FLT, 29, 29);
+    WRITE_BITS(register_value, DEV_CTRL.CLR_FLT_RETRY_COUNT, 28, 28);
+    WRITE_BITS(register_value, DEV_CTRL.EEPROM_WRITE_ACCESS_KEY, 27, 20);
+    WRITE_BITS(register_value, DEV_CTRL.FORCED_ALIGN_ANGLE, 19, 11);
+    WRITE_BITS(register_value, DEV_CTRL.WATCHDOG_TICKLE, 10, 10);
+
+    // 📌 I2C register'a yaz
+    write32(DEV_CTRL_REG, register_value);
+
+    // 📌 JSON formatında başarı mesajı gönder
+    doc.clear();
+    doc["status"] = "success";
+
+    String response;
+    serializeJson(doc, response);
+    server.send(200, "application/json", response);
 }
 
 void WriteEEPROM()
@@ -1799,18 +1873,18 @@ void ReadRegister()
         return;
     }
 
-    doc.clear();  // 📌 JSON nesnesini temizle
+    doc.clear(); // 📌 JSON nesnesini temizle
     String addressStr = server.arg("address");
     uint32_t address = strtoul(addressStr.c_str(), NULL, 16);
 
     register_value = 0;
     read32(address);
 
-    doc["address"] = addressStr;  // JSON nesnesine adresi ekle
-    doc["value"] = "0x" + String(register_value, HEX);  // JSON nesnesine okunan değeri ekle
+    doc["address"] = addressStr;                       // JSON nesnesine adresi ekle
+    doc["value"] = "0x" + String(register_value, HEX); // JSON nesnesine okunan değeri ekle
 
     String response;
-    serializeJson(doc, response);  // JSON'u string olarak hazırla
+    serializeJson(doc, response); // JSON'u string olarak hazırla
     server.send(200, "application/json", response);
 }
 
@@ -1822,7 +1896,7 @@ void WriteRegister()
         return;
     }
 
-    doc.clear();  // 📌 JSON nesnesini temizle
+    doc.clear(); // 📌 JSON nesnesini temizle
     DeserializationError error = deserializeJson(doc, server.arg("plain"));
 
     if (error)
@@ -1918,7 +1992,6 @@ void setup()
 
     server.on("/ReadRegister", HTTP_GET, ReadRegister);
     server.on("/WriteRegister", HTTP_POST, WriteRegister);
-
 
     server.begin();
 }
