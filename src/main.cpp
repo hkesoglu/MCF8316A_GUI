@@ -38,7 +38,7 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
             transition: height 0.3s ease;
         }
         .collapsed {
-            height: 50px;
+            height: 40px;
             overflow: hidden;
         }
         .header {
