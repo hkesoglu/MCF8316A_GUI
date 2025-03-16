@@ -1,4 +1,4 @@
-//MCF8316A GUI
+// MCF8316A GUI
 #include <Arduino.h>
 #include <Wire.h>
 #include <ESP8266WiFi.h>
@@ -128,7 +128,7 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
                         <th title="BEMF threshold to detect if motor is stationary">STAT_DETECT_THR</th>
                         <th title="Speed threshold used to transition to open loop during reverse deceleration (% of MAX_SPEED)">REV_DRV_HANDOFF_THR</th>
                         <th title="Open loop current limit during speed reversal">REV_DRV_OPEN_LOOP_CURRENT</th>
-                        <th>Read/Write</th>
+                        <th>Read / Write</th>
                     </tr>
                     <tr>
                         <td><input type="text" id="ISD_EN" readonly></td>
@@ -281,7 +281,7 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
                         <th title="Bus current limit during active braking">ACTIVE_BRAKE_CURRENT_LIMIT</th>
                         <th title="10-bit value for active braking loop Kp. Kp = ACTIVE_BRAKE_KP / 2^7">ACTIVE_BRAKE_KP</th>
                         <th title="10-bit value for active braking loop Ki. Ki = ACTIVE_BRAKE_KI / 2^9">ACTIVE_BRAKE_KI</th>
-                        <th>Read/Write</th>
+                        <th>Read / Write</th>
                     </tr>
                     <tr>
                         <td><input type="text" id="REV_DRV_OPEN_LOOP_ACCEL_A1" readonly></td>
@@ -362,9 +362,9 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
         </div>
     </div>
 
-        <div class="container collapsed" id="ms1Container">
+    <div class="container collapsed" id="ms1Container">
         <!-- Tıklanabilir Başlık -->
-        <div class="header" onclick="toggleContainer('ms1Container', 'ms1Content', 'ms1vArrow')">
+        <div class="header" onclick="toggleContainer('ms1Container', 'ms1Content', 'ms1Arrow')">
             MOTOR_STARTUP1
             <span class="arrow" id="ms1Arrow">▼</span>
         </div>
@@ -374,86 +374,199 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
             <div class="table-container">
                 <table>
                     <tr>
-                        <th title="Open loop acceleration coefficient A1 during reverse drive">REV_DRV_OPEN_LOOP_ACCEL_A1</th>
-                        <th title="Open loop acceleration coefficient A2 during reverse drive">REV_DRV_OPEN_LOOP_ACCEL_A2</th>
-                        <th title="Bus current limit during active braking">ACTIVE_BRAKE_CURRENT_LIMIT</th>
-                        <th title="10-bit value for active braking loop Kp. Kp = ACTIVE_BRAKE_KP / 2^7">ACTIVE_BRAKE_KP</th>
-                        <th title="10-bit value for active braking loop Ki. Ki = ACTIVE_BRAKE_KI / 2^9">ACTIVE_BRAKE_KI</th>
-                        <th>Read/Write</th>
+                        <th title="Motor start-up method">MTR_STARTUP</th>
+                        <th title="Align, slow first cycle and open loop current ramp rate">ALIGN_SLOW_RAMP_RATE</th>
+                        <th title="Align time">ALIGN_TIME</th>
+                        <th title="Align or slow first cycle current limit">ALIGN_OR_SLOW_CURRENT_ILIMIT</th>
+                        <th title="IPD clock frequency">IPD_CLK_FREQ</th>
+                        <th title="IPD current threshold">IPD_CURR_THR</th>
+                        <th title="IPD release mode">IPD_RLS_MODE</th>
+                        <th title="IPD advance angle">IPD_ADV_ANGLE</th>
+                        <th title="Number of times IPD is executed">IPD_REPEAT</th>
+                        <th title="Open loop current limit configuration">OL_ILIMIT_CONFIG</th>
+                        <th title="Iq ramp down before transition to close loop">IQ_RAMP_EN</th>
+                        <th title="Active braking enable">ACTIVE_BRAKE_EN</th>
+                        <th title="Chooses between forward and reverse drive setting for reverse drive">REV_DRV_CONFIG</th>
+                        <th>Read / Write</th>
+                    </tr>
+
+                    <tr>
+                        <td><input type="text" id="MTR_STARTUP" readonly></td>
+                        <td><input type="text" id="ALIGN_SLOW_RAMP_RATE" readonly></td>
+                        <td><input type="text" id="ALIGN_TIME" readonly></td>
+                        <td><input type="text" id="ALIGN_OR_SLOW_CURRENT_ILIMIT" readonly></td>
+                        <td><input type="text" id="IPD_CLK_FREQ" readonly></td>
+                        <td><input type="text" id="IPD_CURR_THR" readonly></td>
+                        <td><input type="text" id="IPD_RLS_MODE" readonly></td>
+                        <td><input type="text" id="IPD_ADV_ANGLE" readonly></td>
+                        <td><input type="text" id="IPD_REPEAT" readonly></td>
+                        <td><input type="text" id="OL_ILIMIT_CONFIG" readonly></td>
+                        <td><input type="text" id="IQ_RAMP_EN" readonly></td>
+                        <td><input type="text" id="ACTIVE_BRAKE_EN" readonly></td>
+                        <td><input type="text" id="REV_DRV_CONFIG" readonly></td>
+                        <td><button onclick="ReadMotorStartup1()">Read</button></td>
                     </tr>
                     <tr>
-                        <td><input type="text" id="REV_DRV_OPEN_LOOP_ACCEL_A1" readonly></td>
-                        <td><input type="text" id="REV_DRV_OPEN_LOOP_ACCEL_A2" readonly></td>
-                        <td><input type="text" id="ACTIVE_BRAKE_CURRENT_LIMIT" readonly></td>
-                        <td><input type="text" id="ACTIVE_BRAKE_KP" readonly></td>
-                        <td><input type="text" id="ACTIVE_BRAKE_KI" readonly></td>
-                        <td><button onclick="ReadRevDriveConfig()">Read</button></td>
-                    </tr>
-                    <tr>
                         <td>
-                            <select id="REV_DRV_OPEN_LOOP_ACCEL_A1_SELECT">
-                                <option value="0">0 = 0.01 Hz/s</option>
-                                <option value="1">1 = 0.05 Hz/s</option>
-                                <option value="2">2 = 1 Hz/s</option>
-                                <option value="3">3 = 2.5 Hz/s</option>
-                                <option value="4">4 = 5 Hz/s</option>
-                                <option value="5">5 = 10 Hz/s</option>
-                                <option value="6">6 = 25 Hz/s</option>
-                                <option value="7">7 = 50 Hz/s</option>
-                                <option value="8">8 = 75 Hz/s</option>
-                                <option value="9">9 = 100 Hz/s</option>
-                                <option value="A">A = 250 Hz/s</option>
-                                <option value="B">B = 500 Hz/s</option>
-                                <option value="C">C = 750 Hz/s</option>
-                                <option value="D">D = 1000 Hz/s</option>
-                                <option value="E">E = 5000 Hz/s</option>
-                                <option value="F">F = 10000 Hz/s</option>
+                            <select id="MTR_STARTUP_SELECT">
+                                <option value="0">0 = Align</option>
+                                <option value="1">1 = Double Align</option>
+                                <option value="2">2 = IPD</option>
+                                <option value="3">3 = Slow first cycle</option>
                             </select>
                         </td>
-
                         <td>
-                            <select id="REV_DRV_OPEN_LOOP_ACCEL_A2_SELECT">
-                                <option value="0">0 = 0.0 Hz/s²</option>
-                                <option value="1">1 = 0.05 Hz/s²</option>
-                                <option value="2">2 = 1 Hz/s²</option>
-                                <option value="3">3 = 2.5 Hz/s²</option>
-                                <option value="4">4 = 5 Hz/s²</option>
-                                <option value="5">5 = 10 Hz/s²</option>
-                                <option value="6">6 = 25 Hz/s²</option>
-                                <option value="7">7 = 50 Hz/s²</option>
-                                <option value="8">8 = 75 Hz/s²</option>
-                                <option value="9">9 = 100 Hz/s²</option>
-                                <option value="A">A = 250 Hz/s²</option>
-                                <option value="B">B = 500 Hz/s²</option>
-                                <option value="C">C = 750 Hz/s²</option>
-                                <option value="D">D = 1000 Hz/s²</option>
-                                <option value="E">E = 5000 Hz/s²</option>
-                                <option value="F">F = 10000 Hz/s²</option>
+                            <select id="ALIGN_SLOW_RAMP_RATE_SELECT">
+                                <option value="0">0 = 0.1 A/s</option>
+                                <option value="1">1 = 1 A/s</option>
+                                <option value="2">2 = 5 A/s</option>
+                                <option value="3">3 = 10 A/s</option>
+                                <option value="4">4 = 15 A/s</option>
+                                <option value="5">5 = 25 A/s</option>
+                                <option value="6">6 = 50 A/s</option>
+                                <option value="7">7 = 100 A/s</option>
+                                <option value="8">8 = 150 A/s</option>
+                                <option value="9">9 = 200 A/s</option>
+                                <option value="A">A = 250 A/s</option>
+                                <option value="B">B = 500 A/s</option>
+                                <option value="C">C = 1000 A/s</option>
+                                <option value="D">D = 2000 A/s</option>
+                                <option value="E">E = 5000 A/s</option>
+                                <option value="F">F = No Limit</option>
                             </select>
                         </td>
-
                         <td>
-                            <select id="ACTIVE_BRAKE_CURRENT_LIMIT_SELECT">
-                                <option value="0">0 = 0.5 A</option>
-                                <option value="1">1 = 1 A</option>
-                                <option value="2">2 = 2 A</option>
-                                <option value="3">3 = 3 A</option>
-                                <option value="4">4 = 4 A</option>
-                                <option value="5">5 = 5 A</option>
-                                <option value="6">6 = 6 A</option>
-                                <option value="7">7 = 7 A</option>
+                            <select id="ALIGN_TIME_SELECT">
+                                <option value="0">0 = 10 ms</option>
+                                <option value="1">1 = 50 ms</option>
+                                <option value="2">2 = 100 ms</option>
+                                <option value="3">3 = 200 ms</option>
+                                <option value="4">4 = 300 ms</option>
+                                <option value="5">5 = 400 ms</option>
+                                <option value="6">6 = 500 ms</option>
+                                <option value="7">7 = 750 ms</option>
+                                <option value="8">8 = 1 s</option>
+                                <option value="9">9 = 1.5 s</option>
+                                <option value="A">A = 2 s</option>
+                                <option value="B">B = 3 s</option>
+                                <option value="C">C = 4 s</option>
+                                <option value="D">D = 5 s</option>
+                                <option value="E">E = 7.5 s</option>
+                                <option value="F">F = 10 s</option>
                             </select>
                         </td>
-
                         <td>
-                            <input type="text" id="ACTIVE_BRAKE_KP_INPUT" value="0">
+                            <select id="ALIGN_OR_SLOW_CURRENT_ILIMIT_SELECT">
+                                <option value="0">0 = 0.125 A</option>
+                                <option value="1">1 = 0.25 A</option>
+                                <option value="2">2 = 0.5 A</option>
+                                <option value="3">3 = 1.0 A</option>
+                                <option value="4">4 = 1.5 A</option>
+                                <option value="5">5 = 2.0 A</option>
+                                <option value="6">6 = 2.5 A</option>
+                                <option value="7">7 = 3.0 A</option>
+                                <option value="8">8 = 3.5 A</option>
+                                <option value="9">9 = 4.0 A</option>
+                                <option value="A">A = 4.5 A</option>
+                                <option value="B">B = 5.0 A</option>
+                                <option value="C">C = 5.5 A</option>
+                                <option value="D">D = 6.0 A</option>
+                                <option value="E">E = 7.0 A</option>
+                                <option value="F">F = 8.0 A</option>
+                            </select>
                         </td>
-
+                        
                         <td>
-                            <input type="text" id="ACTIVE_BRAKE_KI_INPUT" value="0">
+                            <select id="IPD_CLK_FREQ_SELECT">
+                                <option value="0">0 = 50 Hz</option>
+                                <option value="1">1 = 100 Hz</option>
+                                <option value="2">2 = 250 Hz</option>
+                                <option value="3">3 = 500 Hz</option>
+                                <option value="4">4 = 1000 Hz</option>
+                                <option value="5">5 = 2000 Hz</option>
+                                <option value="6">6 = 5000 Hz</option>
+                                <option value="7">7 = 10000 Hz</option>
+                            </select>
                         </td>
+                        
+                        <td>
+                            <select id="IPD_CURR_THR_SELECT">
+                                <option value="0">0 = 0.25 A</option>
+                                <option value="1">1 = 0.5 A</option>
+                                <option value="2">2 = 0.75 A</option>
+                                <option value="3">3 = 1.0 A</option>
+                                <option value="4">4 = 1.25 A</option>
+                                <option value="5">5 = 1.5 A</option>
+                                <option value="6">6 = 2.0 A</option>
+                                <option value="7">7 = 2.5 A</option>
+                                <option value="8">8 = 3.0 A</option>
+                                <option value="9">9 = 3.667 A</option>
+                                <option value="A">A = 4.0 A</option>
+                                <option value="B">B = 4.667 A</option>
+                                <option value="C">C = 5.0 A</option>
+                                <option value="D">D = 5.333 A</option>
+                                <option value="E">E = 6.0 A</option>
+                                <option value="F">F = 6.667 A</option>
+                                <option value="10">10 = 7.333 A</option>
+                                <option value="11">11 = 8.0 A</option>
+                            </select>
+                        </td>
+                        
+                        <td>
+                            <select id="IPD_RLS_MODE_SELECT">
+                                <option value="0">0 = Brake</option>
+                                <option value="1">1 = Tristate</option>
+                            </select>
+                        </td>
+                        
+                        <td>
+                            <select id="IPD_ADV_ANGLE_SELECT">
+                                <option value="0">0 = 0°</option>
+                                <option value="1">1 = 30°</option>
+                                <option value="2">2 = 60°</option>
+                                <option value="3">3 = 90°</option>
+                            </select>
+                        </td>
+                        
+                        <td>
+                            <select id="IPD_REPEAT_SELECT">
+                                <option value="0">0 = 1 time</option>
+                                <option value="1">1 = average of 2 times</option>
+                                <option value="2">2 = average of 3 times</option>
+                                <option value="3">3 = average of 4 times</option>
+                            </select>
+                        </td>
+                        
+                        <td>
+                            <select id="OL_ILIMIT_CONFIG_SELECT">
+                                <option value="0">0 = Open loop current limit defined by OL_ILIMIT</option>
+                                <option value="1">1 = Open loop current limit defined by ILIMIT</option>
+                            </select>
+                        </td>
+                        
+                        <td>
+                            <select id="IQ_RAMP_EN_SELECT">
+                                <option value="0">0 = Disable Iq ramp down</option>
+                                <option value="1">1 = Enable Iq ramp down</option>
+                            </select>
+                        </td>
+                        
+                        <td>
+                            <select id="ACTIVE_BRAKE_EN_SELECT">
+                                <option value="0">0 = Disable Active Brake</option>
+                                <option value="1">1 = Enable Active Brake</option>
+                            </select>
+                        </td>
+                        
+                        <td>
+                            <select id="REV_DRV_CONFIG_SELECT">
+                                <option value="0">0 = Open loop current, A1, A2 based on forward drive</option>
+                                <option value="1">1 = Open loop current, A1, A2 based on reverse drive</option>
+                            </select>
+                        </td>
+                        
+                        <td><button onclick="WriteMotorStartup1()">Write</button></td>
 
-                        <td><button onclick="WriteRevDriveConfig()">Write</button></td>
                     </tr>
                 </table>
             </div>
@@ -592,316 +705,401 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Register Address Definitions
-#define ISD_CONFIG 0x00000080
-#define REV_DRIVE_CONFIG 0x00000082
-#define MOTOR_STARTUP1 0x00000084
-#define MOTOR_STARTUP2 0x00000086
-#define CLOSED_LOOP1 0x00000088
-#define CLOSED_LOOP2 0x0000008A
-#define CLOSED_LOOP3 0x0000008C
-#define CLOSED_LOOP4 0x0000008E
-#define SPEED_PROFILES1 0x00000094
-#define SPEED_PROFILES2 0x00000096
-#define SPEED_PROFILES3 0x00000098
-#define SPEED_PROFILES4 0x0000009A
-#define SPEED_PROFILES5 0x0000009C
-#define SPEED_PROFILES6 0x0000009E
-#define FAULT_CONFIG1 0x00000090
-#define FAULT_CONFIG2 0x00000092
-#define PIN_CONFIG 0x000000A4
-#define DEVICE_CONFIG1 0x000000A6
-#define DEVICE_CONFIG2 0x000000A8
-#define PERI_CONFIG1 0x000000AA
-#define GD_CONFIG1 0x000000AC
-#define GD_CONFIG2 0x000000AE
-#define ALGO_CTRL1 0x000000EA
-#define INT_ALGO_1 0x000000A0
-#define INT_ALGO_2 0x000000A2
+#define ISD_CONFIG_REG 0x00000080
+#define REV_DRIVE_CONFIG_REG 0x00000082
+#define MOTOR_STARTUP1_REG 0x00000084
+#define MOTOR_STARTUP2_REG 0x00000086
+#define CLOSED_LOOP1_REG 0x00000088
+#define CLOSED_LOOP2_REG 0x0000008A
+#define CLOSED_LOOP3_REG 0x0000008C
+#define CLOSED_LOOP4_REG 0x0000008E
+#define SPEED_PROFILES1_REG 0x00000094
+#define SPEED_PROFILES2_REG 0x00000096
+#define SPEED_PROFILES3_REG 0x00000098
+#define SPEED_PROFILES4_REG 0x0000009A
+#define SPEED_PROFILES5_REG 0x0000009C
+#define SPEED_PROFILES6_REG 0x0000009E
+#define FAULT_CONFIG1_REG 0x00000090
+#define FAULT_CONFIG2_REG 0x00000092
+#define PIN_CONFIG_REG 0x000000A4
+#define DEVICE_CONFIG1_REG 0x000000A6
+#define DEVICE_CONFIG2_REG 0x000000A8
+#define PERI_CONFIG1_REG 0x000000AA
+#define GD_CONFIG1_REG 0x000000AC
+#define GD_CONFIG2_REG 0x000000AE
+#define ALGO_CTRL1_REG 0x000000EA
+#define INT_ALGO_1_REG 0x000000A0
+#define INT_ALGO_2_REG 0x000000A2
+
 
 unsigned long register_value = 0;
 
 #define READ_BITS(value, high, low) ((value >> low) & ((1 << (high - low + 1)) - 1))
 #define WRITE_BITS(target, value, high, low) (target |= ((value & ((1 << (high - low + 1)) - 1)) << low))
 
-struct ISDConfig
+struct ISDCONFIG
 {
-  byte ISD_EN;
-  byte BRAKE_EN;
-  byte HIZ_EN;
-  byte RVS_DR_EN;
-  byte RESYNC_EN;
-  byte FW_DRV_RESYN_THR;
-  byte BRK_MODE;
-  byte BRK_TIME;
-  byte HIZ_TIME;
-  byte STAT_DETECT_THR;
-  byte REV_DRV_HANDOFF_THR;
-  byte REV_DRV_OPEN_LOOP_CURRENT;
+    byte ISD_EN;
+    byte BRAKE_EN;
+    byte HIZ_EN;
+    byte RVS_DR_EN;
+    byte RESYNC_EN;
+    byte FW_DRV_RESYN_THR;
+    byte BRK_MODE;
+    byte BRK_TIME;
+    byte HIZ_TIME;
+    byte STAT_DETECT_THR;
+    byte REV_DRV_HANDOFF_THR;
+    byte REV_DRV_OPEN_LOOP_CURRENT;
 };
 
-struct REVDRIVEConfig
+struct REVDRIVECONFIG
 {
-  byte REV_DRV_OPEN_LOOP_ACCEL_A1;
-  byte REV_DRV_OPEN_LOOP_ACCEL_A2;
-  byte ACTIVE_BRAKE_CURRENT_LIMIT;
-  byte ACTIVE_BRAKE_KP;
-  byte ACTIVE_BRAKE_KI;
+    byte REV_DRV_OPEN_LOOP_ACCEL_A1;
+    byte REV_DRV_OPEN_LOOP_ACCEL_A2;
+    byte ACTIVE_BRAKE_CURRENT_LIMIT;
+    byte ACTIVE_BRAKE_KP;
+    byte ACTIVE_BRAKE_KI;
 };
 
-ISDConfig ISD_Config;
-REVDRIVEConfig REV_DRIVE_Config;
+struct MOTORSTARTUP1
+{
+    byte MTR_STARTUP;
+    byte ALIGN_SLOW_RAMP_RATE;
+    byte ALIGN_TIME;
+    byte ALIGN_OR_SLOW_CURRENT_ILIMIT;
+    byte IPD_CLK_FREQ;
+    byte IPD_CURR_THR;
+    byte IPD_RLS_MODE;
+    byte IPD_ADV_ANGLE;
+    byte IPD_REPEAT;
+    byte OL_ILIMIT_CONFIG;
+    byte IQ_RAMP_EN;
+    byte ACTIVE_BRAKE_EN;
+    byte REV_DRV_CONFIG;
+};
+
+ISDCONFIG ISD_CONFIG;
+REVDRIVECONFIG REV_DRIVE_CONFIG;
+MOTORSTARTUP1 MOTOR_STARTUP1;
 
 byte getJsonHexValue(String json, String key)
 {
-  int startIndex = json.indexOf("\"" + key + "\":");
-  if (startIndex == -1)
-    return 0; // Eğer bulunamazsa, 0 döndür
+    int startIndex = json.indexOf("\"" + key + "\":");
+    if (startIndex == -1)
+        return 0; // Eğer bulunamazsa, 0 döndür
 
-  startIndex += key.length() + 3; // "KEY": sonrası başlama noktası
-  int endIndex = json.indexOf(",", startIndex);
-  if (endIndex == -1)
-    endIndex = json.indexOf("}", startIndex); // Son eleman için "}" ile bitiyor
+    startIndex += key.length() + 3; // "KEY": sonrası başlama noktası
+    int endIndex = json.indexOf(",", startIndex);
+    if (endIndex == -1)
+        endIndex = json.indexOf("}", startIndex); // Son eleman için "}" ile bitiyor
 
-  String hexValue = json.substring(startIndex, endIndex);
-  hexValue.trim();            // Boşlukları temizle
-  hexValue.replace("\"", ""); // Eğer çift tırnak varsa temizle
+    String hexValue = json.substring(startIndex, endIndex);
+    hexValue.trim();            // Boşlukları temizle
+    hexValue.replace("\"", ""); // Eğer çift tırnak varsa temizle
 
-  return (byte)strtol(hexValue.c_str(), NULL, 16); // HEX formatında ayrıştır
-}
-
-byte getJsonIntValue(String json, String key)
-{
-  int startIndex = json.indexOf("\"" + key + "\":");
-  if (startIndex == -1)
-    return 0; // Eğer bulunamazsa, 0 döndür
-
-  startIndex += key.length() + 3; // "KEY": sonrası başlama noktası
-  int endIndex = json.indexOf(",", startIndex);
-  if (endIndex == -1)
-    endIndex = json.indexOf("}", startIndex); // Son eleman için "}" ile bitiyor
-
-  String intValue = json.substring(startIndex, endIndex);
-  intValue.trim();            // Boşlukları temizle
-  intValue.replace("\"", ""); // Eğer çift tırnak varsa temizle
-
-  return (byte)intValue.toInt(); // INT formatında ayrıştır ve byte olarak döndür
+    return (byte)strtol(hexValue.c_str(), NULL, 16); // HEX formatında ayrıştır
 }
 
 String toUpperCaseHex(byte value)
 {
-  String hexString = String(value, HEX); // HEX string'e çevir
-  hexString.toUpperCase();               // Büyük harfe çevir
-  return hexString;
+    String hexString = String(value, HEX); // HEX string'e çevir
+    hexString.toUpperCase();               // Büyük harfe çevir
+    return hexString;
 }
 
 void read32(int reg_addr)
 {
-  byte reg_addr_H = (reg_addr & 0x0F00) >> 8;
-  byte reg_addr_L = (reg_addr & 0xFF);
+    byte reg_addr_H = (reg_addr & 0x0F00) >> 8;
+    byte reg_addr_L = (reg_addr & 0xFF);
 
-  const byte control_word[] = {0x90, reg_addr_H, reg_addr_L};
+    const byte control_word[] = {0x90, reg_addr_H, reg_addr_L};
 
-  Wire.beginTransmission(0x01);
-  Wire.write(control_word, 3);
-  Wire.endTransmission();
+    Wire.beginTransmission(0x01);
+    Wire.write(control_word, 3);
+    Wire.endTransmission();
 
-  Wire.requestFrom(0x01, 4);
+    Wire.requestFrom(0x01, 4);
 
-  for (int i = 0; i < 4; i++)
-  {
-    unsigned long c = Wire.read();
-    register_value |= (c << (i * 8));
-  }
+    for (int i = 0; i < 4; i++)
+    {
+        unsigned long c = Wire.read();
+        register_value |= (c << (i * 8));
+    }
 
-  Serial.print("Register Okundu: 0x");
-  Serial.println(reg_addr, HEX);
-  Serial.print("Değer: 0x");
-  Serial.println(register_value, HEX);
+    Serial.print("Register Okundu: 0x");
+    Serial.println(reg_addr, HEX);
+    Serial.print("Değer: 0x");
+    Serial.println(register_value, HEX);
 }
 
 void write32(int reg_addr, unsigned long writedata)
 {
-  byte reg_addr_H = (reg_addr & 0x0F00) >> 8;
-  byte reg_addr_L = (reg_addr & 0xFF);
+    byte reg_addr_H = (reg_addr & 0x0F00) >> 8;
+    byte reg_addr_L = (reg_addr & 0xFF);
 
-  const byte control_word[] = {0x10, reg_addr_H, reg_addr_L};
-  byte data[] = {0x00, 0x00, 0x00, 0x00};
+    const byte control_word[] = {0x10, reg_addr_H, reg_addr_L};
+    byte data[] = {0x00, 0x00, 0x00, 0x00};
 
-  for (int i = 0; i < 4; i++)
-  {
-    data[i] = ((writedata & (((unsigned long)0xFF) << (i * 8))) >> (i * 8));
-  }
+    for (int i = 0; i < 4; i++)
+    {
+        data[i] = ((writedata & (((unsigned long)0xFF) << (i * 8))) >> (i * 8));
+    }
 
-  Wire.beginTransmission(0x01);
-  Wire.write(control_word, 3);
-  Wire.write(data, 4);
-  Wire.endTransmission();
+    Wire.beginTransmission(0x01);
+    Wire.write(control_word, 3);
+    Wire.write(data, 4);
+    Wire.endTransmission();
 
-  Serial.print("Yazıldı: 0x");
-  Serial.println(reg_addr, HEX);
-  Serial.print("Değer: 0x");
-  Serial.println(writedata, HEX);
+    Serial.print("Yazıldı: 0x");
+    Serial.println(reg_addr, HEX);
+    Serial.print("Değer: 0x");
+    Serial.println(writedata, HEX);
 }
 
 void handleRoot()
 {
-  server.send(200, "text/html", HTML_PAGE);
+    server.send(200, "text/html", HTML_PAGE);
 }
 
 void ReadISDConfig()
 {
-  register_value = 0;
-  read32(ISD_CONFIG);
+    register_value = 0;
+    read32(ISD_CONFIG_REG);
 
-  ISD_Config.ISD_EN = READ_BITS(register_value, 30, 30);
-  ISD_Config.BRAKE_EN = READ_BITS(register_value, 29, 29);
-  ISD_Config.HIZ_EN = READ_BITS(register_value, 28, 28);
-  ISD_Config.RVS_DR_EN = READ_BITS(register_value, 27, 27);
-  ISD_Config.RESYNC_EN = READ_BITS(register_value, 26, 26);
-  ISD_Config.FW_DRV_RESYN_THR = READ_BITS(register_value, 25, 22);
-  ISD_Config.BRK_MODE = READ_BITS(register_value, 21, 21);
-  ISD_Config.BRK_TIME = READ_BITS(register_value, 16, 13);
-  ISD_Config.HIZ_TIME = READ_BITS(register_value, 12, 9);
-  ISD_Config.STAT_DETECT_THR = READ_BITS(register_value, 8, 6);
-  ISD_Config.REV_DRV_HANDOFF_THR = READ_BITS(register_value, 5, 2);
-  ISD_Config.REV_DRV_OPEN_LOOP_CURRENT = READ_BITS(register_value, 1, 0);
+    ISD_CONFIG.ISD_EN = READ_BITS(register_value, 30, 30);
+    ISD_CONFIG.BRAKE_EN = READ_BITS(register_value, 29, 29);
+    ISD_CONFIG.HIZ_EN = READ_BITS(register_value, 28, 28);
+    ISD_CONFIG.RVS_DR_EN = READ_BITS(register_value, 27, 27);
+    ISD_CONFIG.RESYNC_EN = READ_BITS(register_value, 26, 26);
+    ISD_CONFIG.FW_DRV_RESYN_THR = READ_BITS(register_value, 25, 22);
+    ISD_CONFIG.BRK_MODE = READ_BITS(register_value, 21, 21);
+    ISD_CONFIG.BRK_TIME = READ_BITS(register_value, 16, 13);
+    ISD_CONFIG.HIZ_TIME = READ_BITS(register_value, 12, 9);
+    ISD_CONFIG.STAT_DETECT_THR = READ_BITS(register_value, 8, 6);
+    ISD_CONFIG.REV_DRV_HANDOFF_THR = READ_BITS(register_value, 5, 2);
+    ISD_CONFIG.REV_DRV_OPEN_LOOP_CURRENT = READ_BITS(register_value, 1, 0);
 
-  String json = "{ \"ISD_EN\": \"" + toUpperCaseHex(ISD_Config.ISD_EN) +
-                "\", \"BRAKE_EN\": \"" + toUpperCaseHex(ISD_Config.BRAKE_EN) +
-                "\", \"HIZ_EN\": \"" + toUpperCaseHex(ISD_Config.HIZ_EN) +
-                "\", \"RVS_DR_EN\": \"" + toUpperCaseHex(ISD_Config.RVS_DR_EN) +
-                "\", \"RESYNC_EN\": \"" + toUpperCaseHex(ISD_Config.RESYNC_EN) +
-                "\", \"FW_DRV_RESYN_THR\": \"" + toUpperCaseHex(ISD_Config.FW_DRV_RESYN_THR) +
-                "\", \"BRK_MODE\": \"" + toUpperCaseHex(ISD_Config.BRK_MODE) +
-                "\", \"BRK_TIME\": \"" + toUpperCaseHex(ISD_Config.BRK_TIME) +
-                "\", \"HIZ_TIME\": \"" + toUpperCaseHex(ISD_Config.HIZ_TIME) +
-                "\", \"STAT_DETECT_THR\": \"" + toUpperCaseHex(ISD_Config.STAT_DETECT_THR) +
-                "\", \"REV_DRV_HANDOFF_THR\": \"" + toUpperCaseHex(ISD_Config.REV_DRV_HANDOFF_THR) +
-                "\", \"REV_DRV_OPEN_LOOP_CURRENT\": \"" + toUpperCaseHex(ISD_Config.REV_DRV_OPEN_LOOP_CURRENT) + "\" }";
+    String json = "{ \"ISD_EN\": \"" + toUpperCaseHex(ISD_CONFIG.ISD_EN) +
+                  "\", \"BRAKE_EN\": \"" + toUpperCaseHex(ISD_CONFIG.BRAKE_EN) +
+                  "\", \"HIZ_EN\": \"" + toUpperCaseHex(ISD_CONFIG.HIZ_EN) +
+                  "\", \"RVS_DR_EN\": \"" + toUpperCaseHex(ISD_CONFIG.RVS_DR_EN) +
+                  "\", \"RESYNC_EN\": \"" + toUpperCaseHex(ISD_CONFIG.RESYNC_EN) +
+                  "\", \"FW_DRV_RESYN_THR\": \"" + toUpperCaseHex(ISD_CONFIG.FW_DRV_RESYN_THR) +
+                  "\", \"BRK_MODE\": \"" + toUpperCaseHex(ISD_CONFIG.BRK_MODE) +
+                  "\", \"BRK_TIME\": \"" + toUpperCaseHex(ISD_CONFIG.BRK_TIME) +
+                  "\", \"HIZ_TIME\": \"" + toUpperCaseHex(ISD_CONFIG.HIZ_TIME) +
+                  "\", \"STAT_DETECT_THR\": \"" + toUpperCaseHex(ISD_CONFIG.STAT_DETECT_THR) +
+                  "\", \"REV_DRV_HANDOFF_THR\": \"" + toUpperCaseHex(ISD_CONFIG.REV_DRV_HANDOFF_THR) +
+                  "\", \"REV_DRV_OPEN_LOOP_CURRENT\": \"" + toUpperCaseHex(ISD_CONFIG.REV_DRV_OPEN_LOOP_CURRENT) + "\" }";
 
-  server.send(200, "application/json", json);
+    server.send(200, "application/json", json);
 }
 
 void WriteISDConfig()
 {
-  if (server.hasArg("plain"))
-  {
-    String body = server.arg("plain");
+    if (server.hasArg("plain"))
+    {
+        String body = server.arg("plain");
 
-    ISD_Config.ISD_EN = getJsonHexValue(body, "ISD_EN");
-    ISD_Config.BRAKE_EN = getJsonHexValue(body, "BRAKE_EN");
-    ISD_Config.HIZ_EN = getJsonHexValue(body, "HIZ_EN");
-    ISD_Config.RVS_DR_EN = getJsonHexValue(body, "RVS_DR_EN");
-    ISD_Config.RESYNC_EN = getJsonHexValue(body, "RESYNC_EN");
-    ISD_Config.FW_DRV_RESYN_THR = getJsonHexValue(body, "FW_DRV_RESYN_THR");
-    ISD_Config.BRK_MODE = getJsonHexValue(body, "BRK_MODE");
-    ISD_Config.BRK_TIME = getJsonHexValue(body, "BRK_TIME");
-    ISD_Config.HIZ_TIME = getJsonHexValue(body, "HIZ_TIME");
-    ISD_Config.STAT_DETECT_THR = getJsonHexValue(body, "STAT_DETECT_THR");
-    ISD_Config.REV_DRV_HANDOFF_THR = getJsonHexValue(body, "REV_DRV_HANDOFF_THR");
-    ISD_Config.REV_DRV_OPEN_LOOP_CURRENT = getJsonHexValue(body, "REV_DRV_OPEN_LOOP_CURRENT");
+        ISD_CONFIG.ISD_EN = getJsonHexValue(body, "ISD_EN");
+        ISD_CONFIG.BRAKE_EN = getJsonHexValue(body, "BRAKE_EN");
+        ISD_CONFIG.HIZ_EN = getJsonHexValue(body, "HIZ_EN");
+        ISD_CONFIG.RVS_DR_EN = getJsonHexValue(body, "RVS_DR_EN");
+        ISD_CONFIG.RESYNC_EN = getJsonHexValue(body, "RESYNC_EN");
+        ISD_CONFIG.FW_DRV_RESYN_THR = getJsonHexValue(body, "FW_DRV_RESYN_THR");
+        ISD_CONFIG.BRK_MODE = getJsonHexValue(body, "BRK_MODE");
+        ISD_CONFIG.BRK_TIME = getJsonHexValue(body, "BRK_TIME");
+        ISD_CONFIG.HIZ_TIME = getJsonHexValue(body, "HIZ_TIME");
+        ISD_CONFIG.STAT_DETECT_THR = getJsonHexValue(body, "STAT_DETECT_THR");
+        ISD_CONFIG.REV_DRV_HANDOFF_THR = getJsonHexValue(body, "REV_DRV_HANDOFF_THR");
+        ISD_CONFIG.REV_DRV_OPEN_LOOP_CURRENT = getJsonHexValue(body, "REV_DRV_OPEN_LOOP_CURRENT");
 
-    register_value = 0;
-    WRITE_BITS(register_value, 0, 31, 31);
-    WRITE_BITS(register_value, ISD_Config.ISD_EN, 30, 30);
-    WRITE_BITS(register_value, ISD_Config.BRAKE_EN, 29, 29);
-    WRITE_BITS(register_value, ISD_Config.HIZ_EN, 28, 28);
-    WRITE_BITS(register_value, ISD_Config.RVS_DR_EN, 27, 27);
-    WRITE_BITS(register_value, ISD_Config.RESYNC_EN, 26, 26);
-    WRITE_BITS(register_value, ISD_Config.FW_DRV_RESYN_THR, 25, 22);
-    WRITE_BITS(register_value, ISD_Config.BRK_MODE, 21, 21);
-    WRITE_BITS(register_value, 9, 20, 17);
-    WRITE_BITS(register_value, ISD_Config.BRK_TIME, 16, 13);
-    WRITE_BITS(register_value, ISD_Config.HIZ_TIME, 12, 9);
-    WRITE_BITS(register_value, ISD_Config.STAT_DETECT_THR, 8, 6);
-    WRITE_BITS(register_value, ISD_Config.REV_DRV_HANDOFF_THR, 5, 2);
-    WRITE_BITS(register_value, ISD_Config.REV_DRV_OPEN_LOOP_CURRENT, 1, 0);
+        register_value = 0;
+        WRITE_BITS(register_value, 0, 31, 31);
+        WRITE_BITS(register_value, ISD_CONFIG.ISD_EN, 30, 30);
+        WRITE_BITS(register_value, ISD_CONFIG.BRAKE_EN, 29, 29);
+        WRITE_BITS(register_value, ISD_CONFIG.HIZ_EN, 28, 28);
+        WRITE_BITS(register_value, ISD_CONFIG.RVS_DR_EN, 27, 27);
+        WRITE_BITS(register_value, ISD_CONFIG.RESYNC_EN, 26, 26);
+        WRITE_BITS(register_value, ISD_CONFIG.FW_DRV_RESYN_THR, 25, 22);
+        WRITE_BITS(register_value, ISD_CONFIG.BRK_MODE, 21, 21);
+        WRITE_BITS(register_value, 9, 20, 17);
+        WRITE_BITS(register_value, ISD_CONFIG.BRK_TIME, 16, 13);
+        WRITE_BITS(register_value, ISD_CONFIG.HIZ_TIME, 12, 9);
+        WRITE_BITS(register_value, ISD_CONFIG.STAT_DETECT_THR, 8, 6);
+        WRITE_BITS(register_value, ISD_CONFIG.REV_DRV_HANDOFF_THR, 5, 2);
+        WRITE_BITS(register_value, ISD_CONFIG.REV_DRV_OPEN_LOOP_CURRENT, 1, 0);
 
-    write32(ISD_CONFIG, register_value);
+        write32(ISD_CONFIG_REG, register_value);
 
-    server.send(200, "application/json", "{\"status\":\"success\"}");
-  }
-  else
-  {
-    server.send(400, "application/json", "{\"error\":\"Bad Request\"}");
-  }
+        server.send(200, "application/json", "{\"status\":\"success\"}");
+    }
+    else
+    {
+        server.send(400, "application/json", "{\"error\":\"Bad Request\"}");
+    }
 }
 
 void ReadRevDriveConfig()
 {
-  register_value = 0;
-  read32(REV_DRIVE_CONFIG);
+    register_value = 0;
+    read32(REV_DRIVE_CONFIG_REG);
 
-  REV_DRIVE_Config.REV_DRV_OPEN_LOOP_ACCEL_A1 = READ_BITS(register_value, 30, 27);
-  REV_DRIVE_Config.REV_DRV_OPEN_LOOP_ACCEL_A2 = READ_BITS(register_value, 26, 23);
-  REV_DRIVE_Config.ACTIVE_BRAKE_CURRENT_LIMIT = READ_BITS(register_value, 22, 20);
-  REV_DRIVE_Config.ACTIVE_BRAKE_KP = READ_BITS(register_value, 19, 10);
-  REV_DRIVE_Config.ACTIVE_BRAKE_KI = READ_BITS(register_value, 9, 0);
+    REV_DRIVE_CONFIG.REV_DRV_OPEN_LOOP_ACCEL_A1 = READ_BITS(register_value, 30, 27);
+    REV_DRIVE_CONFIG.REV_DRV_OPEN_LOOP_ACCEL_A2 = READ_BITS(register_value, 26, 23);
+    REV_DRIVE_CONFIG.ACTIVE_BRAKE_CURRENT_LIMIT = READ_BITS(register_value, 22, 20);
+    REV_DRIVE_CONFIG.ACTIVE_BRAKE_KP = READ_BITS(register_value, 19, 10);
+    REV_DRIVE_CONFIG.ACTIVE_BRAKE_KI = READ_BITS(register_value, 9, 0);
 
-  String json = "{ \"REV_DRV_OPEN_LOOP_ACCEL_A1\": \"" + toUpperCaseHex(REV_DRIVE_Config.REV_DRV_OPEN_LOOP_ACCEL_A1) +
-                "\", \"REV_DRV_OPEN_LOOP_ACCEL_A2\": \"" + toUpperCaseHex(REV_DRIVE_Config.REV_DRV_OPEN_LOOP_ACCEL_A2) +
-                "\", \"ACTIVE_BRAKE_CURRENT_LIMIT\": \"" + toUpperCaseHex(REV_DRIVE_Config.ACTIVE_BRAKE_CURRENT_LIMIT) +
-                "\", \"ACTIVE_BRAKE_KP\": \"" + toUpperCaseHex(REV_DRIVE_Config.ACTIVE_BRAKE_KP) +
-                "\", \"ACTIVE_BRAKE_KI\": \"" + toUpperCaseHex(REV_DRIVE_Config.ACTIVE_BRAKE_KI) + "\" }";
+    String json = "{ \"REV_DRV_OPEN_LOOP_ACCEL_A1\": \"" + toUpperCaseHex(REV_DRIVE_CONFIG.REV_DRV_OPEN_LOOP_ACCEL_A1) +
+                  "\", \"REV_DRV_OPEN_LOOP_ACCEL_A2\": \"" + toUpperCaseHex(REV_DRIVE_CONFIG.REV_DRV_OPEN_LOOP_ACCEL_A2) +
+                  "\", \"ACTIVE_BRAKE_CURRENT_LIMIT\": \"" + toUpperCaseHex(REV_DRIVE_CONFIG.ACTIVE_BRAKE_CURRENT_LIMIT) +
+                  "\", \"ACTIVE_BRAKE_KP\": \"" + toUpperCaseHex(REV_DRIVE_CONFIG.ACTIVE_BRAKE_KP) +
+                  "\", \"ACTIVE_BRAKE_KI\": \"" + toUpperCaseHex(REV_DRIVE_CONFIG.ACTIVE_BRAKE_KI) + "\" }";
 
-  server.send(200, "application/json", json);
+    server.send(200, "application/json", json);
 }
 
 void WriteRevDriveConfig()
 {
-  if (server.hasArg("plain"))
-  {
-    String body = server.arg("plain");
+    if (server.hasArg("plain"))
+    {
+        String body = server.arg("plain");
 
-    REV_DRIVE_Config.REV_DRV_OPEN_LOOP_ACCEL_A1 = getJsonHexValue(body, "REV_DRV_OPEN_LOOP_ACCEL_A1");
-    REV_DRIVE_Config.REV_DRV_OPEN_LOOP_ACCEL_A2 = getJsonHexValue(body, "REV_DRV_OPEN_LOOP_ACCEL_A2");
-    REV_DRIVE_Config.ACTIVE_BRAKE_CURRENT_LIMIT = getJsonHexValue(body, "ACTIVE_BRAKE_CURRENT_LIMIT");
-    REV_DRIVE_Config.ACTIVE_BRAKE_KP = getJsonHexValue(body, "ACTIVE_BRAKE_KP");
-    REV_DRIVE_Config.ACTIVE_BRAKE_KI = getJsonHexValue(body, "ACTIVE_BRAKE_KI");
+        REV_DRIVE_CONFIG.REV_DRV_OPEN_LOOP_ACCEL_A1 = getJsonHexValue(body, "REV_DRV_OPEN_LOOP_ACCEL_A1");
+        REV_DRIVE_CONFIG.REV_DRV_OPEN_LOOP_ACCEL_A2 = getJsonHexValue(body, "REV_DRV_OPEN_LOOP_ACCEL_A2");
+        REV_DRIVE_CONFIG.ACTIVE_BRAKE_CURRENT_LIMIT = getJsonHexValue(body, "ACTIVE_BRAKE_CURRENT_LIMIT");
+        REV_DRIVE_CONFIG.ACTIVE_BRAKE_KP = getJsonHexValue(body, "ACTIVE_BRAKE_KP");
+        REV_DRIVE_CONFIG.ACTIVE_BRAKE_KI = getJsonHexValue(body, "ACTIVE_BRAKE_KI");
 
+        register_value = 0;
+        WRITE_BITS(register_value, 0, 31, 31);
+        WRITE_BITS(register_value, REV_DRIVE_CONFIG.REV_DRV_OPEN_LOOP_ACCEL_A1, 30, 27);
+        WRITE_BITS(register_value, REV_DRIVE_CONFIG.REV_DRV_OPEN_LOOP_ACCEL_A2, 26, 23);
+        WRITE_BITS(register_value, REV_DRIVE_CONFIG.ACTIVE_BRAKE_CURRENT_LIMIT, 22, 20);
+        WRITE_BITS(register_value, REV_DRIVE_CONFIG.ACTIVE_BRAKE_KP, 19, 10);
+        WRITE_BITS(register_value, REV_DRIVE_CONFIG.ACTIVE_BRAKE_KI, 9, 0);
+
+        write32(REV_DRIVE_CONFIG_REG, register_value);
+
+        server.send(200, "application/json", "{\"status\":\"success\"}");
+    }
+    else
+    {
+        server.send(400, "application/json", "{\"error\":\"Bad Request\"}");
+    }
+}
+
+void ReadMotorStartup1()
+{
     register_value = 0;
-    WRITE_BITS(register_value, 0, 31, 31);
-    WRITE_BITS(register_value, REV_DRIVE_Config.REV_DRV_OPEN_LOOP_ACCEL_A1, 30, 27);
-    WRITE_BITS(register_value, REV_DRIVE_Config.REV_DRV_OPEN_LOOP_ACCEL_A2, 26, 23);
-    WRITE_BITS(register_value, REV_DRIVE_Config.ACTIVE_BRAKE_CURRENT_LIMIT, 22, 20);
-    WRITE_BITS(register_value, REV_DRIVE_Config.ACTIVE_BRAKE_KP, 19, 10);
-    WRITE_BITS(register_value, REV_DRIVE_Config.ACTIVE_BRAKE_KI, 9, 0);
+    read32(MOTOR_STARTUP1_REG);
 
-    write32(REV_DRIVE_CONFIG, register_value);
+    MOTOR_STARTUP1.MTR_STARTUP = READ_BITS(register_value, 30, 29);
+    MOTOR_STARTUP1.ALIGN_SLOW_RAMP_RATE = READ_BITS(register_value, 28, 25);
+    MOTOR_STARTUP1.ALIGN_TIME = READ_BITS(register_value, 24, 21);
+    MOTOR_STARTUP1.ALIGN_OR_SLOW_CURRENT_ILIMIT = READ_BITS(register_value, 20, 17);
+    MOTOR_STARTUP1.IPD_CLK_FREQ = READ_BITS(register_value, 16, 14);
+    MOTOR_STARTUP1.IPD_CURR_THR = READ_BITS(register_value, 13, 9);
+    MOTOR_STARTUP1.IPD_RLS_MODE = READ_BITS(register_value, 8, 8);
+    MOTOR_STARTUP1.IPD_ADV_ANGLE = READ_BITS(register_value, 7, 6);
+    MOTOR_STARTUP1.IPD_REPEAT = READ_BITS(register_value, 5, 4);
+    MOTOR_STARTUP1.OL_ILIMIT_CONFIG = READ_BITS(register_value, 3, 3);
+    MOTOR_STARTUP1.IQ_RAMP_EN = READ_BITS(register_value, 2, 2);
+    MOTOR_STARTUP1.ACTIVE_BRAKE_EN = READ_BITS(register_value, 1, 1);
+    MOTOR_STARTUP1.REV_DRV_CONFIG = READ_BITS(register_value, 0, 0);
 
-    server.send(200, "application/json", "{\"status\":\"success\"}");
-  }
-  else
-  {
-    server.send(400, "application/json", "{\"error\":\"Bad Request\"}");
-  }
+    String json = "{ \"MTR_STARTUP\": \"" + toUpperCaseHex(MOTOR_STARTUP1.MTR_STARTUP) +
+                  "\", \"ALIGN_SLOW_RAMP_RATE\": \"" + toUpperCaseHex(MOTOR_STARTUP1.ALIGN_SLOW_RAMP_RATE) +
+                  "\", \"ALIGN_TIME\": \"" + toUpperCaseHex(MOTOR_STARTUP1.ALIGN_TIME) +
+                  "\", \"ALIGN_OR_SLOW_CURRENT_ILIMIT\": \"" + toUpperCaseHex(MOTOR_STARTUP1.ALIGN_OR_SLOW_CURRENT_ILIMIT) +
+                  "\", \"IPD_CLK_FREQ\": \"" + toUpperCaseHex(MOTOR_STARTUP1.IPD_CLK_FREQ) +
+                  "\", \"IPD_CURR_THR\": \"" + toUpperCaseHex(MOTOR_STARTUP1.IPD_CURR_THR) +
+                  "\", \"IPD_RLS_MODE\": \"" + toUpperCaseHex(MOTOR_STARTUP1.IPD_RLS_MODE) +
+                  "\", \"IPD_ADV_ANGLE\": \"" + toUpperCaseHex(MOTOR_STARTUP1.IPD_ADV_ANGLE) +
+                  "\", \"IPD_REPEAT\": \"" + toUpperCaseHex(MOTOR_STARTUP1.IPD_REPEAT) +
+                  "\", \"OL_ILIMIT_CONFIG\": \"" + toUpperCaseHex(MOTOR_STARTUP1.OL_ILIMIT_CONFIG) +
+                  "\", \"IQ_RAMP_EN\": \"" + toUpperCaseHex(MOTOR_STARTUP1.IQ_RAMP_EN) +
+                  "\", \"ACTIVE_BRAKE_EN\": \"" + toUpperCaseHex(MOTOR_STARTUP1.ACTIVE_BRAKE_EN) +
+                  "\", \"REV_DRV_CONFIG\": \"" + toUpperCaseHex(MOTOR_STARTUP1.REV_DRV_CONFIG) + "\" }";
+
+    server.send(200, "application/json", json);
+}
+
+void WriteMotorStartup1()
+{
+    if (server.hasArg("plain"))
+    {
+        String body = server.arg("plain");
+
+        MOTOR_STARTUP1.MTR_STARTUP = getJsonHexValue(body, "MTR_STARTUP");
+        MOTOR_STARTUP1.ALIGN_SLOW_RAMP_RATE = getJsonHexValue(body, "ALIGN_SLOW_RAMP_RATE");
+        MOTOR_STARTUP1.ALIGN_TIME = getJsonHexValue(body, "ALIGN_TIME");
+        MOTOR_STARTUP1.ALIGN_OR_SLOW_CURRENT_ILIMIT = getJsonHexValue(body, "ALIGN_OR_SLOW_CURRENT_ILIMIT");
+        MOTOR_STARTUP1.IPD_CLK_FREQ = getJsonHexValue(body, "IPD_CLK_FREQ");
+        MOTOR_STARTUP1.IPD_CURR_THR = getJsonHexValue(body, "IPD_CURR_THR");
+        MOTOR_STARTUP1.IPD_RLS_MODE = getJsonHexValue(body, "IPD_RLS_MODE");
+        MOTOR_STARTUP1.IPD_ADV_ANGLE = getJsonHexValue(body, "IPD_ADV_ANGLE");
+        MOTOR_STARTUP1.IPD_REPEAT = getJsonHexValue(body, "IPD_REPEAT");
+        MOTOR_STARTUP1.OL_ILIMIT_CONFIG = getJsonHexValue(body, "OL_ILIMIT_CONFIG");
+        MOTOR_STARTUP1.IQ_RAMP_EN = getJsonHexValue(body, "IQ_RAMP_EN");
+        MOTOR_STARTUP1.ACTIVE_BRAKE_EN = getJsonHexValue(body, "ACTIVE_BRAKE_EN");
+        MOTOR_STARTUP1.REV_DRV_CONFIG = getJsonHexValue(body, "REV_DRV_CONFIG");
+
+        register_value = 0;
+        WRITE_BITS(register_value, 0, 31, 31);
+        WRITE_BITS(register_value, MOTOR_STARTUP1.MTR_STARTUP, 30, 29);
+        WRITE_BITS(register_value, MOTOR_STARTUP1.ALIGN_SLOW_RAMP_RATE, 28, 25);
+        WRITE_BITS(register_value, MOTOR_STARTUP1.ALIGN_TIME, 24, 21);
+        WRITE_BITS(register_value, MOTOR_STARTUP1.ALIGN_OR_SLOW_CURRENT_ILIMIT, 20, 17);
+        WRITE_BITS(register_value, MOTOR_STARTUP1.IPD_CLK_FREQ, 16, 14);
+        WRITE_BITS(register_value, MOTOR_STARTUP1.IPD_CURR_THR, 13, 9);
+        WRITE_BITS(register_value, MOTOR_STARTUP1.IPD_RLS_MODE, 8, 8);
+        WRITE_BITS(register_value, MOTOR_STARTUP1.IPD_ADV_ANGLE, 7, 6);
+        WRITE_BITS(register_value, MOTOR_STARTUP1.IPD_REPEAT, 5, 4);
+        WRITE_BITS(register_value, MOTOR_STARTUP1.OL_ILIMIT_CONFIG, 3, 3);
+        WRITE_BITS(register_value, MOTOR_STARTUP1.IQ_RAMP_EN, 2, 2);
+        WRITE_BITS(register_value, MOTOR_STARTUP1.ACTIVE_BRAKE_EN, 1, 1);
+        WRITE_BITS(register_value, MOTOR_STARTUP1.REV_DRV_CONFIG, 0, 0);
+
+        write32(MOTOR_STARTUP1_REG, register_value);
+
+        server.send(200, "application/json", "{\"status\":\"success\"}");
+    }
+    else
+    {
+        server.send(400, "application/json", "{\"error\":\"Bad Request\"}");
+    }
 }
 
 void setup()
 {
-  Serial.begin(115200);
-  Wire.begin(4, 5);
-  Wire.setClock(100000);
+    Serial.begin(115200);
+    Wire.begin(4, 5);
+    Wire.setClock(100000);
 
-  WiFi.begin(ssid, password);
-  while (WiFi.status() != WL_CONNECTED)
-  {
-    delay(500);
-    Serial.print(".");
-  }
-  Serial.println("\nWiFi Bağlandı!");
-  Serial.print("ESP'nin IP Adresi: ");
-  Serial.println(WiFi.localIP());
+    WiFi.begin(ssid, password);
+    while (WiFi.status() != WL_CONNECTED)
+    {
+        delay(500);
+        Serial.print(".");
+    }
+    Serial.println("\nWiFi Bağlandı!");
+    Serial.print("ESP'nin IP Adresi: ");
+    Serial.println(WiFi.localIP());
 
-  server.on("/", handleRoot);
-  server.on("/ReadISDConfig", HTTP_GET, ReadISDConfig);
-  server.on("/WriteISDConfig", HTTP_POST, WriteISDConfig);
-  server.on("/ReadRevDriveConfig", HTTP_GET, ReadRevDriveConfig);
-  server.on("/WriteRevDriveConfig", HTTP_POST, WriteRevDriveConfig);
-  server.begin();
+    server.on("/", handleRoot);
+    server.on("/ReadISDConfig", HTTP_GET, ReadISDConfig);
+    server.on("/WriteISDConfig", HTTP_POST, WriteISDConfig);
+    server.on("/ReadRevDriveConfig", HTTP_GET, ReadRevDriveConfig);
+    server.on("/WriteRevDriveConfig", HTTP_POST, WriteRevDriveConfig);
+    server.on("/ReadMotorStartup1", HTTP_GET, ReadMotorStartup1);
+    server.on("/WriteMotorStartup1", HTTP_POST, WriteMotorStartup1);
+    server.begin();
 }
 
 void loop()
 {
-  server.handleClient();
+    server.handleClient();
 }
