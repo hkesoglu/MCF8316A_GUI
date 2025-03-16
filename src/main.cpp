@@ -27,7 +27,7 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
             overflow-x: auto;
         }
         .container {
-            max-width: 1400px;
+            max-width: 1800px;
             margin: 20px auto;
             padding: 20px;
             background: white;
@@ -692,6 +692,70 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
             .then(response => console.log("Yazma başarılı:", response))
             .catch(error => console.error('Yazma hatası:', error));
           }
+
+        function ReadMotorStartup1() {
+            fetch('/ReadMotorStartup1', { method: 'GET' })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('MTR_STARTUP').value = data.MTR_STARTUP;
+                document.getElementById('ALIGN_SLOW_RAMP_RATE').value = data.ALIGN_SLOW_RAMP_RATE;
+                document.getElementById('ALIGN_TIME').value = data.ALIGN_TIME;
+                document.getElementById('ALIGN_OR_SLOW_CURRENT_ILIMIT').value = data.ALIGN_OR_SLOW_CURRENT_ILIMIT;
+                document.getElementById('IPD_CLK_FREQ').value = data.IPD_CLK_FREQ;
+                document.getElementById('IPD_CURR_THR').value = data.IPD_CURR_THR;
+                document.getElementById('IPD_RLS_MODE').value = data.IPD_RLS_MODE;
+                document.getElementById('IPD_ADV_ANGLE').value = data.IPD_ADV_ANGLE;
+                document.getElementById('IPD_REPEAT').value = data.IPD_REPEAT;
+                document.getElementById('OL_ILIMIT_CONFIG').value = data.OL_ILIMIT_CONFIG;
+                document.getElementById('IQ_RAMP_EN').value = data.IQ_RAMP_EN;
+                document.getElementById('ACTIVE_BRAKE_EN').value = data.ACTIVE_BRAKE_EN;
+                document.getElementById('REV_DRV_CONFIG').value = data.REV_DRV_CONFIG;
+
+                // Açılır kutulara da aynı verileri yazalım
+                document.getElementById('MTR_STARTUP_SELECT').value = data.MTR_STARTUP;
+                document.getElementById('ALIGN_SLOW_RAMP_RATE_SELECT').value = data.ALIGN_SLOW_RAMP_RATE;
+                document.getElementById('ALIGN_TIME_SELECT').value = data.ALIGN_TIME;
+                document.getElementById('ALIGN_OR_SLOW_CURRENT_ILIMIT_SELECT').value = data.ALIGN_OR_SLOW_CURRENT_ILIMIT;
+                document.getElementById('IPD_CLK_FREQ_SELECT').value = data.IPD_CLK_FREQ;
+                document.getElementById('IPD_CURR_THR_SELECT').value = data.IPD_CURR_THR;
+                document.getElementById('IPD_RLS_MODE_SELECT').value = data.IPD_RLS_MODE;
+                document.getElementById('IPD_ADV_ANGLE_SELECT').value = data.IPD_ADV_ANGLE;
+                document.getElementById('IPD_REPEAT_SELECT').value = data.IPD_REPEAT;
+                document.getElementById('OL_ILIMIT_CONFIG_SELECT').value = data.OL_ILIMIT_CONFIG;
+                document.getElementById('IQ_RAMP_EN_SELECT').value = data.IQ_RAMP_EN;
+                document.getElementById('ACTIVE_BRAKE_EN_SELECT').value = data.ACTIVE_BRAKE_EN;
+                document.getElementById('REV_DRV_CONFIG_SELECT').value = data.REV_DRV_CONFIG;
+            })
+            .catch(error => console.error('Hata:', error));
+        }
+
+        function WriteMotorStartup1() {
+            let data = {
+                MTR_STARTUP: document.getElementById('MTR_STARTUP_SELECT').value,
+                ALIGN_SLOW_RAMP_RATE: document.getElementById('ALIGN_SLOW_RAMP_RATE_SELECT').value,
+                ALIGN_TIME: document.getElementById('ALIGN_TIME_SELECT').value,
+                ALIGN_OR_SLOW_CURRENT_ILIMIT: document.getElementById('ALIGN_OR_SLOW_CURRENT_ILIMIT_SELECT').value,
+                IPD_CLK_FREQ: document.getElementById('IPD_CLK_FREQ_SELECT').value,
+                IPD_CURR_THR: document.getElementById('IPD_CURR_THR_SELECT').value,
+                IPD_RLS_MODE: document.getElementById('IPD_RLS_MODE_SELECT').value,
+                IPD_ADV_ANGLE: document.getElementById('IPD_ADV_ANGLE_SELECT').value,
+                IPD_REPEAT: document.getElementById('IPD_REPEAT_SELECT').value,
+                OL_ILIMIT_CONFIG: document.getElementById('OL_ILIMIT_CONFIG_SELECT').value,
+                IQ_RAMP_EN: document.getElementById('IQ_RAMP_EN_SELECT').value,
+                ACTIVE_BRAKE_EN: document.getElementById('ACTIVE_BRAKE_EN_SELECT').value,
+                REV_DRV_CONFIG: document.getElementById('REV_DRV_CONFIG_SELECT').value
+            };
+
+            fetch('/WriteMotorStartup1', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.text())
+            .then(response => console.log("Yazma başarılı:", response))
+            .catch(error => console.error('Yazma hatası:', error));
+        }
+
 
     </script>
 
