@@ -84,8 +84,8 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
             font-weight: bold;
         }
         td input, td select {
-            width: 32px;
-            height: 22px;
+            width: 50px;
+            height: 30px;
             font-size: 12px;
             text-align: center;
             border: 1px solid #ccc;
@@ -108,12 +108,12 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
 </head>
 <body>
 
-    <div class="container collapsed" id="isdContainer">
-        <div class="header" onclick="toggleContainer('isdContainer', 'isdContent', 'isdArrow')">
+    <div class="container collapsed" id="isdConfigContainer">
+        <div class="header" onclick="toggleContainer('isdConfigContainer', 'isdConfigContent', 'isdConfigArrow')">
             ISD_CONFIG
-            <span class="arrow" id="isdArrow">▼</span>
+            <span class="arrow" id="isdConfigArrow">▼</span>
         </div>
-        <div class="content" id="isdContent" style="display: none;">
+        <div class="content" id="isdConfigContent" style="display: none;">
             <div class="table-container">
                 <table>
                     <tr>
@@ -147,11 +147,11 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
                         <td><button onclick="ReadISDConfig()">Read</button></td>
                     </tr>
                     <tr>
-                        <td><select id="ISD_EN_SELECT"><option value="0">0</option><option value="1">1</option></select></td>
-                        <td><select id="BRAKE_EN_SELECT"><option value="0">0</option><option value="1">1</option></select></td>
-                        <td><select id="HIZ_EN_SELECT"><option value="0">0</option><option value="1">1</option></select></td>
-                        <td><select id="RVS_DR_EN_SELECT"><option value="0">0</option><option value="1">1</option></select></td>
-                        <td><select id="RESYNC_EN_SELECT"><option value="0">0</option><option value="1">1</option></select></td>
+                        <td><select id="ISD_EN_SELECT"><option value="0">0 = Disable</option><option value="1">1 = Enable</option></select></td>
+                        <td><select id="BRAKE_EN_SELECT"><option value="0">0 = Disable</option><option value="1">1 = Enable</option></select></td>
+                        <td><select id="HIZ_EN_SELECT"><option value="0">0 = Disable</option><option value="1">1 = Enable</option></select></td>
+                        <td><select id="RVS_DR_EN_SELECT"><option value="0">0 = Disable</option><option value="1">1 = Enable</option></select></td>
+                        <td><select id="RESYNC_EN_SELECT"><option value="0">0 = Disable</option><option value="1">1 = Enable</option></select></td>
                         <td>
                             <select id="FW_DRV_RESYN_THR_SELECT">
                                 <option value="0">0 = 5%</option>
@@ -369,15 +369,15 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
 <!////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////>
 <!////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////>
 
-    <div class="container collapsed" id="ms1Container">
+    <div class="container collapsed" id="motorStartup1Container">
         <!-- Tıklanabilir Başlık -->
-        <div class="header" onclick="toggleContainer('ms1Container', 'ms1Content', 'ms1Arrow')">
+        <div class="header" onclick="toggleContainer('motorStartup1Container', 'motorStartup1Content', 'motorStartup1Arrow')">
             MOTOR_STARTUP1
-            <span class="arrow" id="ms1Arrow">▼</span>
+            <span class="arrow" id="motorStartup1Arrow">▼</span>
         </div>
 
         <!-- İçerik -->
-        <div class="content" id="ms1Content" style="display: none;">
+        <div class="content" id="motorStartup1Content" style="display: none;">
             <div class="table-container">
                 <table>
                     <tr>
@@ -583,6 +583,234 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
 <!////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////>
 <!////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////>
 
+    <div class="container collapsed" id="motorStartup2Container">
+        <!-- Tıklanabilir Başlık -->
+        <div class="header" onclick="toggleContainer('motorStartup2Container', 'motorStartup2Content', 'motorStartup2Arrow')">
+            MOTOR_STARTUP2
+            <span class="arrow" id="motorStartup2Arrow">▼</span>
+        </div>
+
+        <!-- İçerik -->
+        <div class="content" id="motorStartup2Content" style="display: none;">
+            <div class="table-container">
+                <table>
+                    <tr>
+                        <th title="Open loop current limit">OL_ILIMIT</th>
+                        <th title="Open loop acceleration coefficient A1">OL_ACC_A1</th>
+                        <th title="Open loop acceleration coefficient A2">OL_ACC_A2</th>
+                        <th title="Auto handoff enable">AUTO_HANDOFF_EN</th>
+                        <th title="Open to close loop handoff threshold">OPN_CL_HANDOFF_THR</th>
+                        <th title="Align angle">ALIGN_ANGLE</th>
+                        <th title="Frequency of first cycle in closed loop startup">SLOW_FIRST_CYC_FREQ</th>
+                        <th title="First cycle frequency in open loop for align, double align and IPD startup options">FIRST_CYCLE_FREQ_SEL</th>
+                        <th title="Ramp rate for reducing difference between estimated theta and open loop theta">THETA_ERROR_RAMP_RATE</th>
+                        <th>Read / Write</th>
+                    </tr>
+                    <tr>
+                        <td><input type="text" id="OL_ILIMIT" readonly></td>
+                        <td><input type="text" id="OL_ACC_A1" readonly></td>
+                        <td><input type="text" id="OL_ACC_A2" readonly></td>
+                        <td><input type="text" id="AUTO_HANDOFF_EN" readonly></td>
+                        <td><input type="text" id="OPN_CL_HANDOFF_THR" readonly></td>
+                        <td><input type="text" id="ALIGN_ANGLE" readonly></td>
+                        <td><input type="text" id="SLOW_FIRST_CYC_FREQ" readonly></td>
+                        <td><input type="text" id="FIRST_CYCLE_FREQ_SEL" readonly></td>
+                        <td><input type="text" id="THETA_ERROR_RAMP_RATE" readonly></td>
+                        <td><button onclick="ReadMotorStartup2()">Read</button></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <select id="OL_ILIMIT_SELECT">
+                                <option value="0">0 = 0.125 A</option>
+                                <option value="1">1 = 0.25 A</option>
+                                <option value="2">2 = 0.5 A</option>
+                                <option value="3">3 = 1.0 A</option>
+                                <option value="4">4 = 1.5 A</option>
+                                <option value="5">5 = 2.0 A</option>
+                                <option value="6">6 = 2.5 A</option>
+                                <option value="7">7 = 3.0 A</option>
+                                <option value="8">8 = 3.5 A</option>
+                                <option value="9">9 = 4.0 A</option>
+                                <option value="A">A = 4.5 A</option> 
+                                <option value="B">B = 5.0 A</option>
+                                <option value="C">C = 5.5 A</option>
+                                <option value="D">D = 6.0 A</option>
+                                <option value="E">E = 7.0 A</option>
+                                <option value="F">F = 8.0 A</option>
+                            </select>
+                        </td>
+
+                        <td>
+                            <select id="OL_ACC_A1_SELECT">
+                                <option value="0">0 = 0.01 Hz/s</option>
+                                <option value="1">1 = 0.05 Hz/s</option>
+                                <option value="2">2 = 1 Hz/s</option>
+                                <option value="3">3 = 2.5 Hz/s</option>
+                                <option value="4">4 = 5 Hz/s</option>
+                                <option value="5">5 = 10 Hz/s</option>
+                                <option value="6">6 = 25 Hz/s</option>
+                                <option value="7">7 = 50 Hz/s</option>
+                                <option value="8">8 = 75 Hz/s</option>
+                                <option value="9">9 = 100 Hz/s</option>
+                                <option value="A">A = 250 Hz/s</option>
+                                <option value="B">B = 500 Hz/s</option>
+                                <option value="C">C = 750 Hz/s</option>
+                                <option value="D">D = 1000 Hz/s</option>
+                                <option value="E">E = 5000 Hz/s</option>
+                                <option value="F">F = 10000 Hz/s</option>
+                            </select>
+                        </td>
+
+                        <td>
+                            <select id="OL_ACC_A2_SELECT">
+                                <option value="0">0 = 0.0 Hz/s²</option>
+                                <option value="1">1 = 0.05 Hz/s²</option>
+                                <option value="2">2 = 1 Hz/s²</option>
+                                <option value="3">3 = 2.5 Hz/s²</option>
+                                <option value="4">4 = 5 Hz/s²</option>
+                                <option value="5">5 = 10 Hz/s²</option>
+                                <option value="6">6 = 25 Hz/s²</option>
+                                <option value="7">7 = 50 Hz/s²</option>
+                                <option value="8">8 = 75 Hz/s²</option>
+                                <option value="9">9 = 100 Hz/s²</option>
+                                <option value="A">A = 250 Hz/s²</option>
+                                <option value="B">B = 500 Hz/s²</option>
+                                <option value="C">C = 750 Hz/s²</option>
+                                <option value="D">D = 1000 Hz/s²</option>
+                                <option value="E">E = 5000 Hz/s²</option>
+                                <option value="F">F = 10000 Hz/s²</option>
+                            </select>
+                        </td>
+
+                        <td>
+                            <select id="AUTO_HANDOFF_EN_SELECT">
+                                <option value="0">0 = Disable Auto Handoff (and use OPN_CL_HANDOFF_THR)</option>
+                                <option value="1">1 = Enable Auto Handoff</option>
+                            </select>
+                        </td>
+
+                        <td>
+                            <select id="OPN_CL_HANDOFF_THR_SELECT">
+                                <option value="0">0 = 1%</option>
+                                <option value="1">1 = 2%</option>
+                                <option value="2">2 = 3%</option>
+                                <option value="3">3 = 4%</option>
+                                <option value="4">4 = 5%</option>
+                                <option value="5">5 = 6%</option>
+                                <option value="6">6 = 7%</option>
+                                <option value="7">7 = 8%</option>
+                                <option value="8">8 = 9%</option>
+                                <option value="9">9 = 10%</option>
+                                <option value="A">A = 11%</option>
+                                <option value="B">B = 12%</option>
+                                <option value="C">C = 13%</option>
+                                <option value="D">D = 14%</option>
+                                <option value="E">E = 15%</option>
+                                <option value="F">F = 16%</option>
+                                <option value="10">10 = 17%</option>
+                                <option value="11">11 = 18%</option>
+                                <option value="12">12 = 19%</option>
+                                <option value="13">13 = 20%</option>
+                                <option value="14">14 = 22.5%</option>
+                                <option value="15">15 = 25%</option>
+                                <option value="16">16 = 27.5%</option>
+                                <option value="17">17 = 30%</option>
+                                <option value="18">18 = 32.5%</option>
+                                <option value="19">19 = 35%</option>
+                                <option value="1A">1A = 37.5%</option>
+                                <option value="1B">1B = 40%</option>
+                                <option value="1C">1C = 42.5%</option>
+                                <option value="1D">1D = 45%</option>
+                                <option value="1E">1E = 47.5%</option>
+                                <option value="1F">1F = 50%</option>
+                            </select>
+                        </td>
+
+                        <td>
+                            <select id="ALIGN_ANGLE_SELECT">
+                                <option value="0">0 = 0°</option>
+                                <option value="1">1 = 10°</option>
+                                <option value="2">2 = 20°</option>
+                                <option value="3">3 = 30°</option>
+                                <option value="4">4 = 45°</option>
+                                <option value="5">5 = 60°</option>
+                                <option value="6">6 = 70°</option>
+                                <option value="7">7 = 80°</option>
+                                <option value="8">8 = 90°</option>
+                                <option value="9">9 = 110°</option>
+                                <option value="A">A = 120°</option>
+                                <option value="B">B = 135°</option>
+                                <option value="C">C = 150°</option>
+                                <option value="D">D = 160°</option>
+                                <option value="E">E = 170°</option>
+                                <option value="F">F = 180°</option>
+                                <option value="10">10 = 190°</option>
+                                <option value="11">11 = 210°</option>
+                                <option value="12">12 = 225°</option>
+                                <option value="13">13 = 240°</option>
+                                <option value="14">14 = 250°</option>
+                                <option value="15">15 = 260°</option>
+                                <option value="16">16 = 270°</option>
+                                <option value="17">17 = 280°</option>
+                                <option value="18">18 = 290°</option>
+                                <option value="19">19 = 315°</option>
+                                <option value="1A">1A = 330°</option>
+                                <option value="1B">1B = 340°</option>
+                                <option value="1C">1C = 350°</option>
+                            </select>
+                        </td>
+
+                        <td>
+                            <select id="SLOW_FIRST_CYC_FREQ_SELECT">
+                                <option value="0">0 = 1%</option>
+                                <option value="1">1 = 2%</option>
+                                <option value="2">2 = 3%</option>
+                                <option value="3">3 = 5%</option>
+                                <option value="4">4 = 7.5%</option>
+                                <option value="5">5 = 10%</option>
+                                <option value="6">6 = 12.5%</option>
+                                <option value="7">7 = 15%</option>
+                                <option value="8">8 = 17.5%</option>
+                                <option value="9">9 = 20%</option>
+                                <option value="A">A = 25%</option>
+                                <option value="B">B = 30%</option>
+                                <option value="C">C = 35%</option>
+                                <option value="D">D = 40%</option>
+                                <option value="E">E = 45%</option>
+                                <option value="F">F = 50%</option>
+                            </select>
+                        </td>
+
+                        <td>
+                            <select id="FIRST_CYCLE_FREQ_SEL_SELECT">
+                                <option value="0">0 = Defined by SLOW_FIRST_CYC_FREQ</option>
+                                <option value="1">1 = 0 Hz</option>
+                            </select>
+                        </td>
+
+                        <td>
+                            <select id="THETA_ERROR_RAMP_RATE_SELECT">
+                                <option value="0">0 = 0.01 deg/ms</option>
+                                <option value="1">1 = 0.05 deg/ms</option>
+                                <option value="2">2 = 0.1 deg/ms</option>
+                                <option value="3">3 = 0.15 deg/ms</option>
+                                <option value="4">4 = 0.2 deg/ms</option>
+                                <option value="5">5 = 0.5 deg/ms</option>
+                                <option value="6">6 = 1 deg/ms</option>
+                                <option value="7">7 = 2 deg/ms</option>
+                            </select>
+                        </td>
+                        
+                        <td><button onclick="WriteMotorStartup2()">Write</button></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+<!////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////>
+<!////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////>
+
     <div class="container collapsed" id="closedLoop1Container">
         <!-- Tıklanabilir Başlık -->
         <div class="header" onclick="toggleContainer('closedLoop1Container', 'closedLoop1Content', 'closedLoop1Arrow')">
@@ -590,7 +818,6 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
             <span class="arrow" id="closedLoop1Arrow">▼</span>
         </div>
 
-        <!-- İçerik -->
         <div class="content" id="closedLoop1Content" style="display: none;">
             <div class="table-container">
                 <table>
@@ -598,101 +825,412 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
                         <th title="Overmodulation enable">OVERMODULATION_ENABLE</th>
                         <th title="Closed loop acceleration">CL_ACC</th>
                         <th title="Closed loop deceleration configuration">CL_DEC_CONFIG</th>
-                        <th title="Closed loop deceleration">CL_DEC</th>
+                        <th title="Closed loop deceleration. This register is used only if AVS is disabled and CL_DEC_CONFIG is set to '0'">CL_DEC</th>
                         <th title="Output PWM switching frequency">PWM_FREQ_OUT</th>
+                        <th title="PWM modulation">PWM_MODE</th>
+                        <th title="FG select">FG_SEL</th>
+                        <th title="FG division factor">FG_DIV</th>
+                        <th title="FG output configuration">FG_CONFIG</th>
+                        <th title="FG output BEMF threshold">FG_BEMF_THR</th>
+                        <th title="AVS enable">AVS_EN</th>
+                        <th title="Deadtime compensation enable">DEADTIME_COMP_EN</th>
+                        <th title="Speed loop disable">SPEED_LOOP_DIS</th>
+                        <th title="Stop mode applied when stop mode is recirculation brake and motor running in align or open loop">LOW_SPEED_RECIRC_BRAKE_EN</th>
                         <th>Read / Write</th>
                     </tr>
+
                     <tr>
                         <td><input type="text" id="OVERMODULATION_ENABLE" readonly></td>
                         <td><input type="text" id="CL_ACC" readonly></td>
                         <td><input type="text" id="CL_DEC_CONFIG" readonly></td>
                         <td><input type="text" id="CL_DEC" readonly></td>
                         <td><input type="text" id="PWM_FREQ_OUT" readonly></td>
+                        <td><input type="text" id="PWM_MODE" readonly></td>
+                        <td><input type="text" id="FG_SEL" readonly></td>
+                        <td><input type="text" id="FG_DIV" readonly></td>
+                        <td><input type="text" id="FG_CONFIG" readonly></td>
+                        <td><input type="text" id="FG_BEMF_THR" readonly></td>
+                        <td><input type="text" id="AVS_EN" readonly></td>
+                        <td><input type="text" id="DEADTIME_COMP_EN" readonly></td>
+                        <td><input type="text" id="SPEED_LOOP_DIS" readonly></td>
+                        <td><input type="text" id="LOW_SPEED_RECIRC_BRAKE_EN" readonly></td>
                         <td><button onclick="ReadClosedLoop1()">Read</button></td>
                     </tr>
+
                     <tr>
 
-                        <td>
-                            <select id="OVERMODULATION_ENABLE_SELECT">
-                                <option value="0">0 = Disable Overmodulation</option>
-                                <option value="1">1 = Enable Overmodulation</option>
-                            </select>
-                        </td>
+                    <td>
+                        <select id="OVERMODULATION_ENABLE_SELECT">
+                            <option value="0">0 = Disable Overmodulation</option>
+                            <option value="1">1 = Enable Overmodulation</option>
+                        </select>
+                    </td>
 
-                        <td>
-                            <select id="CL_ACC_SELECT">
-                                <option value="0">0 = 0.5 Hz/s</option>
-                                <option value="1">1 = 1 Hz/s</option>
-                                <option value="2">2 = 2.5 Hz/s</option>
-                                <option value="3">3 = 5 Hz/s</option>
-                                <option value="4">4 = 7.5 Hz/s</option>
-                                <option value="5">5 = 10 Hz/s</option>
-                                <option value="6">6 = 20 Hz/s</option>
-                                <option value="7">7 = 40 Hz/s</option>
-                                <option value="8">8 = 60 Hz/s</option>
-                                <option value="9">9 = 80 Hz/s</option>
-                                <option value="A">A = 100 Hz/s</option>
-                                <option value="B">B = 200 Hz/s</option>
-                                <option value="C">C = 300 Hz/s</option>
-                                <option value="D">D = 400 Hz/s</option>
-                                <option value="E">E = 500 Hz/s</option>
-                                <option value="F">F = 600 Hz/s</option>
-                            </select>
-                        </td>
+                    <td>
+                        <select id="CL_ACC_SELECT">
+                            <option value="0">0 = 0.5 Hz/s</option>
+                            <option value="1">1 = 1 Hz/s</option>
+                            <option value="2">2 = 2.5 Hz/s</option>
+                            <option value="3">3 = 5 Hz/s</option>
+                            <option value="4">4 = 7.5 Hz/s</option>
+                            <option value="5">5 = 10 Hz/s</option>
+                            <option value="6">6 = 20 Hz/s</option>
+                            <option value="7">7 = 40 Hz/s</option>
+                            <option value="8">8 = 60 Hz/s</option>
+                            <option value="9">9 = 80 Hz/s</option>
+                            <option value="A">A = 100 Hz/s</option>
+                            <option value="B">B = 200 Hz/s</option>
+                            <option value="C">C = 300 Hz/s</option>
+                            <option value="D">D = 400 Hz/s</option>
+                            <option value="E">E = 500 Hz/s</option>
+                            <option value="F">F = 600 Hz/s</option>
+                            <option value="10">10 = 700 Hz/s</option>
+                            <option value="11">11 = 800 Hz/s</option>
+                            <option value="12">12 = 900 Hz/s</option>
+                            <option value="13">13 = 1000 Hz/s</option>
+                            <option value="14">14 = 2000 Hz/s</option>
+                            <option value="15">15 = 4000 Hz/s</option>
+                            <option value="16">16 = 6000 Hz/s</option>
+                            <option value="17">17 = 8000 Hz/s</option>
+                            <option value="18">18 = 10000 Hz/s</option>
+                            <option value="19">19 = 20000 Hz/s</option>
+                            <option value="1A">1A = 30000 Hz/s</option>
+                            <option value="1B">1B = 40000 Hz/s</option>
+                            <option value="1C">1C = 50000 Hz/s</option>
+                            <option value="1D">1D = 60000 Hz/s</option>
+                            <option value="1E">1E = 70000 Hz/s</option>
+                            <option value="1F">1F = No limit</option>
+                        </select>
+                    </td>
 
-                        <td>
-                            <select id="CL_DEC_CONFIG_SELECT">
-                                <option value="0">0 = Defined by CL_DEC</option>
-                                <option value="1">1 = Defined by CL_ACC</option>
-                            </select>
-                        </td>
+                    <td>
+                        <select id="CL_DEC_CONFIG_SELECT">
+                            <option value="0">0 = Defined by CL_DEC</option>
+                            <option value="1">1 = Defined by CL_ACC</option>
+                        </select>
+                    </td>
 
-                        <td>
-                            <select id="CL_DEC_SELECT">
-                                <option value="0">0 = 0.5 Hz/s</option>
-                                <option value="1">1 = 1 Hz/s</option>
-                                <option value="2">2 = 2.5 Hz/s</option>
-                                <option value="3">3 = 5 Hz/s</option>
-                                <option value="4">4 = 7.5 Hz/s</option>
-                                <option value="5">5 = 10 Hz/s</option>
-                                <option value="6">6 = 20 Hz/s</option>
-                                <option value="7">7 = 40 Hz/s</option>
-                                <option value="8">8 = 60 Hz/s</option>
-                                <option value="9">9 = 80 Hz/s</option>
-                                <option value="A">A = 100 Hz/s</option>
-                                <option value="B">B = 200 Hz/s</option>
-                                <option value="C">C = 300 Hz/s</option>
-                                <option value="D">D = 400 Hz/s</option>
-                                <option value="E">E = 500 Hz/s</option>
-                                <option value="F">F = 600 Hz/s</option>
-                            </select>
-                        </td>
+                    <td>
+                        <select id="CL_DEC_SELECT">
+                            <option value="0">0 = 0.5 Hz/s</option>
+                            <option value="1">1 = 1 Hz/s</option>
+                            <option value="2">2 = 2.5 Hz/s</option>
+                            <option value="3">3 = 5 Hz/s</option>
+                            <option value="4">4 = 7.5 Hz/s</option>
+                            <option value="5">5 = 10 Hz/s</option>
+                            <option value="6">6 = 20 Hz/s</option>
+                            <option value="7">7 = 40 Hz/s</option>
+                            <option value="8">8 = 60 Hz/s</option>
+                            <option value="9">9 = 80 Hz/s</option>
+                            <option value="A">A = 100 Hz/s</option>
+                            <option value="B">B = 200 Hz/s</option>
+                            <option value="C">C = 300 Hz/s</option>
+                            <option value="D">D = 400 Hz/s</option>
+                            <option value="E">E = 500 Hz/s</option>
+                            <option value="F">F = 600 Hz/s</option>
+                            <option value="10">10 = 700 Hz/s</option>
+                            <option value="11">11 = 800 Hz/s</option>
+                            <option value="12">12 = 900 Hz/s</option>
+                            <option value="13">13 = 1000 Hz/s</option>
+                            <option value="14">14 = 2000 Hz/s</option>
+                            <option value="15">15 = 4000 Hz/s</option>
+                            <option value="16">16 = 6000 Hz/s</option>
+                            <option value="17">17 = 8000 Hz/s</option>
+                            <option value="18">18 = 10000 Hz/s</option>
+                            <option value="19">19 = 20000 Hz/s</option>
+                            <option value="1A">1A = 30000 Hz/s</option>
+                            <option value="1B">1B = 40000 Hz/s</option>
+                            <option value="1C">1C = 50000 Hz/s</option>
+                            <option value="1D">1D = 60000 Hz/s</option>
+                            <option value="1E">1E = 70000 Hz/s</option>
+                            <option value="1F">1F = No limit</option>
+                        </select>
+                    </td>
 
-                        <td>
-                            <select id="PWM_FREQ_OUT_SELECT">
-                                <option value="0">0 = 10 kHz</option>
-                                <option value="1">1 = 15 kHz</option>
-                                <option value="2">2 = 20 kHz</option>
-                                <option value="3">3 = 25 kHz</option>
-                                <option value="4">4 = 30 kHz</option>
-                                <option value="5">5 = 35 kHz</option>
-                                <option value="6">6 = 40 kHz</option>
-                                <option value="7">7 = 45 kHz</option>
-                                <option value="8">8 = 50 kHz</option>
-                                <option value="9">9 = 55 kHz</option>
-                                <option value="A">A = 60 kHz</option>
-                                <option value="B">B = 65 kHz</option>
-                                <option value="C">C = 70 kHz</option>
-                                <option value="D">D = 75 kHz</option>
-                            </select>
-                        </td>
+                    <td>
+                        <select id="PWM_FREQ_OUT_SELECT">
+                            <option value="0">0 = 10 kHz</option>
+                            <option value="1">1 = 15 kHz</option>
+                            <option value="2">2 = 20 kHz</option>
+                            <option value="3">3 = 25 kHz</option>
+                            <option value="4">4 = 30 kHz</option>
+                            <option value="5">5 = 35 kHz</option>
+                            <option value="6">6 = 40 kHz</option>
+                            <option value="7">7 = 45 kHz</option>
+                            <option value="8">8 = 50 kHz</option>
+                            <option value="9">9 = 55 kHz</option>
+                            <option value="A">A = 60 kHz</option>
+                            <option value="B">B = 65 kHz</option>
+                            <option value="C">C = 70 kHz</option>
+                            <option value="D">D = 75 kHz</option>
+                        </select>
+                    </td>
 
-                        <td><button onclick="WriteClosedLoop1()">Write</button></td>
+                    <td>
+                        <select id="PWM_MODE_SELECT">
+                            <option value="0">0 = Continuous Space Vector Modulation</option>
+                            <option value="1">1 = Discontinuous Space Vector Modulation</option>
+                        </select>
+                    </td>
+                    
+                    <td>
+                        <select id="FG_SEL_SELECT">
+                            <option value="0">0 = Output FG in open loop and closed loop</option>
+                            <option value="1">1 = Output FG in only closed loop</option>
+                            <option value="2">2 = Output FG in open loop for the first try</option>
+                            <option value="3">3 = N/A</option>
+                        </select>
+                    </td>
+
+                    <td>
+                        <select id="FG_DIV_SELECT">
+                            <option value="0">0 = Divide by 1 (2-pole motor mechanical speed)</option>
+                            <option value="1">1 = Divide by 1 (2-pole motor mechanical speed)</option>
+                            <option value="2">2 = Divide by 2 (4-pole motor mechanical speed)</option>
+                            <option value="3">3 = Divide by 3 (6-pole motor mechanical speed)</option>
+                            <option value="4">4 = Divide by 4 (8-pole motor mechanical speed)</option>
+                            <option value="F">F = Divide by 15 (30-pole motor mechanical speed)</option>
+                        </select>
+                    </td>
+
+                    <td>
+                        <select id="FG_CONFIG_SELECT">
+                            <option value="0">0 = FG active as long as motor is driven</option>
+                            <option value="1">1 = FG active till BEMF drops below BEMF threshold defined by FG_BEMF_THR</option>
+                        </select>
+                    </td>
+
+                    <td>
+                        <select id="FG_BEMF_THR_SELECT">
+                            <option value="0">0 = ±1 mV</option>
+                            <option value="1">1 = ±2 mV</option>
+                            <option value="2">2 = ±5 mV</option>
+                            <option value="3">3 = ±10 mV</option>
+                            <option value="4">4 = ±20 mV</option>
+                            <option value="5">5 = ±30 mV</option>
+                        </select>
+                    </td>
+
+                    <td>
+                        <select id="AVS_EN_SELECT">
+                            <option value="0">0 = AVS Disabled</option>
+                            <option value="1">1 = AVS Enabled</option>
+                        </select>
+                    </td>
+
+                    <td>
+                        <select id="DEADTIME_COMP_EN_SELECT">
+                            <option value="0">0 = Deadtime compensation disabled</option>
+                            <option value="1">1 = Deadtime compensation enabled</option>
+                        </select>
+                    </td>
+
+                    <td>
+                        <select id="SPEED_LOOP_DIS_SELECT">
+                            <option value="0">0 = Speed loop enabled</option>
+                            <option value="1">1 = Speed loop disabled</option>
+                        </select>
+                    </td>
+
+                    <td>
+                        <select id="LOW_SPEED_RECIRC_BRAKE_EN_SELECT">
+                            <option value="0">0 = Hi-Z</option>
+                            <option value="1">1 = Low Side Brake</option>
+                        </select>
+                    </td>
+
+                    <td><button onclick="WriteClosedLoop1()">Write</button></td>
+
                     </tr>
                 </table>
             </div>
         </div>
     </div>
+
+<!////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////>
+<!////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////>
+
+    <div class="container collapsed" id="closedLoop2Container">
+        <div class="header" onclick="toggleContainer('closedLoop2Container', 'closedLoop2Content', 'closedLoop2Arrow')">
+            CLOSED_LOOP2
+            <span class="arrow" id="closedLoop2Arrow">▼</span>
+        </div>
+
+        <div class="content" id="closedLoop2Content" style="display: none;">
+            <div class="table-container">
+                <table>
+                    <tr>
+                        <th title="Motor stop method">MTR_STOP</th>
+                        <th title="Brake time during motor stop">MTR_STOP_BRK_TIME</th>
+                        <th title="Speed threshold for active spin down (% of MAX_SPEED)">ACT_SPIN_THR</th>
+                        <th title="Speed threshold for BRAKE pin and motor stop options (low-side braking or high-side braking or align braking) (% of MAX_SPEED)">BRAKE_SPEED_THRESHOLD</th>
+                        <th title="8-bit values for motor phase resistance">MOTOR_RES</th>
+                        <th title="8-bit values for motor phase inductance">MOTOR_IND</th>
+                        <th>Read / Write</th>
+                    </tr>
+                    <tr>
+                        <td><input type="text" id="MTR_STOP" readonly></td>
+                        <td><input type="text" id="MTR_STOP_BRK_TIME" readonly></td>
+                        <td><input type="text" id="ACT_SPIN_THR" readonly></td>
+                        <td><input type="text" id="BRAKE_SPEED_THRESHOLD" readonly></td>
+                        <td><input type="text" id="MOTOR_RES" readonly></td>
+                        <td><input type="text" id="MOTOR_IND" readonly></td>
+                        <td><button onclick="ReadClosedLoop2()">Read</button></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <select id="MTR_STOP_SELECT">
+                                <option value="0">0 = Hi-Z</option>
+                                <option value="1">1 = Recirculation Mode</option>
+                                <option value="2">2 = Low Side Braking</option>
+                                <option value="3">3 = High Side Braking</option>
+                                <option value="4">4 = Active Spin Down</option>
+                                <option value="5">5 = Align Braking</option>
+                            </select>
+                        </td>
+                        <td>
+                            <select id="MTR_STOP_BRK_TIME_SELECT">
+                                <option value="0">0 = 0.1 ms</option>
+                                <option value="1">1 = 0.1 ms</option>
+                                <option value="2">2 = 0.25 ms</option>
+                                <option value="3">3 = 0.5 ms</option>
+                                <option value="4">4 = 1 ms</option>
+                                <option value="5">5 = 5 ms</option>
+                                <option value="6">6 = 10 ms</option>
+                                <option value="7">7 = 50 ms</option>
+                                <option value="8">8 = 100 ms</option>
+                                <option value="9">9 = 250 ms</option>
+                                <option value="A">A = 500 ms</option>
+                                <option value="B">B = 1000 ms</option>
+                                <option value="C">C = 2500 ms</option>
+                                <option value="D">D = 5000 ms</option>
+                                <option value="E">E = 10000 ms</option>
+                                <option value="F">F = 15000 ms</option>
+                            </select>
+                        </td>
+                        <td>
+                            <select id="ACT_SPIN_THR_SELECT">
+                                <option value="0">0 = 100%</option>
+                                <option value="1">1 = 90%</option>
+                                <option value="2">2 = 80%</option>
+                                <option value="3">3 = 70%</option>
+                                <option value="4">4 = 60%</option>
+                                <option value="5">5 = 50%</option>
+                                <option value="6">6 = 45%</option>
+                                <option value="7">7 = 40%</option>
+                                <option value="8">8 = 35%</option>
+                                <option value="9">9 = 30%</option>
+                                <option value="A">A = 25%</option>
+                                <option value="B">B = 20%</option>
+                                <option value="C">C = 15%</option>
+                                <option value="D">D = 10%</option>
+                                <option value="E">E = 5%</option>
+                                <option value="F">F = 2.5%</option>
+                            </select>
+                        </td>
+                        <td>
+                            <select id="BRAKE_SPEED_THRESHOLD_SELECT">
+                                <option value="0">0 = 100%</option>
+                                <option value="1">1 = 90%</option>
+                                <option value="2">2 = 80%</option>
+                                <option value="3">3 = 70%</option>
+                                <option value="4">4 = 60%</option>
+                                <option value="5">5 = 50%</option>
+                                <option value="6">6 = 45%</option>
+                                <option value="7">7 = 40%</option>
+                                <option value="8">8 = 35%</option>
+                                <option value="9">9 = 30%</option>
+                                <option value="A">A = 25%</option>
+                                <option value="B">B = 20%</option>
+                                <option value="C">C = 15%</option>
+                                <option value="D">D = 10%</option>
+                                <option value="E">E = 5%</option>
+                                <option value="F">F = 2.5%</option>
+                            </select>
+                        </td>
+                        <td><input type="text" id="MOTOR_RES_INPUT" value="0"></td>
+                        <td><input type="text" id="MOTOR_IND_INPUT" value="0"></td>
+                        <td><button onclick="WriteClosedLoop2()">Write</button></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+<!////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////>
+<!////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////>
+
+    <div class="container collapsed" id="closedLoop3Container">
+        <div class="header" onclick="toggleContainer('closedLoop3Container', 'closedLoop3Content', 'closedLoop3Arrow')">
+            CLOSED_LOOP3
+            <span class="arrow" id="closedLoop3Arrow">▼</span>
+        </div>
+
+        <div class="content" id="closedLoop3Content" style="display: none;">
+            <div class="table-container">
+                <table>
+                    <tr>
+                        <th title="8-bit values for motor BEMF constant">MOTOR_BEMF_CONST</th>
+                        <th title="10-bit value for current Iq and Id loop Kp. Kp = 8LSB of CURR_LOOP_KP / 10^2MSB of CURR_LOOP_KP. Set to 0 for auto calculation of current loop Kp.">CURR_LOOP_KP</th>
+                        <th title="10-bit value for current Iq and Id loop Ki. Ki = 1000 * 8LSB of CURR_LOOP_KI / 10^2MSB of CURR_LOOP_KI. Set to 0 for auto calculation of current loop Ki.">CURR_LOOP_KI</th>
+                        <th title="3 MSB bits for speed loop Kp. Kp = 0.01 * 8LSB of SPD_LOOP_KP / 10^2MSB of SPD_LOOP_KP">SPD_LOOP_KP</th>
+                        <th>Read / Write</th>
+                    </tr>
+                    <tr>
+                        <td><input type="text" id="MOTOR_BEMF_CONST" value="0"></td>
+                        <td><input type="text" id="CURR_LOOP_KP" value="0"></td>
+                        <td><input type="text" id="CURR_LOOP_KI" value="0"></td>
+                        <td><input type="text" id="SPD_LOOP_KP_CL3" value="0"></td>
+                        <td><button onclick="ReadClosedLoop3()">Read</button></td>
+                    </tr>
+                    <tr>
+                        <td><input type="text" id="MOTOR_BEMF_CONST_INPUT" value="0"></td>
+                        <td><input type="text" id="CURR_LOOP_KP_INPUT" value="0"></td>
+                        <td><input type="text" id="CURR_LOOP_KI_INPUT" value="0"></td>
+                        <td><input type="text" id="SPD_LOOP_KP_CL3_INPUT" value="0"></td>
+                        <td><button onclick="WriteClosedLoop3()">Write</button></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+<!////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////>
+<!////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////>
+
+    <div class="container collapsed" id="closedLoop4Container">
+        <div class="header" onclick="toggleContainer('closedLoop4Container', 'closedLoop4Content', 'closedLoop4Arrow')">
+            CLOSED_LOOP4
+            <span class="arrow" id="closedLoop4Arrow">▼</span>
+        </div>
+
+        <div class="content" id="closedLoop4Content" style="display: none;">
+            <div class="table-container">
+                <table>
+                    <tr>
+                        <th title="7 LSB bits for speed loop Kp. Kp = 0.01 * 8LSB of SPD_LOOP_KP / 10^2MSB of SPD_LOOP_KP. Set to 0 for auto calculation of speed loop Kp.">SPD_LOOP_KP</th>
+                        <th title="10-bit value for speed loop Ki. Ki = 0.1 * 8LSB of SPD_LOOP_KI / 10^2MSB of SPD_LOOP_KI. Set to 0 for auto calculation of speed loop Ki">SPD_LOOP_KI</th>
+                        <th title="14-bit value for setting maximum value of speed in electrical Hz Maximum motor electrical speed (Hz): {MOTOR_SPEED/6} For example: if MOTOR_SPEED is 0x2710, then maximum motor speed (Hz) = 10000(0x2710)/6 = 1666 Hz">MAX_SPEED</th>
+                        <th>Read / Write</th>
+                    </tr>
+                    <tr>
+                        <td><input type="text" id="SPD_LOOP_KP_CL4" value="0"></td>
+                        <td><input type="text" id="SPD_LOOP_KI" value="0"></td>
+                        <td><input type="text" id="MAX_SPEED" value="0"></td>
+                        <td><button onclick="ReadClosedLoop4()">Read</button></td>
+                    </tr>
+                    <tr>
+                        <td><input type="text" id="SPD_LOOP_KP_CL4_INPUT" value="0"></td>
+                        <td><input type="text" id="SPD_LOOP_KI_INPUT" value="0"></td>
+                        <td><input type="text" id="MAX_SPEED_INPUT" value="0"></td>
+                        <td><button onclick="WriteClosedLoop4()">Write</button></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
 
 <!////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////>
 <!////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////>
@@ -1019,8 +1557,6 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
             .catch(error => console.error('Hata:', error));
     }
             
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     function WriteISDConfig() {
         let data = {
@@ -1071,8 +1607,6 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
         .catch(error => console.error('Hata:', error));
         }
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     function WriteRevDriveConfig() {
         let data = {
@@ -1132,8 +1666,6 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
         .catch(error => console.error('Hata:', error));
     }
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     function WriteMotorStartup1() {
         let data = {
@@ -1165,6 +1697,246 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    function ReadMotorStartup2() {
+        fetch('/ReadMotorStartup2', { method: 'GET' })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('OL_ILIMIT').value = data.OL_ILIMIT;
+            document.getElementById('OL_ACC_A1').value = data.OL_ACC_A1;
+            document.getElementById('OL_ACC_A2').value = data.OL_ACC_A2;
+            document.getElementById('AUTO_HANDOFF_EN').value = data.AUTO_HANDOFF_EN;
+            document.getElementById('OPN_CL_HANDOFF_THR').value = data.OPN_CL_HANDOFF_THR;
+            document.getElementById('ALIGN_ANGLE').value = data.ALIGN_ANGLE;
+            document.getElementById('SLOW_FIRST_CYC_FREQ').value = data.SLOW_FIRST_CYC_FREQ;
+            document.getElementById('FIRST_CYCLE_FREQ_SEL').value = data.FIRST_CYCLE_FREQ_SEL;
+            document.getElementById('THETA_ERROR_RAMP_RATE').value = data.THETA_ERROR_RAMP_RATE;
+
+            document.getElementById('OL_ILIMIT_SELECT').value = data.OL_ILIMIT;
+            document.getElementById('OL_ACC_A1_SELECT').value = data.OL_ACC_A1;
+            document.getElementById('OL_ACC_A2_SELECT').value = data.OL_ACC_A2;
+            document.getElementById('AUTO_HANDOFF_EN_SELECT').value = data.AUTO_HANDOFF_EN;
+            document.getElementById('OPN_CL_HANDOFF_THR_SELECT').value = data.OPN_CL_HANDOFF_THR;
+            document.getElementById('ALIGN_ANGLE_SELECT').value = data.ALIGN_ANGLE;
+            document.getElementById('SLOW_FIRST_CYC_FREQ_SELECT').value = data.SLOW_FIRST_CYC_FREQ;
+            document.getElementById('FIRST_CYCLE_FREQ_SEL_SELECT').value = data.FIRST_CYCLE_FREQ_SEL;
+            document.getElementById('THETA_ERROR_RAMP_RATE_SELECT').value = data.THETA_ERROR_RAMP_RATE;
+        })
+        .catch(error => console.error('Hata:', error));
+    }
+
+
+    function WriteMotorStartup2() {
+        let data = {
+            OL_ILIMIT: document.getElementById('OL_ILIMIT_SELECT').value,
+            OL_ACC_A1: document.getElementById('OL_ACC_A1_SELECT').value,
+            OL_ACC_A2: document.getElementById('OL_ACC_A2_SELECT').value,
+            AUTO_HANDOFF_EN: document.getElementById('AUTO_HANDOFF_EN_SELECT').value,
+            OPN_CL_HANDOFF_THR: document.getElementById('OPN_CL_HANDOFF_THR_SELECT').value,
+            ALIGN_ANGLE: document.getElementById('ALIGN_ANGLE_SELECT').value,
+            SLOW_FIRST_CYC_FREQ: document.getElementById('SLOW_FIRST_CYC_FREQ_SELECT').value,
+            FIRST_CYCLE_FREQ_SEL: document.getElementById('FIRST_CYCLE_FREQ_SEL_SELECT').value,
+            THETA_ERROR_RAMP_RATE: document.getElementById('THETA_ERROR_RAMP_RATE_SELECT').value
+        };
+
+        fetch('/WriteMotorStartup2', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.text())
+        .then(response => console.log("Yazma başarılı:", response))
+        .catch(error => console.error('Yazma hatası:', error));
+    }
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+    function ReadClosedLoop1() {
+        fetch('/ReadClosedLoop1', { method: 'GET' })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('OVERMODULATION_ENABLE').value = data.OVERMODULATION_ENABLE;
+            document.getElementById('CL_ACC').value = data.CL_ACC;
+            document.getElementById('CL_DEC_CONFIG').value = data.CL_DEC_CONFIG;
+            document.getElementById('CL_DEC').value = data.CL_DEC;
+            document.getElementById('PWM_FREQ_OUT').value = data.PWM_FREQ_OUT;
+            document.getElementById('PWM_MODE').value = data.PWM_MODE;
+            document.getElementById('FG_SEL').value = data.FG_SEL;
+            document.getElementById('FG_DIV').value = data.FG_DIV;
+            document.getElementById('FG_CONFIG').value = data.FG_CONFIG;
+            document.getElementById('FG_BEMF_THR').value = data.FG_BEMF_THR;
+            document.getElementById('AVS_EN').value = data.AVS_EN;
+            document.getElementById('DEADTIME_COMP_EN').value = data.DEADTIME_COMP_EN;
+            document.getElementById('SPEED_LOOP_DIS').value = data.SPEED_LOOP_DIS;
+            document.getElementById('LOW_SPEED_RECIRC_BRAKE_EN').value = data.LOW_SPEED_RECIRC_BRAKE_EN;
+
+            document.getElementById('OVERMODULATION_ENABLE_SELECT').value = data.OVERMODULATION_ENABLE;
+            document.getElementById('CL_ACC_SELECT').value = data.CL_ACC;
+            document.getElementById('CL_DEC_CONFIG_SELECT').value = data.CL_DEC_CONFIG;
+            document.getElementById('CL_DEC_SELECT').value = data.CL_DEC;
+            document.getElementById('PWM_FREQ_OUT_SELECT').value = data.PWM_FREQ_OUT;
+            document.getElementById('PWM_MODE').value = data.PWM_MODE;
+            document.getElementById('FG_SEL_SELECT').value = data.FG_SEL;
+            document.getElementById('FG_DIV_SELECT').value = data.FG_DIV;
+            document.getElementById('FG_CONFIG_SELECT').value = data.FG_CONFIG;
+            document.getElementById('FG_BEMF_THR_SELECT').value = data.FG_BEMF_THR;
+            document.getElementById('AVS_EN_SELECT').value = data.AVS_EN;
+            document.getElementById('DEADTIME_COMP_EN_SELECT').value = data.DEADTIME_COMP_EN;
+            document.getElementById('SPEED_LOOP_DIS_SELECT').value = data.SPEED_LOOP_DIS;
+            document.getElementById('LOW_SPEED_RECIRC_BRAKE_EN_SELECT').value = data.LOW_SPEED_RECIRC_BRAKE_EN;
+        });
+    }
+
+
+
+    function WriteClosedLoop1() {
+        let data = {
+            OVERMODULATION_ENABLE: document.getElementById('OVERMODULATION_ENABLE_SELECT').value,
+            CL_ACC: document.getElementById('CL_ACC_SELECT').value,
+            CL_DEC_CONFIG: document.getElementById('CL_DEC_CONFIG_SELECT').value,
+            CL_DEC: document.getElementById('CL_DEC_SELECT').value,
+            PWM_FREQ_OUT: document.getElementById('PWM_FREQ_OUT_SELECT').value,
+            PWM_MODE: document.getElementById('PWM_MODE_SELECT').value,
+            FG_SEL: document.getElementById('FG_SEL_SELECT').value,
+            FG_DIV: document.getElementById('FG_DIV_SELECT').value,
+            FG_CONFIG: document.getElementById('FG_CONFIG_SELECT').value,
+            FG_BEMF_THR: document.getElementById('FG_BEMF_THR_SELECT').value,
+            AVS_EN: document.getElementById('AVS_EN_SELECT').value,
+            DEADTIME_COMP_EN: document.getElementById('DEADTIME_COMP_EN_SELECT').value,
+            SPEED_LOOP_DIS: document.getElementById('SPEED_LOOP_DIS_SELECT').value,
+            LOW_SPEED_RECIRC_BRAKE_EN: document.getElementById('LOW_SPEED_RECIRC_BRAKE_EN_SELECT').value
+        };
+
+        fetch('/WriteClosedLoop1', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.text())
+        .then(response => console.log("Yazma başarılı:", response));
+    }
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    function ReadClosedLoop2() {
+        fetch('/ReadClosedLoop2', { method: 'GET' })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('MTR_STOP').value = data.MTR_STOP;
+            document.getElementById('MTR_STOP_BRK_TIME').value = data.MTR_STOP_BRK_TIME;
+            document.getElementById('ACT_SPIN_THR').value = data.ACT_SPIN_THR;
+            document.getElementById('BRAKE_SPEED_THRESHOLD').value = data.BRAKE_SPEED_THRESHOLD;
+            document.getElementById('MOTOR_RES').value = data.MOTOR_RES;
+            document.getElementById('MOTOR_IND').value = data.MOTOR_IND;
+
+            // Dropdownlar için
+            document.getElementById('MTR_STOP_SELECT').value = data.MTR_STOP;
+            document.getElementById('MTR_STOP_BRK_TIME_SELECT').value = data.MTR_STOP_BRK_TIME;
+            document.getElementById('ACT_SPIN_THR_SELECT').value = data.ACT_SPIN_THR;
+            document.getElementById('BRAKE_SPEED_THRESHOLD_SELECT').value = data.BRAKE_SPEED_THRESHOLD;
+
+            // Number inputlar için
+            document.getElementById('MOTOR_RES_INPUT').value = data.MOTOR_RES;
+            document.getElementById('MOTOR_IND_INPUT').value = data.MOTOR_IND;
+        });
+    }
+
+    function WriteClosedLoop2() {
+        let data = {
+            MTR_STOP: document.getElementById('MTR_STOP_SELECT').value,
+            MTR_STOP_BRK_TIME: document.getElementById('MTR_STOP_BRK_TIME_SELECT').value,
+            ACT_SPIN_THR: document.getElementById('ACT_SPIN_THR_SELECT').value,
+            BRAKE_SPEED_THRESHOLD: document.getElementById('BRAKE_SPEED_THRESHOLD_SELECT').value,
+            MOTOR_RES: document.getElementById('MOTOR_RES_INPUT').value,
+            MOTOR_IND: document.getElementById('MOTOR_IND_INPUT').value
+        };
+
+        fetch('/WriteClosedLoop2', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.text())
+        .then(response => console.log("Yazma başarılı:", response));
+    }
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    function ReadClosedLoop3() {
+        fetch('/ReadClosedLoop3', { method: 'GET' })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('MOTOR_BEMF_CONST').value = data.MOTOR_BEMF_CONST;
+            document.getElementById('CURR_LOOP_KP').value = data.CURR_LOOP_KP;
+            document.getElementById('CURR_LOOP_KI').value = data.CURR_LOOP_KI;
+            document.getElementById('SPD_LOOP_KP_CL3').value = data.SPD_LOOP_KP_CL3;
+
+            document.getElementById('MOTOR_BEMF_CONST_INPUT').value = data.MOTOR_BEMF_CONST;
+            document.getElementById('CURR_LOOP_KP_INPUT').value = data.CURR_LOOP_KP;
+            document.getElementById('CURR_LOOP_KI_INPUT').value = data.CURR_LOOP_KI;
+            document.getElementById('SPD_LOOP_KP_CL3_INPUT').value = data.SPD_LOOP_KP_CL3;
+        });
+    }
+
+    function WriteClosedLoop3() {
+        let data = {
+            MOTOR_BEMF_CONST: document.getElementById('MOTOR_BEMF_CONST_INPUT').value,
+            CURR_LOOP_KP: document.getElementById('CURR_LOOP_KP_INPUT').value,
+            CURR_LOOP_KI: document.getElementById('CURR_LOOP_KI_INPUT').value,
+            SPD_LOOP_KP_CL3: document.getElementById('SPD_LOOP_KP_CL3_INPUT').value
+        };
+
+        fetch('/WriteClosedLoop3', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.text())
+        .then(response => console.log("Yazma başarılı:", response));
+    }
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function ReadClosedLoop4() {
+    fetch('/ReadClosedLoop4', { method: 'GET' })
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById('SPD_LOOP_KP_CL4').value = data.SPD_LOOP_KP_CL4;
+        document.getElementById('SPD_LOOP_KI').value = data.SPD_LOOP_KI;
+        document.getElementById('MAX_SPEED').value = data.MAX_SPEED;
+
+        document.getElementById('SPD_LOOP_KP_CL4_INPUT').value = data.SPD_LOOP_KP_CL4;
+        document.getElementById('SPD_LOOP_KI_INPUT').value = data.SPD_LOOP_KI;
+        document.getElementById('MAX_SPEED_INPUT').value = data.MAX_SPEED;
+    });
+}
+
+function WriteClosedLoop4() {
+    let data = {
+        SPD_LOOP_KP_CL4: document.getElementById('SPD_LOOP_KP_CL4_INPUT').value,
+        SPD_LOOP_KI: document.getElementById('SPD_LOOP_KI_INPUT').value,
+        MAX_SPEED: document.getElementById('MAX_SPEED_INPUT').value
+    };
+
+    fetch('/WriteClosedLoop4', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+    });
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     function ReadPinConfig() {
         fetch('/ReadPinConfig', { method: 'GET' })
         .then(response => response.json())
@@ -1182,8 +1954,6 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
         .catch(error => console.error('Hata:', error));
     }
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     function WritePinConfig() {
         let data = {
@@ -1233,8 +2003,6 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
         .catch(error => console.error('Hata:', error));
     }
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     function WriteAlgoCtrl1() {
         let data = {
@@ -1285,8 +2053,6 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
             .catch(error => console.error('Hata:', error));
     }
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     function WriteDevCtrl() {
         let data = {
@@ -1412,102 +2178,6 @@ JsonDocument doc;
 
 #define READ_BITS(value, high, low) ((value >> low) & ((1 << (high - low + 1)) - 1))
 #define WRITE_BITS(target, value, high, low) (target |= ((value & ((1 << (high - low + 1)) - 1)) << low))
-/*
-struct ISDCONFIG
-{
-    byte ISD_EN;
-    byte BRAKE_EN;
-    byte HIZ_EN;
-    byte RVS_DR_EN;
-    byte RESYNC_EN;
-    byte FW_DRV_RESYN_THR;
-    byte BRK_MODE;
-    byte BRK_TIME;
-    byte HIZ_TIME;
-    byte STAT_DETECT_THR;
-    byte REV_DRV_HANDOFF_THR;
-    byte REV_DRV_OPEN_LOOP_CURRENT;
-};
-*/
-struct REVDRIVECONFIG
-{
-    byte REV_DRV_OPEN_LOOP_ACCEL_A1;
-    byte REV_DRV_OPEN_LOOP_ACCEL_A2;
-    byte ACTIVE_BRAKE_CURRENT_LIMIT;
-    uint16_t ACTIVE_BRAKE_KP;
-    uint16_t ACTIVE_BRAKE_KI;
-};
-
-struct MOTORSTARTUP1
-{
-    byte MTR_STARTUP;
-    byte ALIGN_SLOW_RAMP_RATE;
-    byte ALIGN_TIME;
-    byte ALIGN_OR_SLOW_CURRENT_ILIMIT;
-    byte IPD_CLK_FREQ;
-    byte IPD_CURR_THR;
-    byte IPD_RLS_MODE;
-    byte IPD_ADV_ANGLE;
-    byte IPD_REPEAT;
-    byte OL_ILIMIT_CONFIG;
-    byte IQ_RAMP_EN;
-    byte ACTIVE_BRAKE_EN;
-    byte REV_DRV_CONFIG;
-};
-
-struct MOTORSTARTUP2
-{
-    byte OL_LIMIT;                  // 30-27: Open loop current limit
-    byte OL_ACC_A1;                 // 26-23: Open loop acceleration coefficient A1
-    byte OL_ACC_A2;                 // 22-19: Open loop acceleration coefficient A2
-    byte AUTO_HANDOFF_EN;           // 18: Auto handoff enable
-    byte OPN_CL_HANDOFF_THR;        // 17-13: Open to close loop handoff threshold (% of MAX_SPEED)
-    byte ALIGN_ANGLE;               // 12-8: Align angle
-    byte SLOW_FIRST_CYC_FREQ;       // 7-4: Frequency of first cycle in close loop startup (% of MAX_SPEED)
-    byte FIRST_CYCLE_FREQ_SEL;      // 3: First cycle frequency in open loop
-    byte THETA_ERROR_RAMP_RATE;     // 2-0: Ramp rate for reducing difference between estimated theta and open loop theta
-};
-
-struct PINCONFIG
-{
-    byte BRAKE_PIN_MODE;
-    byte ALIGN_BRAKE_ANGLE_SEL;
-    byte BRAKE_INPUT;
-    byte SPEED_MODE;
-};
-
-struct ALGOCTRL1
-{
-    byte OVERRIDE;
-    uint16_t DIGITAL_SPEED_CTRL;
-    byte CLOSED_LOOP_DIS;
-    byte FORCE_ALIGN_EN;
-    byte FORCE_SLOW_FIRST_CYCLE_EN;
-    byte FORCE_IPD_EN;
-    byte FORCE_ISD_EN;
-    byte FORCE_ALIGN_ANGLE_SRC_SEL;
-    uint16_t FORCE_IQ_REF_SPEED_LOOP_DIS;
-};
-
-struct DEVCTRL
-{
-    byte EEPROM_WRT;              // Bit 31: Write the configuration to EEPROM
-    byte EEPROM_READ;             // Bit 30: Read the default configuration from EEPROM
-    byte CLR_FLT;                 // Bit 29: Clears all faults
-    byte CLR_FLT_RETRY_COUNT;     // Bit 28: Clears fault retry count
-    byte EEPROM_WRITE_ACCESS_KEY; // Bit 27-20: EEPROM write access key (8-bit)
-    uint16_t FORCED_ALIGN_ANGLE;  // Bit 19-11: Forced align angle (9-bit)
-    byte WATCHDOG_TICKLE;         // Bit 10: RAM bit to tickle watchdog in I2C mode
-};
-
-//ISDCONFIG ISD_CONFIG;
-REVDRIVECONFIG REV_DRIVE_CONFIG;
-MOTORSTARTUP1 MOTOR_STARTUP1;
-MOTORSTARTUP2 MOTOR_STARTUP2;
-PINCONFIG PIN_CONFIG;
-ALGOCTRL1 ALGO_CTRL1;
-DEVCTRL DEV_CTRL;
-
 
 String toUpperCaseHex(uint16_t value)
 {
@@ -1741,15 +2411,15 @@ void ReadMotorStartup2()
 {
     readRegister(MOTOR_STARTUP2_REG,
     {
-        {"OL_LIMIT", {30, 27}},       // Open loop current limit
-        {"OL_ACC_A1", {26, 23}},      // Open loop acceleration coefficient A1
-        {"OL_ACC_A2", {22, 19}},      // Open loop acceleration coefficient A2
-        {"AUTO_HANDOFF_EN", {18, 18}}, // Auto handoff enable
-        {"OPN_CL_HANDOFF_THR", {17, 13}}, // Open to close loop handoff threshold
-        {"ALIGN_ANGLE", {12, 8}},     // Align angle
-        {"SLOW_FIRST_CYC_FREQ", {7, 4}}, // First cycle frequency in close loop startup
-        {"FIRST_CYCLE_FREQ_SEL", {3, 3}}, // First cycle frequency selection
-        {"THETA_ERROR_RAMP_RATE", {2, 0}} // Theta error ramp rate
+        {"OL_ILIMIT", {30, 27}},              // Açık döngü akım limiti
+        {"OL_ACC_A1", {26, 23}},              // Açık döngü ivme katsayısı A1
+        {"OL_ACC_A2", {22, 19}},              // Açık döngü ivme katsayısı A2
+        {"AUTO_HANDOFF_EN", {18, 18}},        // Otomatik devralma etkinleştirme
+        {"OPN_CL_HANDOFF_THR", {17, 13}},     // Açık/kapalı döngü devralma eşiği
+        {"ALIGN_ANGLE", {12, 8}},             // Hizalama açısı
+        {"SLOW_FIRST_CYC_FREQ", {7, 4}},      // İlk döngü frekansı
+        {"FIRST_CYCLE_FREQ_SEL", {3, 3}},     // İlk döngü frekans seçimi
+        {"THETA_ERROR_RAMP_RATE", {2, 0}}     // Theta hata rampa oranı
     });
 }
 
@@ -1757,15 +2427,15 @@ void WriteMotorStartup2()
 {
     writeRegister(MOTOR_STARTUP2_REG,
     {
-        {"OL_LIMIT", {30, 27}},       // Open loop current limit
-        {"OL_ACC_A1", {26, 23}},      // Open loop acceleration coefficient A1
-        {"OL_ACC_A2", {22, 19}},      // Open loop acceleration coefficient A2
-        {"AUTO_HANDOFF_EN", {18, 18}}, // Auto handoff enable
-        {"OPN_CL_HANDOFF_THR", {17, 13}}, // Open to close loop handoff threshold
-        {"ALIGN_ANGLE", {12, 8}},     // Align angle
-        {"SLOW_FIRST_CYC_FREQ", {7, 4}}, // First cycle frequency in close loop startup
-        {"FIRST_CYCLE_FREQ_SEL", {3, 3}}, // First cycle frequency selection
-        {"THETA_ERROR_RAMP_RATE", {2, 0}} // Theta error ramp rate
+        {"OL_ILIMIT", {30, 27}},
+        {"OL_ACC_A1", {26, 23}},
+        {"OL_ACC_A2", {22, 19}},
+        {"AUTO_HANDOFF_EN", {18, 18}},
+        {"OPN_CL_HANDOFF_THR", {17, 13}},
+        {"ALIGN_ANGLE", {12, 8}},
+        {"SLOW_FIRST_CYC_FREQ", {7, 4}},
+        {"FIRST_CYCLE_FREQ_SEL", {3, 3}},
+        {"THETA_ERROR_RAMP_RATE", {2, 0}}
     });
 }
 
@@ -1775,7 +2445,6 @@ void ReadClosedLoop1()
 {
     readRegister(CLOSED_LOOP1_REG,
     {
-        {"PARITY", {31, 31}},
         {"OVERMODULATION_ENABLE", {30, 30}},
         {"CL_ACC", {29, 25}},
         {"CL_DEC_CONFIG", {24, 24}},
@@ -1797,7 +2466,6 @@ void WriteClosedLoop1()
 {
     writeRegister(CLOSED_LOOP1_REG,
     {
-        {"PARITY", {31, 31}},
         {"OVERMODULATION_ENABLE", {30, 30}},
         {"CL_ACC", {29, 25}},
         {"CL_DEC_CONFIG", {24, 24}},
@@ -1817,9 +2485,79 @@ void WriteClosedLoop1()
 
 /////////////////////////////////////////////////////////////////////////////////
 
+void ReadClosedLoop2()
+{
+    readRegister(CLOSED_LOOP2_REG,
+    {
+        {"MTR_STOP", {30, 28}},
+        {"MTR_STOP_BRK_TIME", {27, 24}},
+        {"ACT_SPIN_THR", {23, 20}},
+        {"BRAKE_SPEED_THRESHOLD", {19, 16}},
+        {"MOTOR_RES", {15, 8}},
+        {"MOTOR_IND", {7, 0}}
+    });
+}
 
+void WriteClosedLoop2()
+{
+    writeRegister(CLOSED_LOOP2_REG,
+    {
+        {"MTR_STOP", {30, 28}},
+        {"MTR_STOP_BRK_TIME", {27, 24}},
+        {"ACT_SPIN_THR", {23, 20}},
+        {"BRAKE_SPEED_THRESHOLD", {19, 16}},
+        {"MOTOR_RES", {15, 8}},
+        {"MOTOR_IND", {7, 0}}
+    });
+}
 
+/////////////////////////////////////////////////////////////////////////////////
 
+void ReadClosedLoop3()
+{
+    readRegister(CLOSED_LOOP3_REG,
+    {
+        {"MOTOR_BEMF_CONST", {30, 23}},
+        {"CURR_LOOP_KP", {22, 13}},
+        {"CURR_LOOP_KI", {12, 3}},
+        {"SPD_LOOP_KP_CL3", {2, 0}}
+    });
+}
+
+void WriteClosedLoop3()
+{
+    writeRegister(CLOSED_LOOP3_REG,
+    {
+        {"MOTOR_BEMF_CONST", {30, 23}},
+        {"CURR_LOOP_KP", {22, 13}},
+        {"CURR_LOOP_KI", {12, 3}},
+        {"SPD_LOOP_KP_CL3", {2, 0}}
+    });
+}
+
+/////////////////////////////////////////////////////////////////////////////////
+
+void ReadClosedLoop4()
+{
+    readRegister(CLOSED_LOOP4_REG,
+    {
+        {"SPD_LOOP_KP_CL4", {30, 24}},
+        {"SPD_LOOP_KI", {23, 14}},
+        {"MAX_SPEED", {13, 0}}
+    });
+}
+
+void WriteClosedLoop4()
+{
+    writeRegister(CLOSED_LOOP4_REG,
+    {
+        {"SPD_LOOP_KP_CL4", {30, 24}},
+        {"SPD_LOOP_KI", {23, 14}},
+        {"MAX_SPEED", {13, 0}}
+    });
+}
+
+/////////////////////////////////////////////////////////////////////////////////
 
 
 
@@ -2035,6 +2773,21 @@ void setup()
 
     server.on("/ReadMotorStartup1", HTTP_GET, ReadMotorStartup1);
     server.on("/WriteMotorStartup1", HTTP_POST, WriteMotorStartup1);
+
+    server.on("/ReadMotorStartup2", HTTP_GET, ReadMotorStartup2);
+    server.on("/WriteMotorStartup2", HTTP_POST, WriteMotorStartup2);
+
+    server.on("/ReadClosedLoop1", HTTP_GET, ReadClosedLoop1);
+    server.on("/WriteClosedLoop1", HTTP_POST, WriteClosedLoop1);
+
+    server.on("/ReadClosedLoop2", HTTP_GET, ReadClosedLoop2);
+    server.on("/WriteClosedLoop2", HTTP_POST, WriteClosedLoop2);
+
+    server.on("/ReadClosedLoop3", HTTP_GET, ReadClosedLoop3);
+    server.on("/WriteClosedLoop3", HTTP_POST, WriteClosedLoop3);
+
+    server.on("/ReadClosedLoop4", HTTP_GET, ReadClosedLoop4);
+    server.on("/WriteClosedLoop4", HTTP_POST, WriteClosedLoop4);
 
     server.on("/ReadPinConfig", HTTP_GET, ReadPinConfig);
     server.on("/WritePinConfig", HTTP_POST, WritePinConfig);
