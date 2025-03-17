@@ -2244,7 +2244,7 @@ void write32(int reg_addr, unsigned long writedata)
 
 /////////////////////////////////////////////////////////////////////////////////
 
-void readRegister(uint32_t reg, std::initializer_list<std::pair<const char*, std::pair<int, int>>> bitFields)
+void readRegister(uint32_t reg, std::initializer_list<std::pair<const char *, std::pair<int, int>>> bitFields)
 {
     register_value = 0;
     read32(reg);
@@ -2252,7 +2252,7 @@ void readRegister(uint32_t reg, std::initializer_list<std::pair<const char*, std
 
     for (auto &field : bitFields)
     {
-        const char* fieldName = field.first;
+        const char *fieldName = field.first;
         int high = field.second.first;
         int low = field.second.second;
 
@@ -2264,7 +2264,7 @@ void readRegister(uint32_t reg, std::initializer_list<std::pair<const char*, std
     server.send(200, "application/json", response);
 }
 
-void writeRegister(uint32_t reg, std::initializer_list<std::pair<const char*, std::pair<int, int>>> bitFields)
+void writeRegister(uint32_t reg, std::initializer_list<std::pair<const char *, std::pair<int, int>>> bitFields)
 {
     if (!server.hasArg("plain"))
     {
@@ -2285,7 +2285,7 @@ void writeRegister(uint32_t reg, std::initializer_list<std::pair<const char*, st
 
     for (auto &field : bitFields)
     {
-        const char* fieldName = field.first;
+        const char *fieldName = field.first;
         int high = field.second.first;
         int low = field.second.second;
 
@@ -2302,39 +2302,35 @@ void writeRegister(uint32_t reg, std::initializer_list<std::pair<const char*, st
 void ReadISDConfig()
 {
     readRegister(ISD_CONFIG_REG,
-    {
-        {"ISD_EN", {30, 30}},
-        {"BRAKE_EN", {29, 29}},
-        {"HIZ_EN", {28, 28}},
-        {"RVS_DR_EN", {27, 27}},
-        {"RESYNC_EN", {26, 26}},
-        {"FW_DRV_RESYN_THR", {25, 22}},
-        {"BRK_MODE", {21, 21}},
-        {"BRK_TIME", {16, 13}},
-        {"HIZ_TIME", {12, 9}},
-        {"STAT_DETECT_THR", {8, 6}},
-        {"REV_DRV_HANDOFF_THR", {5, 2}},
-        {"REV_DRV_OPEN_LOOP_CURRENT", {1, 0}}
-    });
+                 {{"ISD_EN", {30, 30}},
+                  {"BRAKE_EN", {29, 29}},
+                  {"HIZ_EN", {28, 28}},
+                  {"RVS_DR_EN", {27, 27}},
+                  {"RESYNC_EN", {26, 26}},
+                  {"FW_DRV_RESYN_THR", {25, 22}},
+                  {"BRK_MODE", {21, 21}},
+                  {"BRK_TIME", {16, 13}},
+                  {"HIZ_TIME", {12, 9}},
+                  {"STAT_DETECT_THR", {8, 6}},
+                  {"REV_DRV_HANDOFF_THR", {5, 2}},
+                  {"REV_DRV_OPEN_LOOP_CURRENT", {1, 0}}});
 }
 
 void WriteISDConfig()
 {
     writeRegister(ISD_CONFIG_REG,
-    {
-        {"ISD_EN", {30, 30}},
-        {"BRAKE_EN", {29, 29}},
-        {"HIZ_EN", {28, 28}},
-        {"RVS_DR_EN", {27, 27}},
-        {"RESYNC_EN", {26, 26}},
-        {"FW_DRV_RESYN_THR", {25, 22}},
-        {"BRK_MODE", {21, 21}},
-        {"BRK_TIME", {16, 13}},
-        {"HIZ_TIME", {12, 9}},
-        {"STAT_DETECT_THR", {8, 6}},
-        {"REV_DRV_HANDOFF_THR", {5, 2}},
-        {"REV_DRV_OPEN_LOOP_CURRENT", {1, 0}}
-    });
+                  {{"ISD_EN", {30, 30}},
+                   {"BRAKE_EN", {29, 29}},
+                   {"HIZ_EN", {28, 28}},
+                   {"RVS_DR_EN", {27, 27}},
+                   {"RESYNC_EN", {26, 26}},
+                   {"FW_DRV_RESYN_THR", {25, 22}},
+                   {"BRK_MODE", {21, 21}},
+                   {"BRK_TIME", {16, 13}},
+                   {"HIZ_TIME", {12, 9}},
+                   {"STAT_DETECT_THR", {8, 6}},
+                   {"REV_DRV_HANDOFF_THR", {5, 2}},
+                   {"REV_DRV_OPEN_LOOP_CURRENT", {1, 0}}});
 }
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -2342,25 +2338,25 @@ void WriteISDConfig()
 void ReadRevDriveConfig()
 {
     readRegister(REV_DRIVE_CONFIG_REG,
-    {
-        {"REV_DRV_OPEN_LOOP_ACCEL_A1", {30, 27}},
-        {"REV_DRV_OPEN_LOOP_ACCEL_A2", {26, 23}},
-        {"ACTIVE_BRAKE_CURRENT_LIMIT", {22, 20}},
-        {"ACTIVE_BRAKE_KP", {19, 10}}, // 10-bit
-        {"ACTIVE_BRAKE_KI", {9, 0}}    // 10-bit
-    });
+                 {
+                     {"REV_DRV_OPEN_LOOP_ACCEL_A1", {30, 27}},
+                     {"REV_DRV_OPEN_LOOP_ACCEL_A2", {26, 23}},
+                     {"ACTIVE_BRAKE_CURRENT_LIMIT", {22, 20}},
+                     {"ACTIVE_BRAKE_KP", {19, 10}}, // 10-bit
+                     {"ACTIVE_BRAKE_KI", {9, 0}}    // 10-bit
+                 });
 }
 
 void WriteRevDriveConfig()
 {
     writeRegister(REV_DRIVE_CONFIG_REG,
-    {
-        {"REV_DRV_OPEN_LOOP_ACCEL_A1", {30, 27}},
-        {"REV_DRV_OPEN_LOOP_ACCEL_A2", {26, 23}},
-        {"ACTIVE_BRAKE_CURRENT_LIMIT", {22, 20}},
-        {"ACTIVE_BRAKE_KP", {19, 10}}, // 10-bit
-        {"ACTIVE_BRAKE_KI", {9, 0}}    // 10-bit
-    });
+                  {
+                      {"REV_DRV_OPEN_LOOP_ACCEL_A1", {30, 27}},
+                      {"REV_DRV_OPEN_LOOP_ACCEL_A2", {26, 23}},
+                      {"ACTIVE_BRAKE_CURRENT_LIMIT", {22, 20}},
+                      {"ACTIVE_BRAKE_KP", {19, 10}}, // 10-bit
+                      {"ACTIVE_BRAKE_KI", {9, 0}}    // 10-bit
+                  });
 }
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -2368,41 +2364,37 @@ void WriteRevDriveConfig()
 void ReadMotorStartup1()
 {
     readRegister(MOTOR_STARTUP1_REG,
-    {
-        {"MTR_STARTUP", {30, 29}},
-        {"ALIGN_SLOW_RAMP_RATE", {28, 25}},
-        {"ALIGN_TIME", {24, 21}},
-        {"ALIGN_OR_SLOW_CURRENT_ILIMIT", {20, 17}},
-        {"IPD_CLK_FREQ", {16, 14}},
-        {"IPD_CURR_THR", {13, 9}},
-        {"IPD_RLS_MODE", {8, 8}},
-        {"IPD_ADV_ANGLE", {7, 6}},
-        {"IPD_REPEAT", {5, 4}},
-        {"OL_ILIMIT_CONFIG", {3, 3}},
-        {"IQ_RAMP_EN", {2, 2}},
-        {"ACTIVE_BRAKE_EN", {1, 1}},
-        {"REV_DRV_CONFIG", {0, 0}}
-    });
+                 {{"MTR_STARTUP", {30, 29}},
+                  {"ALIGN_SLOW_RAMP_RATE", {28, 25}},
+                  {"ALIGN_TIME", {24, 21}},
+                  {"ALIGN_OR_SLOW_CURRENT_ILIMIT", {20, 17}},
+                  {"IPD_CLK_FREQ", {16, 14}},
+                  {"IPD_CURR_THR", {13, 9}},
+                  {"IPD_RLS_MODE", {8, 8}},
+                  {"IPD_ADV_ANGLE", {7, 6}},
+                  {"IPD_REPEAT", {5, 4}},
+                  {"OL_ILIMIT_CONFIG", {3, 3}},
+                  {"IQ_RAMP_EN", {2, 2}},
+                  {"ACTIVE_BRAKE_EN", {1, 1}},
+                  {"REV_DRV_CONFIG", {0, 0}}});
 }
 
 void WriteMotorStartup1()
 {
     writeRegister(MOTOR_STARTUP1_REG,
-    {
-        {"MTR_STARTUP", {30, 29}},
-        {"ALIGN_SLOW_RAMP_RATE", {28, 25}},
-        {"ALIGN_TIME", {24, 21}},
-        {"ALIGN_OR_SLOW_CURRENT_ILIMIT", {20, 17}},
-        {"IPD_CLK_FREQ", {16, 14}},
-        {"IPD_CURR_THR", {13, 9}},
-        {"IPD_RLS_MODE", {8, 8}},
-        {"IPD_ADV_ANGLE", {7, 6}},
-        {"IPD_REPEAT", {5, 4}},
-        {"OL_ILIMIT_CONFIG", {3, 3}},
-        {"IQ_RAMP_EN", {2, 2}},
-        {"ACTIVE_BRAKE_EN", {1, 1}},
-        {"REV_DRV_CONFIG", {0, 0}}
-    });
+                  {{"MTR_STARTUP", {30, 29}},
+                   {"ALIGN_SLOW_RAMP_RATE", {28, 25}},
+                   {"ALIGN_TIME", {24, 21}},
+                   {"ALIGN_OR_SLOW_CURRENT_ILIMIT", {20, 17}},
+                   {"IPD_CLK_FREQ", {16, 14}},
+                   {"IPD_CURR_THR", {13, 9}},
+                   {"IPD_RLS_MODE", {8, 8}},
+                   {"IPD_ADV_ANGLE", {7, 6}},
+                   {"IPD_REPEAT", {5, 4}},
+                   {"OL_ILIMIT_CONFIG", {3, 3}},
+                   {"IQ_RAMP_EN", {2, 2}},
+                   {"ACTIVE_BRAKE_EN", {1, 1}},
+                   {"REV_DRV_CONFIG", {0, 0}}});
 }
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -2410,33 +2402,31 @@ void WriteMotorStartup1()
 void ReadMotorStartup2()
 {
     readRegister(MOTOR_STARTUP2_REG,
-    {
-        {"OL_ILIMIT", {30, 27}},              // Açık döngü akım limiti
-        {"OL_ACC_A1", {26, 23}},              // Açık döngü ivme katsayısı A1
-        {"OL_ACC_A2", {22, 19}},              // Açık döngü ivme katsayısı A2
-        {"AUTO_HANDOFF_EN", {18, 18}},        // Otomatik devralma etkinleştirme
-        {"OPN_CL_HANDOFF_THR", {17, 13}},     // Açık/kapalı döngü devralma eşiği
-        {"ALIGN_ANGLE", {12, 8}},             // Hizalama açısı
-        {"SLOW_FIRST_CYC_FREQ", {7, 4}},      // İlk döngü frekansı
-        {"FIRST_CYCLE_FREQ_SEL", {3, 3}},     // İlk döngü frekans seçimi
-        {"THETA_ERROR_RAMP_RATE", {2, 0}}     // Theta hata rampa oranı
-    });
+                 {
+                     {"OL_ILIMIT", {30, 27}},          // Açık döngü akım limiti
+                     {"OL_ACC_A1", {26, 23}},          // Açık döngü ivme katsayısı A1
+                     {"OL_ACC_A2", {22, 19}},          // Açık döngü ivme katsayısı A2
+                     {"AUTO_HANDOFF_EN", {18, 18}},    // Otomatik devralma etkinleştirme
+                     {"OPN_CL_HANDOFF_THR", {17, 13}}, // Açık/kapalı döngü devralma eşiği
+                     {"ALIGN_ANGLE", {12, 8}},         // Hizalama açısı
+                     {"SLOW_FIRST_CYC_FREQ", {7, 4}},  // İlk döngü frekansı
+                     {"FIRST_CYCLE_FREQ_SEL", {3, 3}}, // İlk döngü frekans seçimi
+                     {"THETA_ERROR_RAMP_RATE", {2, 0}} // Theta hata rampa oranı
+                 });
 }
 
 void WriteMotorStartup2()
 {
     writeRegister(MOTOR_STARTUP2_REG,
-    {
-        {"OL_ILIMIT", {30, 27}},
-        {"OL_ACC_A1", {26, 23}},
-        {"OL_ACC_A2", {22, 19}},
-        {"AUTO_HANDOFF_EN", {18, 18}},
-        {"OPN_CL_HANDOFF_THR", {17, 13}},
-        {"ALIGN_ANGLE", {12, 8}},
-        {"SLOW_FIRST_CYC_FREQ", {7, 4}},
-        {"FIRST_CYCLE_FREQ_SEL", {3, 3}},
-        {"THETA_ERROR_RAMP_RATE", {2, 0}}
-    });
+                  {{"OL_ILIMIT", {30, 27}},
+                   {"OL_ACC_A1", {26, 23}},
+                   {"OL_ACC_A2", {22, 19}},
+                   {"AUTO_HANDOFF_EN", {18, 18}},
+                   {"OPN_CL_HANDOFF_THR", {17, 13}},
+                   {"ALIGN_ANGLE", {12, 8}},
+                   {"SLOW_FIRST_CYC_FREQ", {7, 4}},
+                   {"FIRST_CYCLE_FREQ_SEL", {3, 3}},
+                   {"THETA_ERROR_RAMP_RATE", {2, 0}}});
 }
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -2444,43 +2434,39 @@ void WriteMotorStartup2()
 void ReadClosedLoop1()
 {
     readRegister(CLOSED_LOOP1_REG,
-    {
-        {"OVERMODULATION_ENABLE", {30, 30}},
-        {"CL_ACC", {29, 25}},
-        {"CL_DEC_CONFIG", {24, 24}},
-        {"CL_DEC", {23, 19}},
-        {"PWM_FREQ_OUT", {18, 15}},
-        {"PWM_MODE", {14, 14}},
-        {"FG_SEL", {13, 12}},
-        {"FG_DIV", {11, 8}},
-        {"FG_CONFIG", {7, 7}},
-        {"FG_BEMF_THR", {6, 4}},
-        {"AVS_EN", {3, 3}},
-        {"DEADTIME_COMP_EN", {2, 2}},
-        {"SPEED_LOOP_DIS", {1, 1}},
-        {"LOW_SPEED_RECIRC_BRAKE_EN", {0, 0}}
-    });
+                 {{"OVERMODULATION_ENABLE", {30, 30}},
+                  {"CL_ACC", {29, 25}},
+                  {"CL_DEC_CONFIG", {24, 24}},
+                  {"CL_DEC", {23, 19}},
+                  {"PWM_FREQ_OUT", {18, 15}},
+                  {"PWM_MODE", {14, 14}},
+                  {"FG_SEL", {13, 12}},
+                  {"FG_DIV", {11, 8}},
+                  {"FG_CONFIG", {7, 7}},
+                  {"FG_BEMF_THR", {6, 4}},
+                  {"AVS_EN", {3, 3}},
+                  {"DEADTIME_COMP_EN", {2, 2}},
+                  {"SPEED_LOOP_DIS", {1, 1}},
+                  {"LOW_SPEED_RECIRC_BRAKE_EN", {0, 0}}});
 }
 
 void WriteClosedLoop1()
 {
     writeRegister(CLOSED_LOOP1_REG,
-    {
-        {"OVERMODULATION_ENABLE", {30, 30}},
-        {"CL_ACC", {29, 25}},
-        {"CL_DEC_CONFIG", {24, 24}},
-        {"CL_DEC", {23, 19}},
-        {"PWM_FREQ_OUT", {18, 15}},
-        {"PWM_MODE", {14, 14}},
-        {"FG_SEL", {13, 12}},
-        {"FG_DIV", {11, 8}},
-        {"FG_CONFIG", {7, 7}},
-        {"FG_BEMF_THR", {6, 4}},
-        {"AVS_EN", {3, 3}},
-        {"DEADTIME_COMP_EN", {2, 2}},
-        {"SPEED_LOOP_DIS", {1, 1}},
-        {"LOW_SPEED_RECIRC_BRAKE_EN", {0, 0}}
-    });
+                  {{"OVERMODULATION_ENABLE", {30, 30}},
+                   {"CL_ACC", {29, 25}},
+                   {"CL_DEC_CONFIG", {24, 24}},
+                   {"CL_DEC", {23, 19}},
+                   {"PWM_FREQ_OUT", {18, 15}},
+                   {"PWM_MODE", {14, 14}},
+                   {"FG_SEL", {13, 12}},
+                   {"FG_DIV", {11, 8}},
+                   {"FG_CONFIG", {7, 7}},
+                   {"FG_BEMF_THR", {6, 4}},
+                   {"AVS_EN", {3, 3}},
+                   {"DEADTIME_COMP_EN", {2, 2}},
+                   {"SPEED_LOOP_DIS", {1, 1}},
+                   {"LOW_SPEED_RECIRC_BRAKE_EN", {0, 0}}});
 }
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -2488,27 +2474,23 @@ void WriteClosedLoop1()
 void ReadClosedLoop2()
 {
     readRegister(CLOSED_LOOP2_REG,
-    {
-        {"MTR_STOP", {30, 28}},
-        {"MTR_STOP_BRK_TIME", {27, 24}},
-        {"ACT_SPIN_THR", {23, 20}},
-        {"BRAKE_SPEED_THRESHOLD", {19, 16}},
-        {"MOTOR_RES", {15, 8}},
-        {"MOTOR_IND", {7, 0}}
-    });
+                 {{"MTR_STOP", {30, 28}},
+                  {"MTR_STOP_BRK_TIME", {27, 24}},
+                  {"ACT_SPIN_THR", {23, 20}},
+                  {"BRAKE_SPEED_THRESHOLD", {19, 16}},
+                  {"MOTOR_RES", {15, 8}},
+                  {"MOTOR_IND", {7, 0}}});
 }
 
 void WriteClosedLoop2()
 {
     writeRegister(CLOSED_LOOP2_REG,
-    {
-        {"MTR_STOP", {30, 28}},
-        {"MTR_STOP_BRK_TIME", {27, 24}},
-        {"ACT_SPIN_THR", {23, 20}},
-        {"BRAKE_SPEED_THRESHOLD", {19, 16}},
-        {"MOTOR_RES", {15, 8}},
-        {"MOTOR_IND", {7, 0}}
-    });
+                  {{"MTR_STOP", {30, 28}},
+                   {"MTR_STOP_BRK_TIME", {27, 24}},
+                   {"ACT_SPIN_THR", {23, 20}},
+                   {"BRAKE_SPEED_THRESHOLD", {19, 16}},
+                   {"MOTOR_RES", {15, 8}},
+                   {"MOTOR_IND", {7, 0}}});
 }
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -2516,23 +2498,19 @@ void WriteClosedLoop2()
 void ReadClosedLoop3()
 {
     readRegister(CLOSED_LOOP3_REG,
-    {
-        {"MOTOR_BEMF_CONST", {30, 23}},
-        {"CURR_LOOP_KP", {22, 13}},
-        {"CURR_LOOP_KI", {12, 3}},
-        {"SPD_LOOP_KP_CL3", {2, 0}}
-    });
+                 {{"MOTOR_BEMF_CONST", {30, 23}},
+                  {"CURR_LOOP_KP", {22, 13}},
+                  {"CURR_LOOP_KI", {12, 3}},
+                  {"SPD_LOOP_KP_CL3", {2, 0}}});
 }
 
 void WriteClosedLoop3()
 {
     writeRegister(CLOSED_LOOP3_REG,
-    {
-        {"MOTOR_BEMF_CONST", {30, 23}},
-        {"CURR_LOOP_KP", {22, 13}},
-        {"CURR_LOOP_KI", {12, 3}},
-        {"SPD_LOOP_KP_CL3", {2, 0}}
-    });
+                  {{"MOTOR_BEMF_CONST", {30, 23}},
+                   {"CURR_LOOP_KP", {22, 13}},
+                   {"CURR_LOOP_KI", {12, 3}},
+                   {"SPD_LOOP_KP_CL3", {2, 0}}});
 }
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -2540,49 +2518,37 @@ void WriteClosedLoop3()
 void ReadClosedLoop4()
 {
     readRegister(CLOSED_LOOP4_REG,
-    {
-        {"SPD_LOOP_KP_CL4", {30, 24}},
-        {"SPD_LOOP_KI", {23, 14}},
-        {"MAX_SPEED", {13, 0}}
-    });
+                 {{"SPD_LOOP_KP_CL4", {30, 24}},
+                  {"SPD_LOOP_KI", {23, 14}},
+                  {"MAX_SPEED", {13, 0}}});
 }
 
 void WriteClosedLoop4()
 {
     writeRegister(CLOSED_LOOP4_REG,
-    {
-        {"SPD_LOOP_KP_CL4", {30, 24}},
-        {"SPD_LOOP_KI", {23, 14}},
-        {"MAX_SPEED", {13, 0}}
-    });
+                  {{"SPD_LOOP_KP_CL4", {30, 24}},
+                   {"SPD_LOOP_KI", {23, 14}},
+                   {"MAX_SPEED", {13, 0}}});
 }
 
 /////////////////////////////////////////////////////////////////////////////////
 
-
-
-
-
 void ReadPinConfig()
 {
     readRegister(PIN_CONFIG_REG,
-    {
-        {"BRAKE_PIN_MODE", {5, 5}},
-        {"ALIGN_BRAKE_ANGLE_SEL", {4, 4}},
-        {"BRAKE_INPUT", {3, 2}},
-        {"SPEED_MODE", {1, 0}}
-    });
+                 {{"BRAKE_PIN_MODE", {5, 5}},
+                  {"ALIGN_BRAKE_ANGLE_SEL", {4, 4}},
+                  {"BRAKE_INPUT", {3, 2}},
+                  {"SPEED_MODE", {1, 0}}});
 }
 
 void WritePinConfig()
 {
     writeRegister(PIN_CONFIG_REG,
-    {
-        {"BRAKE_PIN_MODE", {5, 5}},
-        {"ALIGN_BRAKE_ANGLE_SEL", {4, 4}},
-        {"BRAKE_INPUT", {3, 2}},
-        {"SPEED_MODE", {1, 0}}
-    });
+                  {{"BRAKE_PIN_MODE", {5, 5}},
+                   {"ALIGN_BRAKE_ANGLE_SEL", {4, 4}},
+                   {"BRAKE_INPUT", {3, 2}},
+                   {"SPEED_MODE", {1, 0}}});
 }
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -2590,33 +2556,29 @@ void WritePinConfig()
 void ReadAlgoCtrl1()
 {
     readRegister(ALGO_CTRL1_REG,
-    {
-        {"OVERRIDE", {31, 31}},
-        {"DIGITAL_SPEED_CTRL", {30, 16}},
-        {"CLOSED_LOOP_DIS", {15, 15}},
-        {"FORCE_ALIGN_EN", {14, 14}},
-        {"FORCE_SLOW_FIRST_CYCLE_EN", {13, 13}},
-        {"FORCE_IPD_EN", {12, 12}},
-        {"FORCE_ISD_EN", {11, 11}},
-        {"FORCE_ALIGN_ANGLE_SRC_SEL", {10, 10}},
-        {"FORCE_IQ_REF_SPEED_LOOP_DIS", {9, 0}}
-    });
+                 {{"OVERRIDE", {31, 31}},
+                  {"DIGITAL_SPEED_CTRL", {30, 16}},
+                  {"CLOSED_LOOP_DIS", {15, 15}},
+                  {"FORCE_ALIGN_EN", {14, 14}},
+                  {"FORCE_SLOW_FIRST_CYCLE_EN", {13, 13}},
+                  {"FORCE_IPD_EN", {12, 12}},
+                  {"FORCE_ISD_EN", {11, 11}},
+                  {"FORCE_ALIGN_ANGLE_SRC_SEL", {10, 10}},
+                  {"FORCE_IQ_REF_SPEED_LOOP_DIS", {9, 0}}});
 }
 
 void WriteAlgoCtrl1()
 {
     writeRegister(ALGO_CTRL1_REG,
-    {
-        {"OVERRIDE", {31, 31}},
-        {"DIGITAL_SPEED_CTRL", {30, 16}},
-        {"CLOSED_LOOP_DIS", {15, 15}},
-        {"FORCE_ALIGN_EN", {14, 14}},
-        {"FORCE_SLOW_FIRST_CYCLE_EN", {13, 13}},
-        {"FORCE_IPD_EN", {12, 12}},
-        {"FORCE_ISD_EN", {11, 11}},
-        {"FORCE_ALIGN_ANGLE_SRC_SEL", {10, 10}},
-        {"FORCE_IQ_REF_SPEED_LOOP_DIS", {9, 0}}
-    });
+                  {{"OVERRIDE", {31, 31}},
+                   {"DIGITAL_SPEED_CTRL", {30, 16}},
+                   {"CLOSED_LOOP_DIS", {15, 15}},
+                   {"FORCE_ALIGN_EN", {14, 14}},
+                   {"FORCE_SLOW_FIRST_CYCLE_EN", {13, 13}},
+                   {"FORCE_IPD_EN", {12, 12}},
+                   {"FORCE_ISD_EN", {11, 11}},
+                   {"FORCE_ALIGN_ANGLE_SRC_SEL", {10, 10}},
+                   {"FORCE_IQ_REF_SPEED_LOOP_DIS", {9, 0}}});
 }
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -2624,39 +2586,33 @@ void WriteAlgoCtrl1()
 void ReadDevCtrl()
 {
     readRegister(DEV_CTRL_REG,
-    {
-        {"EEPROM_WRT", {31, 31}},
-        {"EEPROM_READ", {30, 30}},
-        {"CLR_FLT", {29, 29}},
-        {"CLR_FLT_RETRY_COUNT", {28, 28}},
-        {"EEPROM_WRITE_ACCESS_KEY", {27, 20}},
-        {"FORCED_ALIGN_ANGLE", {19, 11}},
-        {"WATCHDOG_TICKLE", {10, 10}}
-    });
+                 {{"EEPROM_WRT", {31, 31}},
+                  {"EEPROM_READ", {30, 30}},
+                  {"CLR_FLT", {29, 29}},
+                  {"CLR_FLT_RETRY_COUNT", {28, 28}},
+                  {"EEPROM_WRITE_ACCESS_KEY", {27, 20}},
+                  {"FORCED_ALIGN_ANGLE", {19, 11}},
+                  {"WATCHDOG_TICKLE", {10, 10}}});
 }
 
 void WriteDevCtrl()
 {
     writeRegister(DEV_CTRL_REG,
-    {
-        {"EEPROM_WRT", {31, 31}},
-        {"EEPROM_READ", {30, 30}},
-        {"CLR_FLT", {29, 29}},
-        {"CLR_FLT_RETRY_COUNT", {28, 28}},
-        {"EEPROM_WRITE_ACCESS_KEY", {27, 20}},
-        {"FORCED_ALIGN_ANGLE", {19, 11}},
-        {"WATCHDOG_TICKLE", {10, 10}}
-    });
+                  {{"EEPROM_WRT", {31, 31}},
+                   {"EEPROM_READ", {30, 30}},
+                   {"CLR_FLT", {29, 29}},
+                   {"CLR_FLT_RETRY_COUNT", {28, 28}},
+                   {"EEPROM_WRITE_ACCESS_KEY", {27, 20}},
+                   {"FORCED_ALIGN_ANGLE", {19, 11}},
+                   {"WATCHDOG_TICKLE", {10, 10}}});
 }
-
-
 
 void WriteEEPROM()
 {
     delay(500);
     write32(0x0000EA, 0x8A500000);
-    //delay(1000);
-    //write32(0x0000EA, 0x80000000);
+    // delay(1000);
+    // write32(0x0000EA, 0x80000000);
 
     server.send(200, "application/json", "{\"status\":\"success\"}");
 }
@@ -2719,29 +2675,53 @@ void ReadAlgorithmState()
 void default_settings()
 {
     write32(0x00000080, 0x64738C20);
+    delay(100);
     write32(0x00000082, 0x28200000);
+    delay(100);
     write32(0x00000084, 0x0B6807D0);
+    delay(100);
     write32(0x00000086, 0x2306600C);
+    delay(100);
     write32(0x00000088, 0x0D3201B5);
+    delay(100);
     write32(0x0000008A, 0x1BAD0000);
+    delay(100);
     write32(0x0000008C, 0x00000000);
+    delay(100);
     write32(0x0000008E, 0x00000000);
+    delay(100);
     write32(0x00000094, 0x00000000);
+    delay(100);
     write32(0x00000096, 0x00000000);
+    delay(100);
     write32(0x00000098, 0x00000000);
+    delay(100);
     write32(0x0000009A, 0x00000000);
+    delay(100);
     write32(0x0000009C, 0x00000000);
+    delay(100);
     write32(0x0000009E, 0x00000000);
+    delay(100);
     write32(0x00000090, 0x3EC80106);
+    delay(100);
     write32(0x00000092, 0x70DC0888);
+    delay(100);
     write32(0x000000A4, 0x00000088);
+    delay(100);
     write32(0x000000A6, 0x00101462);
+    delay(100);
     write32(0x000000A8, 0x4000F00F);
+    delay(100);
     write32(0x000000AA, 0x41C01F00);
+    delay(100);
     write32(0x000000AC, 0x1C450100);
+    delay(100);
     write32(0x000000AE, 0x00200000);
+    delay(100);
     write32(0x000000A0, 0x2433407D);
+    delay(100);
     write32(0x000000A2, 0x000001A7);
+    delay(100);
 
     WriteEEPROM();
 }
@@ -2762,7 +2742,7 @@ void setup()
     Serial.print("ESP'nin IP Adresi: ");
     Serial.println(WiFi.localIP());
 
-    // default_settings();
+    //default_settings();
 
     server.on("/", handleRoot);
     server.on("/ReadISDConfig", HTTP_GET, ReadISDConfig);
