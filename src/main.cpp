@@ -2675,53 +2675,53 @@ void ReadAlgorithmState()
 void default_settings()
 {
     write32(0x00000080, 0x64738C20);
-    delay(100);
+    delay(200);
     write32(0x00000082, 0x28200000);
-    delay(100);
+    delay(200);
     write32(0x00000084, 0x0B6807D0);
-    delay(100);
+    delay(200);
     write32(0x00000086, 0x2306600C);
-    delay(100);
+    delay(200);
     write32(0x00000088, 0x0D3201B5);
-    delay(100);
+    delay(200);
     write32(0x0000008A, 0x1BAD0000);
-    delay(100);
+    delay(200);
     write32(0x0000008C, 0x00000000);
-    delay(100);
+    delay(200);
     write32(0x0000008E, 0x00000000);
-    delay(100);
+    delay(200);
     write32(0x00000094, 0x00000000);
-    delay(100);
+    delay(200);
     write32(0x00000096, 0x00000000);
-    delay(100);
+    delay(200);
     write32(0x00000098, 0x00000000);
-    delay(100);
+    delay(200);
     write32(0x0000009A, 0x00000000);
-    delay(100);
+    delay(200);
     write32(0x0000009C, 0x00000000);
-    delay(100);
+    delay(200);
     write32(0x0000009E, 0x00000000);
-    delay(100);
+    delay(200);
     write32(0x00000090, 0x3EC80106);
-    delay(100);
+    delay(200);
     write32(0x00000092, 0x70DC0888);
-    delay(100);
+    delay(200);
     write32(0x000000A4, 0x00000088);
-    delay(100);
+    delay(200);
     write32(0x000000A6, 0x00101462);
-    delay(100);
+    delay(200);
     write32(0x000000A8, 0x4000F00F);
-    delay(100);
+    delay(200);
     write32(0x000000AA, 0x41C01F00);
-    delay(100);
+    delay(200);
     write32(0x000000AC, 0x1C450100);
-    delay(100);
+    delay(200);
     write32(0x000000AE, 0x00200000);
-    delay(100);
+    delay(200);
     write32(0x000000A0, 0x2433407D);
-    delay(100);
+    delay(200);
     write32(0x000000A2, 0x000001A7);
-    delay(100);
+    delay(1000);
 
     WriteEEPROM();
 }
@@ -2742,7 +2742,7 @@ void setup()
     Serial.print("ESP'nin IP Adresi: ");
     Serial.println(WiFi.localIP());
 
-    //default_settings();
+    // default_settings();
 
     server.on("/", handleRoot);
     server.on("/ReadISDConfig", HTTP_GET, ReadISDConfig);
