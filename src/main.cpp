@@ -265,6 +265,9 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
         </div>
     </div>
 
+<!////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////>
+<!////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////>
+
     <div class="container collapsed" id="revContainer">
         <!-- Tıklanabilir Başlık -->
         <div class="header" onclick="toggleContainer('revContainer', 'revContent', 'revArrow')">
@@ -362,6 +365,9 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
             </div>
         </div>
     </div>
+
+<!////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////>
+<!////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////>
 
     <div class="container collapsed" id="ms1Container">
         <!-- Tıklanabilir Başlık -->
@@ -574,6 +580,123 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
         </div>
     </div>
 
+<!////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////>
+<!////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////>
+
+    <div class="container collapsed" id="closedLoop1Container">
+        <!-- Tıklanabilir Başlık -->
+        <div class="header" onclick="toggleContainer('closedLoop1Container', 'closedLoop1Content', 'closedLoop1Arrow')">
+            CLOSED_LOOP1
+            <span class="arrow" id="closedLoop1Arrow">▼</span>
+        </div>
+
+        <!-- İçerik -->
+        <div class="content" id="closedLoop1Content" style="display: none;">
+            <div class="table-container">
+                <table>
+                    <tr>
+                        <th title="Overmodulation enable">OVERMODULATION_ENABLE</th>
+                        <th title="Closed loop acceleration">CL_ACC</th>
+                        <th title="Closed loop deceleration configuration">CL_DEC_CONFIG</th>
+                        <th title="Closed loop deceleration">CL_DEC</th>
+                        <th title="Output PWM switching frequency">PWM_FREQ_OUT</th>
+                        <th>Read / Write</th>
+                    </tr>
+                    <tr>
+                        <td><input type="text" id="OVERMODULATION_ENABLE" readonly></td>
+                        <td><input type="text" id="CL_ACC" readonly></td>
+                        <td><input type="text" id="CL_DEC_CONFIG" readonly></td>
+                        <td><input type="text" id="CL_DEC" readonly></td>
+                        <td><input type="text" id="PWM_FREQ_OUT" readonly></td>
+                        <td><button onclick="ReadClosedLoop1()">Read</button></td>
+                    </tr>
+                    <tr>
+
+                        <td>
+                            <select id="OVERMODULATION_ENABLE_SELECT">
+                                <option value="0">0 = Disable Overmodulation</option>
+                                <option value="1">1 = Enable Overmodulation</option>
+                            </select>
+                        </td>
+
+                        <td>
+                            <select id="CL_ACC_SELECT">
+                                <option value="0">0 = 0.5 Hz/s</option>
+                                <option value="1">1 = 1 Hz/s</option>
+                                <option value="2">2 = 2.5 Hz/s</option>
+                                <option value="3">3 = 5 Hz/s</option>
+                                <option value="4">4 = 7.5 Hz/s</option>
+                                <option value="5">5 = 10 Hz/s</option>
+                                <option value="6">6 = 20 Hz/s</option>
+                                <option value="7">7 = 40 Hz/s</option>
+                                <option value="8">8 = 60 Hz/s</option>
+                                <option value="9">9 = 80 Hz/s</option>
+                                <option value="A">A = 100 Hz/s</option>
+                                <option value="B">B = 200 Hz/s</option>
+                                <option value="C">C = 300 Hz/s</option>
+                                <option value="D">D = 400 Hz/s</option>
+                                <option value="E">E = 500 Hz/s</option>
+                                <option value="F">F = 600 Hz/s</option>
+                            </select>
+                        </td>
+
+                        <td>
+                            <select id="CL_DEC_CONFIG_SELECT">
+                                <option value="0">0 = Defined by CL_DEC</option>
+                                <option value="1">1 = Defined by CL_ACC</option>
+                            </select>
+                        </td>
+
+                        <td>
+                            <select id="CL_DEC_SELECT">
+                                <option value="0">0 = 0.5 Hz/s</option>
+                                <option value="1">1 = 1 Hz/s</option>
+                                <option value="2">2 = 2.5 Hz/s</option>
+                                <option value="3">3 = 5 Hz/s</option>
+                                <option value="4">4 = 7.5 Hz/s</option>
+                                <option value="5">5 = 10 Hz/s</option>
+                                <option value="6">6 = 20 Hz/s</option>
+                                <option value="7">7 = 40 Hz/s</option>
+                                <option value="8">8 = 60 Hz/s</option>
+                                <option value="9">9 = 80 Hz/s</option>
+                                <option value="A">A = 100 Hz/s</option>
+                                <option value="B">B = 200 Hz/s</option>
+                                <option value="C">C = 300 Hz/s</option>
+                                <option value="D">D = 400 Hz/s</option>
+                                <option value="E">E = 500 Hz/s</option>
+                                <option value="F">F = 600 Hz/s</option>
+                            </select>
+                        </td>
+
+                        <td>
+                            <select id="PWM_FREQ_OUT_SELECT">
+                                <option value="0">0 = 10 kHz</option>
+                                <option value="1">1 = 15 kHz</option>
+                                <option value="2">2 = 20 kHz</option>
+                                <option value="3">3 = 25 kHz</option>
+                                <option value="4">4 = 30 kHz</option>
+                                <option value="5">5 = 35 kHz</option>
+                                <option value="6">6 = 40 kHz</option>
+                                <option value="7">7 = 45 kHz</option>
+                                <option value="8">8 = 50 kHz</option>
+                                <option value="9">9 = 55 kHz</option>
+                                <option value="A">A = 60 kHz</option>
+                                <option value="B">B = 65 kHz</option>
+                                <option value="C">C = 70 kHz</option>
+                                <option value="D">D = 75 kHz</option>
+                            </select>
+                        </td>
+
+                        <td><button onclick="WriteClosedLoop1()">Write</button></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+<!////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////>
+<!////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////>
+
     <div class="container collapsed" id="pinConfigContainer">
         <div class="header" onclick="toggleContainer('pinConfigContainer', 'pinConfigContent', 'pinConfigArrow')">
             PIN_CONFIG
@@ -634,6 +757,9 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
             </div>
         </div>
     </div>
+
+<!////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////>
+<!////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////>
 
     <div class="container collapsed" id="algoCtrl1Container">
         <div class="header" onclick="toggleContainer('algoCtrl1Container', 'algoCtrl1Content', 'algoCtrl1Arrow')">
@@ -722,6 +848,9 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
         </div>
     </div>
 
+<!////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////>
+<!////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////>
+
     <div class="container collapsed" id="devCtrlContainer">
         <div class="header" onclick="toggleContainer('devCtrlContainer', 'devCtrlContent', 'devCtrlArrow')">
             DEV_CTRL
@@ -793,6 +922,9 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
         </div>
     </div>
 
+<!////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////>
+<!////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////>
+
 
     <div class="container collapsed" id="controlContainer">
         <div class="header" onclick="toggleContainer('controlContainer', 'controlContent', 'controlArrow')">
@@ -835,23 +967,26 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
 
     <script>
         
-        function toggleContainer(containerId, contentId, arrowId) {
-            let container = document.getElementById(containerId);
-            let content = document.getElementById(contentId);
-            let arrow = document.getElementById(arrowId);
+    function toggleContainer(containerId, contentId, arrowId) {
+        let container = document.getElementById(containerId);
+        let content = document.getElementById(contentId);
+        let arrow = document.getElementById(arrowId);
             
-            if (content.style.display === "none" || content.style.display === "") {
-                content.style.display = "block";
-                container.classList.remove("collapsed");
-                arrow.classList.add("rotate");
-            } else {
-                content.style.display = "none";
-                container.classList.add("collapsed");
-                arrow.classList.remove("rotate");
-            }
+        if (content.style.display === "none" || content.style.display === "") {
+            content.style.display = "block";
+            container.classList.remove("collapsed");
+            arrow.classList.add("rotate");
+        } else {
+            content.style.display = "none";
+            container.classList.add("collapsed");
+            arrow.classList.remove("rotate");
         }
-        
-        function ReadISDConfig() {
+    }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    function ReadISDConfig() {
         fetch('/ReadISDConfig', { method: 'GET' })
         .then(response => response.json())
         .then(data => {
@@ -868,7 +1003,6 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
             document.getElementById('REV_DRV_HANDOFF_THR').value = data.REV_DRV_HANDOFF_THR;
             document.getElementById('REV_DRV_OPEN_LOOP_CURRENT').value = data.REV_DRV_OPEN_LOOP_CURRENT;
 
-            // Açılır kutulara da aynı verileri yazalım
             document.getElementById('ISD_EN_SELECT').value = data.ISD_EN;
             document.getElementById('BRAKE_EN_SELECT').value = data.BRAKE_EN;
             document.getElementById('HIZ_EN_SELECT').value = data.HIZ_EN;
@@ -883,35 +1017,41 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
             document.getElementById('REV_DRV_OPEN_LOOP_CURRENT_SELECT').value = data.REV_DRV_OPEN_LOOP_CURRENT;
             })
             .catch(error => console.error('Hata:', error));
-          }
+    }
+            
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-          function WriteISDConfig() {
-            let data = {
-                ISD_EN: document.getElementById('ISD_EN_SELECT').value,
-                BRAKE_EN: document.getElementById('BRAKE_EN_SELECT').value,
-                HIZ_EN: document.getElementById('HIZ_EN_SELECT').value,
-                RVS_DR_EN: document.getElementById('RVS_DR_EN_SELECT').value,
-                RESYNC_EN: document.getElementById('RESYNC_EN_SELECT').value,
-                FW_DRV_RESYN_THR: document.getElementById('FW_DRV_RESYN_THR_SELECT').value,
-                BRK_MODE: document.getElementById('BRK_MODE_SELECT').value,
-                BRK_TIME: document.getElementById('BRK_TIME_SELECT').value,
-                HIZ_TIME: document.getElementById('HIZ_TIME_SELECT').value,
-                STAT_DETECT_THR: document.getElementById('STAT_DETECT_THR_SELECT').value,
-                REV_DRV_HANDOFF_THR: document.getElementById('REV_DRV_HANDOFF_THR_SELECT').value,
-                REV_DRV_OPEN_LOOP_CURRENT: document.getElementById('REV_DRV_OPEN_LOOP_CURRENT_SELECT').value
-            };
+    function WriteISDConfig() {
+        let data = {
+            ISD_EN: document.getElementById('ISD_EN_SELECT').value,
+            BRAKE_EN: document.getElementById('BRAKE_EN_SELECT').value,
+            HIZ_EN: document.getElementById('HIZ_EN_SELECT').value,
+            RVS_DR_EN: document.getElementById('RVS_DR_EN_SELECT').value,
+            RESYNC_EN: document.getElementById('RESYNC_EN_SELECT').value,
+            FW_DRV_RESYN_THR: document.getElementById('FW_DRV_RESYN_THR_SELECT').value,
+            BRK_MODE: document.getElementById('BRK_MODE_SELECT').value,
+            BRK_TIME: document.getElementById('BRK_TIME_SELECT').value,
+            HIZ_TIME: document.getElementById('HIZ_TIME_SELECT').value,
+            STAT_DETECT_THR: document.getElementById('STAT_DETECT_THR_SELECT').value,
+            REV_DRV_HANDOFF_THR: document.getElementById('REV_DRV_HANDOFF_THR_SELECT').value,
+            REV_DRV_OPEN_LOOP_CURRENT: document.getElementById('REV_DRV_OPEN_LOOP_CURRENT_SELECT').value
+        };
 
-            fetch('/WriteISDConfig', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
-            })
-            .then(response => response.text())
-            .then(response => console.log("Yazma başarılı:", response))
-            .catch(error => console.error('Yazma hatası:', error));
-        }
+        fetch('/WriteISDConfig', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.text())
+        .then(response => console.log("Yazma başarılı:", response))
+        .catch(error => console.error('Yazma hatası:', error));
+    }
 
-        function ReadRevDriveConfig() {
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    function ReadRevDriveConfig() {
         fetch('/ReadRevDriveConfig', { method: 'GET' })
         .then(response => response.json())
         .then(data => {
@@ -921,8 +1061,6 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
             document.getElementById('ACTIVE_BRAKE_KP').value = data.ACTIVE_BRAKE_KP;
             document.getElementById('ACTIVE_BRAKE_KI').value = data.ACTIVE_BRAKE_KI;
 
-
-            // Açılır kutulara da aynı verileri yazalım
             document.getElementById('REV_DRV_OPEN_LOOP_ACCEL_A1_SELECT').value = data.REV_DRV_OPEN_LOOP_ACCEL_A1;
             document.getElementById('REV_DRV_OPEN_LOOP_ACCEL_A2_SELECT').value = data.REV_DRV_OPEN_LOOP_ACCEL_A2;
             document.getElementById('ACTIVE_BRAKE_CURRENT_LIMIT_SELECT').value = data.ACTIVE_BRAKE_CURRENT_LIMIT;
@@ -931,126 +1069,142 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
 
             })
         .catch(error => console.error('Hata:', error));
-          }
-
-          function WriteRevDriveConfig() {
-            let data = {
-                REV_DRV_OPEN_LOOP_ACCEL_A1: document.getElementById('REV_DRV_OPEN_LOOP_ACCEL_A1_SELECT').value,
-                REV_DRV_OPEN_LOOP_ACCEL_A2: document.getElementById('REV_DRV_OPEN_LOOP_ACCEL_A2_SELECT').value,
-                ACTIVE_BRAKE_CURRENT_LIMIT: document.getElementById('ACTIVE_BRAKE_CURRENT_LIMIT_SELECT').value,
-                ACTIVE_BRAKE_KP: document.getElementById('ACTIVE_BRAKE_KP_INPUT').value.trim(),
-                ACTIVE_BRAKE_KI: document.getElementById('ACTIVE_BRAKE_KI_INPUT').value.trim()
-
-              };
-
-            fetch('/WriteRevDriveConfig', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
-              })
-            .then(response => response.text())
-            .then(response => console.log("Yazma başarılı:", response))
-            .catch(error => console.error('Yazma hatası:', error));
-          }
-
-        function ReadMotorStartup1() {
-            fetch('/ReadMotorStartup1', { method: 'GET' })
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('MTR_STARTUP').value = data.MTR_STARTUP;
-                document.getElementById('ALIGN_SLOW_RAMP_RATE').value = data.ALIGN_SLOW_RAMP_RATE;
-                document.getElementById('ALIGN_TIME').value = data.ALIGN_TIME;
-                document.getElementById('ALIGN_OR_SLOW_CURRENT_ILIMIT').value = data.ALIGN_OR_SLOW_CURRENT_ILIMIT;
-                document.getElementById('IPD_CLK_FREQ').value = data.IPD_CLK_FREQ;
-                document.getElementById('IPD_CURR_THR').value = data.IPD_CURR_THR;
-                document.getElementById('IPD_RLS_MODE').value = data.IPD_RLS_MODE;
-                document.getElementById('IPD_ADV_ANGLE').value = data.IPD_ADV_ANGLE;
-                document.getElementById('IPD_REPEAT').value = data.IPD_REPEAT;
-                document.getElementById('OL_ILIMIT_CONFIG').value = data.OL_ILIMIT_CONFIG;
-                document.getElementById('IQ_RAMP_EN').value = data.IQ_RAMP_EN;
-                document.getElementById('ACTIVE_BRAKE_EN').value = data.ACTIVE_BRAKE_EN;
-                document.getElementById('REV_DRV_CONFIG').value = data.REV_DRV_CONFIG;
-
-                // Açılır kutulara da aynı verileri yazalım
-                document.getElementById('MTR_STARTUP_SELECT').value = data.MTR_STARTUP;
-                document.getElementById('ALIGN_SLOW_RAMP_RATE_SELECT').value = data.ALIGN_SLOW_RAMP_RATE;
-                document.getElementById('ALIGN_TIME_SELECT').value = data.ALIGN_TIME;
-                document.getElementById('ALIGN_OR_SLOW_CURRENT_ILIMIT_SELECT').value = data.ALIGN_OR_SLOW_CURRENT_ILIMIT;
-                document.getElementById('IPD_CLK_FREQ_SELECT').value = data.IPD_CLK_FREQ;
-                document.getElementById('IPD_CURR_THR_SELECT').value = data.IPD_CURR_THR;
-                document.getElementById('IPD_RLS_MODE_SELECT').value = data.IPD_RLS_MODE;
-                document.getElementById('IPD_ADV_ANGLE_SELECT').value = data.IPD_ADV_ANGLE;
-                document.getElementById('IPD_REPEAT_SELECT').value = data.IPD_REPEAT;
-                document.getElementById('OL_ILIMIT_CONFIG_SELECT').value = data.OL_ILIMIT_CONFIG;
-                document.getElementById('IQ_RAMP_EN_SELECT').value = data.IQ_RAMP_EN;
-                document.getElementById('ACTIVE_BRAKE_EN_SELECT').value = data.ACTIVE_BRAKE_EN;
-                document.getElementById('REV_DRV_CONFIG_SELECT').value = data.REV_DRV_CONFIG;
-            })
-            .catch(error => console.error('Hata:', error));
         }
 
-        function WriteMotorStartup1() {
-            let data = {
-                MTR_STARTUP: document.getElementById('MTR_STARTUP_SELECT').value,
-                ALIGN_SLOW_RAMP_RATE: document.getElementById('ALIGN_SLOW_RAMP_RATE_SELECT').value,
-                ALIGN_TIME: document.getElementById('ALIGN_TIME_SELECT').value,
-                ALIGN_OR_SLOW_CURRENT_ILIMIT: document.getElementById('ALIGN_OR_SLOW_CURRENT_ILIMIT_SELECT').value,
-                IPD_CLK_FREQ: document.getElementById('IPD_CLK_FREQ_SELECT').value,
-                IPD_CURR_THR: document.getElementById('IPD_CURR_THR_SELECT').value,
-                IPD_RLS_MODE: document.getElementById('IPD_RLS_MODE_SELECT').value,
-                IPD_ADV_ANGLE: document.getElementById('IPD_ADV_ANGLE_SELECT').value,
-                IPD_REPEAT: document.getElementById('IPD_REPEAT_SELECT').value,
-                OL_ILIMIT_CONFIG: document.getElementById('OL_ILIMIT_CONFIG_SELECT').value,
-                IQ_RAMP_EN: document.getElementById('IQ_RAMP_EN_SELECT').value,
-                ACTIVE_BRAKE_EN: document.getElementById('ACTIVE_BRAKE_EN_SELECT').value,
-                REV_DRV_CONFIG: document.getElementById('REV_DRV_CONFIG_SELECT').value
-            };
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-            fetch('/WriteMotorStartup1', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
-            })
-            .then(response => response.text())
-            .then(response => console.log("Yazma başarılı:", response))
-            .catch(error => console.error('Yazma hatası:', error));
-        }
+    function WriteRevDriveConfig() {
+        let data = {
+            REV_DRV_OPEN_LOOP_ACCEL_A1: document.getElementById('REV_DRV_OPEN_LOOP_ACCEL_A1_SELECT').value,
+            REV_DRV_OPEN_LOOP_ACCEL_A2: document.getElementById('REV_DRV_OPEN_LOOP_ACCEL_A2_SELECT').value,
+            ACTIVE_BRAKE_CURRENT_LIMIT: document.getElementById('ACTIVE_BRAKE_CURRENT_LIMIT_SELECT').value,
+            ACTIVE_BRAKE_KP: document.getElementById('ACTIVE_BRAKE_KP_INPUT').value.trim(),
+            ACTIVE_BRAKE_KI: document.getElementById('ACTIVE_BRAKE_KI_INPUT').value.trim()
 
-        function ReadPinConfig() {
-            fetch('/ReadPinConfig', { method: 'GET' })
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('BRAKE_PIN_MODE').value = data.BRAKE_PIN_MODE;
-                document.getElementById('ALIGN_BRAKE_ANGLE_SEL').value = data.ALIGN_BRAKE_ANGLE_SEL;
-                document.getElementById('BRAKE_INPUT').value = data.BRAKE_INPUT;
-                document.getElementById('SPEED_MODE').value = data.SPEED_MODE;
+        };
 
-                // Açılır kutulara da aynı verileri yazalım
-                document.getElementById('BRAKE_PIN_MODE_SELECT').value = data.BRAKE_PIN_MODE;
-                document.getElementById('ALIGN_BRAKE_ANGLE_SEL_SELECT').value = data.ALIGN_BRAKE_ANGLE_SEL;
-                document.getElementById('BRAKE_INPUT_SELECT').value = data.BRAKE_INPUT;
-                document.getElementById('SPEED_MODE_SELECT').value = data.SPEED_MODE;
-            })
-            .catch(error => console.error('Hata:', error));
-        }
+        fetch('/WriteRevDriveConfig', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.text())
+        .then(response => console.log("Yazma başarılı:", response))
+        .catch(error => console.error('Yazma hatası:', error));
+    }
 
-        function WritePinConfig() {
-            let data = {
-                BRAKE_PIN_MODE: document.getElementById('BRAKE_PIN_MODE_SELECT').value,
-                ALIGN_BRAKE_ANGLE_SEL: document.getElementById('ALIGN_BRAKE_ANGLE_SEL_SELECT').value,
-                BRAKE_INPUT: document.getElementById('BRAKE_INPUT_SELECT').value,
-                SPEED_MODE: document.getElementById('SPEED_MODE_SELECT').value
-            };
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-            fetch('/WritePinConfig', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
-            })
-            .then(response => response.text())
-            .then(response => console.log("Yazma başarılı:", response))
-            .catch(error => console.error('Yazma hatası:', error));
-        }
+    function ReadMotorStartup1() {
+        fetch('/ReadMotorStartup1', { method: 'GET' })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('MTR_STARTUP').value = data.MTR_STARTUP;
+            document.getElementById('ALIGN_SLOW_RAMP_RATE').value = data.ALIGN_SLOW_RAMP_RATE;
+            document.getElementById('ALIGN_TIME').value = data.ALIGN_TIME;
+            document.getElementById('ALIGN_OR_SLOW_CURRENT_ILIMIT').value = data.ALIGN_OR_SLOW_CURRENT_ILIMIT;
+            document.getElementById('IPD_CLK_FREQ').value = data.IPD_CLK_FREQ;
+            document.getElementById('IPD_CURR_THR').value = data.IPD_CURR_THR;
+            document.getElementById('IPD_RLS_MODE').value = data.IPD_RLS_MODE;
+            document.getElementById('IPD_ADV_ANGLE').value = data.IPD_ADV_ANGLE;
+            document.getElementById('IPD_REPEAT').value = data.IPD_REPEAT;
+            document.getElementById('OL_ILIMIT_CONFIG').value = data.OL_ILIMIT_CONFIG;
+            document.getElementById('IQ_RAMP_EN').value = data.IQ_RAMP_EN;
+            document.getElementById('ACTIVE_BRAKE_EN').value = data.ACTIVE_BRAKE_EN;
+            document.getElementById('REV_DRV_CONFIG').value = data.REV_DRV_CONFIG;
+
+            document.getElementById('MTR_STARTUP_SELECT').value = data.MTR_STARTUP;
+            document.getElementById('ALIGN_SLOW_RAMP_RATE_SELECT').value = data.ALIGN_SLOW_RAMP_RATE;
+            document.getElementById('ALIGN_TIME_SELECT').value = data.ALIGN_TIME;
+            document.getElementById('ALIGN_OR_SLOW_CURRENT_ILIMIT_SELECT').value = data.ALIGN_OR_SLOW_CURRENT_ILIMIT;
+            document.getElementById('IPD_CLK_FREQ_SELECT').value = data.IPD_CLK_FREQ;
+            document.getElementById('IPD_CURR_THR_SELECT').value = data.IPD_CURR_THR;
+            document.getElementById('IPD_RLS_MODE_SELECT').value = data.IPD_RLS_MODE;
+            document.getElementById('IPD_ADV_ANGLE_SELECT').value = data.IPD_ADV_ANGLE;
+            document.getElementById('IPD_REPEAT_SELECT').value = data.IPD_REPEAT;
+            document.getElementById('OL_ILIMIT_CONFIG_SELECT').value = data.OL_ILIMIT_CONFIG;
+            document.getElementById('IQ_RAMP_EN_SELECT').value = data.IQ_RAMP_EN;
+            document.getElementById('ACTIVE_BRAKE_EN_SELECT').value = data.ACTIVE_BRAKE_EN;
+            document.getElementById('REV_DRV_CONFIG_SELECT').value = data.REV_DRV_CONFIG;
+        })
+        .catch(error => console.error('Hata:', error));
+    }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    function WriteMotorStartup1() {
+        let data = {
+            MTR_STARTUP: document.getElementById('MTR_STARTUP_SELECT').value,
+            ALIGN_SLOW_RAMP_RATE: document.getElementById('ALIGN_SLOW_RAMP_RATE_SELECT').value,
+            ALIGN_TIME: document.getElementById('ALIGN_TIME_SELECT').value,
+            ALIGN_OR_SLOW_CURRENT_ILIMIT: document.getElementById('ALIGN_OR_SLOW_CURRENT_ILIMIT_SELECT').value,
+            IPD_CLK_FREQ: document.getElementById('IPD_CLK_FREQ_SELECT').value,
+            IPD_CURR_THR: document.getElementById('IPD_CURR_THR_SELECT').value,
+            IPD_RLS_MODE: document.getElementById('IPD_RLS_MODE_SELECT').value,
+            IPD_ADV_ANGLE: document.getElementById('IPD_ADV_ANGLE_SELECT').value,
+            IPD_REPEAT: document.getElementById('IPD_REPEAT_SELECT').value,
+            OL_ILIMIT_CONFIG: document.getElementById('OL_ILIMIT_CONFIG_SELECT').value,
+            IQ_RAMP_EN: document.getElementById('IQ_RAMP_EN_SELECT').value,
+            ACTIVE_BRAKE_EN: document.getElementById('ACTIVE_BRAKE_EN_SELECT').value,
+            REV_DRV_CONFIG: document.getElementById('REV_DRV_CONFIG_SELECT').value
+        };
+
+        fetch('/WriteMotorStartup1', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.text())
+        .then(response => console.log("Yazma başarılı:", response))
+        .catch(error => console.error('Yazma hatası:', error));
+    }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    function ReadPinConfig() {
+        fetch('/ReadPinConfig', { method: 'GET' })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('BRAKE_PIN_MODE').value = data.BRAKE_PIN_MODE;
+            document.getElementById('ALIGN_BRAKE_ANGLE_SEL').value = data.ALIGN_BRAKE_ANGLE_SEL;
+            document.getElementById('BRAKE_INPUT').value = data.BRAKE_INPUT;
+            document.getElementById('SPEED_MODE').value = data.SPEED_MODE;
+
+            document.getElementById('BRAKE_PIN_MODE_SELECT').value = data.BRAKE_PIN_MODE;
+            document.getElementById('ALIGN_BRAKE_ANGLE_SEL_SELECT').value = data.ALIGN_BRAKE_ANGLE_SEL;
+            document.getElementById('BRAKE_INPUT_SELECT').value = data.BRAKE_INPUT;
+            document.getElementById('SPEED_MODE_SELECT').value = data.SPEED_MODE;
+        })
+        .catch(error => console.error('Hata:', error));
+    }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    function WritePinConfig() {
+        let data = {
+            BRAKE_PIN_MODE: document.getElementById('BRAKE_PIN_MODE_SELECT').value,
+            ALIGN_BRAKE_ANGLE_SEL: document.getElementById('ALIGN_BRAKE_ANGLE_SEL_SELECT').value,
+            BRAKE_INPUT: document.getElementById('BRAKE_INPUT_SELECT').value,
+            SPEED_MODE: document.getElementById('SPEED_MODE_SELECT').value
+        };
+
+        fetch('/WritePinConfig', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.text())
+        .then(response => console.log("Yazma başarılı:", response))
+        .catch(error => console.error('Yazma hatası:', error));
+    }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     function ReadAlgoCtrl1() {
         fetch('/ReadAlgoCtrl1', { method: 'GET' })
@@ -1066,7 +1220,6 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
             document.getElementById('FORCE_ALIGN_ANGLE_SRC_SEL').value = data.FORCE_ALIGN_ANGLE_SRC_SEL;
             document.getElementById('FORCE_IQ_REF_SPEED_LOOP_DIS').value = data.FORCE_IQ_REF_SPEED_LOOP_DIS;
 
-            // Açılır kutulara da aynı verileri yazalım
             document.getElementById('OVERRIDE_SELECT').value = data.OVERRIDE;
             document.getElementById('DIGITAL_SPEED_CTRL_SELECT').value = data.DIGITAL_SPEED_CTRL;
             document.getElementById('CLOSED_LOOP_DIS_SELECT').value = data.CLOSED_LOOP_DIS;
@@ -1079,6 +1232,9 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
         })
         .catch(error => console.error('Hata:', error));
     }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     function WriteAlgoCtrl1() {
         let data = {
@@ -1103,6 +1259,9 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
         .catch(error => console.error('Yazma hatası:', error));
     }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     function ReadDevCtrl() {
         fetch('/ReadDevCtrl', { method: 'GET' })
             .then(response => response.json())
@@ -1115,7 +1274,6 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
                 document.getElementById('FORCED_ALIGN_ANGLE').value = data.FORCED_ALIGN_ANGLE;
                 document.getElementById('WATCHDOG_TICKLE').value = data.WATCHDOG_TICKLE;
 
-                // Açılır kutulara da aynı verileri yazalım
                 document.getElementById('EEPROM_WRT_SELECT').value = data.EEPROM_WRT;
                 document.getElementById('EEPROM_READ_SELECT').value = data.EEPROM_READ;
                 document.getElementById('CLR_FLT_SELECT').value = data.CLR_FLT;
@@ -1126,6 +1284,9 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
             })
             .catch(error => console.error('Hata:', error));
     }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     function WriteDevCtrl() {
         let data = {
@@ -1148,6 +1309,9 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
             .catch(error => console.error('Yazma hatası:', error));
     }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     function WriteEEPROM() {
         fetch('/WriteEEPROM', { method: 'GET' })
             .then(response => response.json())
@@ -1155,12 +1319,18 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
             .catch(error => console.error('EEPROM yazma hatası:', error));
     }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     function ReadAlgorithmState() {
         fetch('/ReadAlgorithmState', { method: 'GET' })
             .then(response => response.json())
             .then(data => console.log("EEPROM yazma başarılı:", data))
             .catch(error => console.error('EEPROM yazma hatası:', error));
     }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     function ReadRegister() {
         let address = document.getElementById('ReadRegAddress').value;
@@ -1172,6 +1342,9 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
             })
             .catch(error => console.error('Register okuma hatası:', error));
     }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     function WriteRegister() {
         let data = {
@@ -1239,7 +1412,7 @@ JsonDocument doc;
 
 #define READ_BITS(value, high, low) ((value >> low) & ((1 << (high - low + 1)) - 1))
 #define WRITE_BITS(target, value, high, low) (target |= ((value & ((1 << (high - low + 1)) - 1)) << low))
-
+/*
 struct ISDCONFIG
 {
     byte ISD_EN;
@@ -1255,7 +1428,7 @@ struct ISDCONFIG
     byte REV_DRV_HANDOFF_THR;
     byte REV_DRV_OPEN_LOOP_CURRENT;
 };
-
+*/
 struct REVDRIVECONFIG
 {
     byte REV_DRV_OPEN_LOOP_ACCEL_A1;
@@ -1280,6 +1453,19 @@ struct MOTORSTARTUP1
     byte IQ_RAMP_EN;
     byte ACTIVE_BRAKE_EN;
     byte REV_DRV_CONFIG;
+};
+
+struct MOTORSTARTUP2
+{
+    byte OL_LIMIT;                  // 30-27: Open loop current limit
+    byte OL_ACC_A1;                 // 26-23: Open loop acceleration coefficient A1
+    byte OL_ACC_A2;                 // 22-19: Open loop acceleration coefficient A2
+    byte AUTO_HANDOFF_EN;           // 18: Auto handoff enable
+    byte OPN_CL_HANDOFF_THR;        // 17-13: Open to close loop handoff threshold (% of MAX_SPEED)
+    byte ALIGN_ANGLE;               // 12-8: Align angle
+    byte SLOW_FIRST_CYC_FREQ;       // 7-4: Frequency of first cycle in close loop startup (% of MAX_SPEED)
+    byte FIRST_CYCLE_FREQ_SEL;      // 3: First cycle frequency in open loop
+    byte THETA_ERROR_RAMP_RATE;     // 2-0: Ramp rate for reducing difference between estimated theta and open loop theta
 };
 
 struct PINCONFIG
@@ -1314,12 +1500,14 @@ struct DEVCTRL
     byte WATCHDOG_TICKLE;         // Bit 10: RAM bit to tickle watchdog in I2C mode
 };
 
-ISDCONFIG ISD_CONFIG;
+//ISDCONFIG ISD_CONFIG;
 REVDRIVECONFIG REV_DRIVE_CONFIG;
 MOTORSTARTUP1 MOTOR_STARTUP1;
+MOTORSTARTUP2 MOTOR_STARTUP2;
 PINCONFIG PIN_CONFIG;
 ALGOCTRL1 ALGO_CTRL1;
 DEVCTRL DEV_CTRL;
+
 
 String toUpperCaseHex(uint16_t value)
 {
@@ -1327,6 +1515,13 @@ String toUpperCaseHex(uint16_t value)
     hexString.toUpperCase();               // Büyük harfe çevir
     return hexString;
 }
+
+void handleRoot()
+{
+    server.send(200, "text/html", HTML_PAGE);
+}
+
+/////////////////////////////////////////////////////////////////////////////////
 
 void read32(int reg_addr)
 {
@@ -1347,9 +1542,9 @@ void read32(int reg_addr)
         register_value |= (c << (i * 8));
     }
 
-    Serial.print("Register Okundu: 0x");
-    Serial.println(reg_addr, HEX);
-    Serial.print("Değer: 0x");
+    Serial.print("Read Register: 0x");
+    Serial.print(reg_addr, HEX);
+    Serial.print(" | Value: 0x");
     Serial.println(register_value, HEX);
 }
 
@@ -1371,489 +1566,352 @@ void write32(int reg_addr, unsigned long writedata)
     Wire.write(data, 4);
     Wire.endTransmission();
 
-    Serial.print("Yazıldı: 0x");
-    Serial.println(reg_addr, HEX);
-    Serial.print("Değer: 0x");
+    Serial.print("Write Register: 0x");
+    Serial.print(reg_addr, HEX);
+    Serial.print(" | Value: 0x");
     Serial.println(writedata, HEX);
 }
 
-void handleRoot()
+/////////////////////////////////////////////////////////////////////////////////
+
+void readRegister(uint32_t reg, std::initializer_list<std::pair<const char*, std::pair<int, int>>> bitFields)
 {
-    server.send(200, "text/html", HTML_PAGE);
+    register_value = 0;
+    read32(reg);
+    doc.clear();
+
+    for (auto &field : bitFields)
+    {
+        const char* fieldName = field.first;
+        int high = field.second.first;
+        int low = field.second.second;
+
+        doc[fieldName] = toUpperCaseHex(READ_BITS(register_value, high, low));
+    }
+
+    String response;
+    serializeJson(doc, response);
+    server.send(200, "application/json", response);
 }
+
+void writeRegister(uint32_t reg, std::initializer_list<std::pair<const char*, std::pair<int, int>>> bitFields)
+{
+    if (!server.hasArg("plain"))
+    {
+        server.send(400, "application/json", "{\"error\":\"Bad Request\"}");
+        return;
+    }
+
+    doc.clear();
+    DeserializationError error = deserializeJson(doc, server.arg("plain"));
+    if (error)
+    {
+        server.send(400, "application/json", "{\"error\":\"JSON Parse Failed\"}");
+        return;
+    }
+
+    register_value = 0;
+    WRITE_BITS(register_value, 0, 31, 31);
+
+    for (auto &field : bitFields)
+    {
+        const char* fieldName = field.first;
+        int high = field.second.first;
+        int low = field.second.second;
+
+        uint32_t value = strtoul(doc[fieldName].as<String>().c_str(), NULL, 16);
+        WRITE_BITS(register_value, value, high, low);
+    }
+
+    write32(reg, register_value);
+    server.send(200, "application/json", "{\"status\":\"success\"}");
+}
+
+/////////////////////////////////////////////////////////////////////////////////
 
 void ReadISDConfig()
 {
-    register_value = 0;
-    read32(ISD_CONFIG_REG);
-
-    // 📌 JSON nesnesini temizle
-    doc.clear();
-
-    // 📌 Register bitlerini JSON nesnesine **sade HEX formatında** ekle
-    doc["ISD_EN"] = toUpperCaseHex(READ_BITS(register_value, 30, 30));
-    doc["BRAKE_EN"] = toUpperCaseHex(READ_BITS(register_value, 29, 29));
-    doc["HIZ_EN"] = toUpperCaseHex(READ_BITS(register_value, 28, 28));
-    doc["RVS_DR_EN"] = toUpperCaseHex(READ_BITS(register_value, 27, 27));
-    doc["RESYNC_EN"] = toUpperCaseHex(READ_BITS(register_value, 26, 26));
-    doc["FW_DRV_RESYN_THR"] = toUpperCaseHex(READ_BITS(register_value, 25, 22));
-    doc["BRK_MODE"] = toUpperCaseHex(READ_BITS(register_value, 21, 21));
-    doc["BRK_TIME"] = toUpperCaseHex(READ_BITS(register_value, 16, 13));
-    doc["HIZ_TIME"] = toUpperCaseHex(READ_BITS(register_value, 12, 9));
-    doc["STAT_DETECT_THR"] = toUpperCaseHex(READ_BITS(register_value, 8, 6));
-    doc["REV_DRV_HANDOFF_THR"] = toUpperCaseHex(READ_BITS(register_value, 5, 2));
-    doc["REV_DRV_OPEN_LOOP_CURRENT"] = toUpperCaseHex(READ_BITS(register_value, 1, 0));
-
-    // 📌 JSON'u string olarak hazırla
-    String response;
-    serializeJson(doc, response);
-
-    // 📌 JSON formatında yanıt gönder
-    server.send(200, "application/json", response);
+    readRegister(ISD_CONFIG_REG,
+    {
+        {"ISD_EN", {30, 30}},
+        {"BRAKE_EN", {29, 29}},
+        {"HIZ_EN", {28, 28}},
+        {"RVS_DR_EN", {27, 27}},
+        {"RESYNC_EN", {26, 26}},
+        {"FW_DRV_RESYN_THR", {25, 22}},
+        {"BRK_MODE", {21, 21}},
+        {"BRK_TIME", {16, 13}},
+        {"HIZ_TIME", {12, 9}},
+        {"STAT_DETECT_THR", {8, 6}},
+        {"REV_DRV_HANDOFF_THR", {5, 2}},
+        {"REV_DRV_OPEN_LOOP_CURRENT", {1, 0}}
+    });
 }
 
 void WriteISDConfig()
 {
-    if (!server.hasArg("plain"))
+    writeRegister(ISD_CONFIG_REG,
     {
-        server.send(400, "application/json", "{\"error\":\"Bad Request\"}");
-        return;
-    }
-
-    // 📌 JSON nesnesini temizle
-    doc.clear();
-
-    // 📌 JSON stringini deserialize et
-    DeserializationError error = deserializeJson(doc, server.arg("plain"));
-    if (error)
-    {
-        server.send(400, "application/json", "{\"error\":\"JSON Parse Failed\"}");
-        return;
-    }
-
-    // 📌 JSON içindeki değerleri al
-    ISD_CONFIG.ISD_EN = strtoul(doc["ISD_EN"].as<String>().c_str(), NULL, 16);
-    ISD_CONFIG.BRAKE_EN = strtoul(doc["BRAKE_EN"].as<String>().c_str(), NULL, 16);
-    ISD_CONFIG.HIZ_EN = strtoul(doc["HIZ_EN"].as<String>().c_str(), NULL, 16);
-    ISD_CONFIG.RVS_DR_EN = strtoul(doc["RVS_DR_EN"].as<String>().c_str(), NULL, 16);
-    ISD_CONFIG.RESYNC_EN = strtoul(doc["RESYNC_EN"].as<String>().c_str(), NULL, 16);
-    ISD_CONFIG.FW_DRV_RESYN_THR = strtoul(doc["FW_DRV_RESYN_THR"].as<String>().c_str(), NULL, 16);
-    ISD_CONFIG.BRK_MODE = strtoul(doc["BRK_MODE"].as<String>().c_str(), NULL, 16);
-    ISD_CONFIG.BRK_TIME = strtoul(doc["BRK_TIME"].as<String>().c_str(), NULL, 16);
-    ISD_CONFIG.HIZ_TIME = strtoul(doc["HIZ_TIME"].as<String>().c_str(), NULL, 16);
-    ISD_CONFIG.STAT_DETECT_THR = strtoul(doc["STAT_DETECT_THR"].as<String>().c_str(), NULL, 16);
-    ISD_CONFIG.REV_DRV_HANDOFF_THR = strtoul(doc["REV_DRV_HANDOFF_THR"].as<String>().c_str(), NULL, 16);
-    ISD_CONFIG.REV_DRV_OPEN_LOOP_CURRENT = strtoul(doc["REV_DRV_OPEN_LOOP_CURRENT"].as<String>().c_str(), NULL, 16);
-
-    // 📌 Register değerini oluştur
-    register_value = 0;
-    WRITE_BITS(register_value, 0, 31, 31);
-    WRITE_BITS(register_value, ISD_CONFIG.ISD_EN, 30, 30);
-    WRITE_BITS(register_value, ISD_CONFIG.BRAKE_EN, 29, 29);
-    WRITE_BITS(register_value, ISD_CONFIG.HIZ_EN, 28, 28);
-    WRITE_BITS(register_value, ISD_CONFIG.RVS_DR_EN, 27, 27);
-    WRITE_BITS(register_value, ISD_CONFIG.RESYNC_EN, 26, 26);
-    WRITE_BITS(register_value, ISD_CONFIG.FW_DRV_RESYN_THR, 25, 22);
-    WRITE_BITS(register_value, ISD_CONFIG.BRK_MODE, 21, 21);
-    WRITE_BITS(register_value, 9, 20, 17);
-    WRITE_BITS(register_value, ISD_CONFIG.BRK_TIME, 16, 13);
-    WRITE_BITS(register_value, ISD_CONFIG.HIZ_TIME, 12, 9);
-    WRITE_BITS(register_value, ISD_CONFIG.STAT_DETECT_THR, 8, 6);
-    WRITE_BITS(register_value, ISD_CONFIG.REV_DRV_HANDOFF_THR, 5, 2);
-    WRITE_BITS(register_value, ISD_CONFIG.REV_DRV_OPEN_LOOP_CURRENT, 1, 0);
-
-    // 📌 Register'a yaz
-    write32(ISD_CONFIG_REG, register_value);
-
-    // 📌 Başarı mesajı gönder
-    server.send(200, "application/json", "{\"status\":\"success\"}");
+        {"ISD_EN", {30, 30}},
+        {"BRAKE_EN", {29, 29}},
+        {"HIZ_EN", {28, 28}},
+        {"RVS_DR_EN", {27, 27}},
+        {"RESYNC_EN", {26, 26}},
+        {"FW_DRV_RESYN_THR", {25, 22}},
+        {"BRK_MODE", {21, 21}},
+        {"BRK_TIME", {16, 13}},
+        {"HIZ_TIME", {12, 9}},
+        {"STAT_DETECT_THR", {8, 6}},
+        {"REV_DRV_HANDOFF_THR", {5, 2}},
+        {"REV_DRV_OPEN_LOOP_CURRENT", {1, 0}}
+    });
 }
+
+/////////////////////////////////////////////////////////////////////////////////
 
 void ReadRevDriveConfig()
 {
-    register_value = 0;
-    read32(REV_DRIVE_CONFIG_REG);
-
-    // 📌 JSON nesnesini temizle
-    doc.clear();
-
-    // 📌 Register bitlerini çıkar ve JSON nesnesine ekle
-    doc["REV_DRV_OPEN_LOOP_ACCEL_A1"] = toUpperCaseHex(READ_BITS(register_value, 30, 27));
-    doc["REV_DRV_OPEN_LOOP_ACCEL_A2"] = toUpperCaseHex(READ_BITS(register_value, 26, 23));
-    doc["ACTIVE_BRAKE_CURRENT_LIMIT"] = toUpperCaseHex(READ_BITS(register_value, 22, 20));
-    doc["ACTIVE_BRAKE_KP"] = toUpperCaseHex(READ_BITS(register_value, 19, 10));
-    doc["ACTIVE_BRAKE_KI"] = toUpperCaseHex(READ_BITS(register_value, 9, 0));
-
-    // 📌 JSON string olarak oluştur
-    String response;
-    serializeJson(doc, response);
-
-    // 📌 JSON formatında yanıt gönder
-    server.send(200, "application/json", response);
+    readRegister(REV_DRIVE_CONFIG_REG,
+    {
+        {"REV_DRV_OPEN_LOOP_ACCEL_A1", {30, 27}},
+        {"REV_DRV_OPEN_LOOP_ACCEL_A2", {26, 23}},
+        {"ACTIVE_BRAKE_CURRENT_LIMIT", {22, 20}},
+        {"ACTIVE_BRAKE_KP", {19, 10}}, // 10-bit
+        {"ACTIVE_BRAKE_KI", {9, 0}}    // 10-bit
+    });
 }
 
 void WriteRevDriveConfig()
 {
-    if (!server.hasArg("plain"))
+    writeRegister(REV_DRIVE_CONFIG_REG,
     {
-        server.send(400, "application/json", "{\"error\":\"Bad Request\"}");
-        return;
-    }
-
-    // 📌 JSON nesnesini temizle
-    doc.clear();
-
-    // 📌 JSON stringini parse et
-    DeserializationError error = deserializeJson(doc, server.arg("plain"));
-    if (error)
-    {
-        server.send(400, "application/json", "{\"error\":\"JSON Parse Failed\"}");
-        return;
-    }
-
-    // 📌 JSON içindeki değerleri çek ve **HEX formatında çevir**
-    REV_DRIVE_CONFIG.REV_DRV_OPEN_LOOP_ACCEL_A1 = strtoul(doc["REV_DRV_OPEN_LOOP_ACCEL_A1"].as<String>().c_str(), NULL, 16);
-    REV_DRIVE_CONFIG.REV_DRV_OPEN_LOOP_ACCEL_A2 = strtoul(doc["REV_DRV_OPEN_LOOP_ACCEL_A2"].as<String>().c_str(), NULL, 16);
-    REV_DRIVE_CONFIG.ACTIVE_BRAKE_CURRENT_LIMIT = strtoul(doc["ACTIVE_BRAKE_CURRENT_LIMIT"].as<String>().c_str(), NULL, 16);
-    REV_DRIVE_CONFIG.ACTIVE_BRAKE_KP = strtoul(doc["ACTIVE_BRAKE_KP"].as<String>().c_str(), NULL, 16);
-    REV_DRIVE_CONFIG.ACTIVE_BRAKE_KI = strtoul(doc["ACTIVE_BRAKE_KI"].as<String>().c_str(), NULL, 16);
-
-    // 📌 Register değerini sıfırla ve yeni değerleri yaz
-    register_value = 0;
-    WRITE_BITS(register_value, 0, 31, 31);
-    WRITE_BITS(register_value, REV_DRIVE_CONFIG.REV_DRV_OPEN_LOOP_ACCEL_A1, 30, 27);
-    WRITE_BITS(register_value, REV_DRIVE_CONFIG.REV_DRV_OPEN_LOOP_ACCEL_A2, 26, 23);
-    WRITE_BITS(register_value, REV_DRIVE_CONFIG.ACTIVE_BRAKE_CURRENT_LIMIT, 22, 20);
-    WRITE_BITS(register_value, REV_DRIVE_CONFIG.ACTIVE_BRAKE_KP, 19, 10); // 📌 10-bitlik değer
-    WRITE_BITS(register_value, REV_DRIVE_CONFIG.ACTIVE_BRAKE_KI, 9, 0);   // 📌 10-bitlik değer
-
-    // 📌 I2C register'a yaz
-    write32(REV_DRIVE_CONFIG_REG, register_value);
-
-    // 📌 JSON formatında başarı mesajı gönder
-    doc.clear();
-    doc["status"] = "success";
-
-    String response;
-    serializeJson(doc, response);
-    server.send(200, "application/json", response);
+        {"REV_DRV_OPEN_LOOP_ACCEL_A1", {30, 27}},
+        {"REV_DRV_OPEN_LOOP_ACCEL_A2", {26, 23}},
+        {"ACTIVE_BRAKE_CURRENT_LIMIT", {22, 20}},
+        {"ACTIVE_BRAKE_KP", {19, 10}}, // 10-bit
+        {"ACTIVE_BRAKE_KI", {9, 0}}    // 10-bit
+    });
 }
+
+/////////////////////////////////////////////////////////////////////////////////
 
 void ReadMotorStartup1()
 {
-    register_value = 0;
-    read32(MOTOR_STARTUP1_REG);
-
-    // 📌 JSON nesnesini temizle
-    doc.clear();
-
-    // 📌 Register bitlerini JSON nesnesine **hex formatında** ekle
-    doc["MTR_STARTUP"] = toUpperCaseHex(READ_BITS(register_value, 30, 29));
-    doc["ALIGN_SLOW_RAMP_RATE"] = toUpperCaseHex(READ_BITS(register_value, 28, 25));
-    doc["ALIGN_TIME"] = toUpperCaseHex(READ_BITS(register_value, 24, 21));
-    doc["ALIGN_OR_SLOW_CURRENT_ILIMIT"] = toUpperCaseHex(READ_BITS(register_value, 20, 17));
-    doc["IPD_CLK_FREQ"] = toUpperCaseHex(READ_BITS(register_value, 16, 14));
-    doc["IPD_CURR_THR"] = toUpperCaseHex(READ_BITS(register_value, 13, 9));
-    doc["IPD_RLS_MODE"] = toUpperCaseHex(READ_BITS(register_value, 8, 8));
-    doc["IPD_ADV_ANGLE"] = toUpperCaseHex(READ_BITS(register_value, 7, 6));
-    doc["IPD_REPEAT"] = toUpperCaseHex(READ_BITS(register_value, 5, 4));
-    doc["OL_ILIMIT_CONFIG"] = toUpperCaseHex(READ_BITS(register_value, 3, 3));
-    doc["IQ_RAMP_EN"] = toUpperCaseHex(READ_BITS(register_value, 2, 2));
-    doc["ACTIVE_BRAKE_EN"] = toUpperCaseHex(READ_BITS(register_value, 1, 1));
-    doc["REV_DRV_CONFIG"] = toUpperCaseHex(READ_BITS(register_value, 0, 0));
-
-    // 📌 JSON string olarak oluştur
-    String response;
-    serializeJson(doc, response);
-
-    // 📌 JSON formatında yanıt gönder
-    server.send(200, "application/json", response);
+    readRegister(MOTOR_STARTUP1_REG,
+    {
+        {"MTR_STARTUP", {30, 29}},
+        {"ALIGN_SLOW_RAMP_RATE", {28, 25}},
+        {"ALIGN_TIME", {24, 21}},
+        {"ALIGN_OR_SLOW_CURRENT_ILIMIT", {20, 17}},
+        {"IPD_CLK_FREQ", {16, 14}},
+        {"IPD_CURR_THR", {13, 9}},
+        {"IPD_RLS_MODE", {8, 8}},
+        {"IPD_ADV_ANGLE", {7, 6}},
+        {"IPD_REPEAT", {5, 4}},
+        {"OL_ILIMIT_CONFIG", {3, 3}},
+        {"IQ_RAMP_EN", {2, 2}},
+        {"ACTIVE_BRAKE_EN", {1, 1}},
+        {"REV_DRV_CONFIG", {0, 0}}
+    });
 }
 
 void WriteMotorStartup1()
 {
-    if (!server.hasArg("plain"))
+    writeRegister(MOTOR_STARTUP1_REG,
     {
-        server.send(400, "application/json", "{\"error\":\"Bad Request\"}");
-        return;
-    }
-
-    // 📌 JSON nesnesini temizle
-    doc.clear();
-
-    // 📌 JSON stringini parse et
-    DeserializationError error = deserializeJson(doc, server.arg("plain"));
-    if (error)
-    {
-        server.send(400, "application/json", "{\"error\":\"JSON Parse Failed\"}");
-        return;
-    }
-
-    // 📌 JSON içindeki değerleri çek ve **HEX formatında çevir**
-    MOTOR_STARTUP1.MTR_STARTUP = strtoul(doc["MTR_STARTUP"].as<String>().c_str(), NULL, 16);
-    MOTOR_STARTUP1.ALIGN_SLOW_RAMP_RATE = strtoul(doc["ALIGN_SLOW_RAMP_RATE"].as<String>().c_str(), NULL, 16);
-    MOTOR_STARTUP1.ALIGN_TIME = strtoul(doc["ALIGN_TIME"].as<String>().c_str(), NULL, 16);
-    MOTOR_STARTUP1.ALIGN_OR_SLOW_CURRENT_ILIMIT = strtoul(doc["ALIGN_OR_SLOW_CURRENT_ILIMIT"].as<String>().c_str(), NULL, 16);
-    MOTOR_STARTUP1.IPD_CLK_FREQ = strtoul(doc["IPD_CLK_FREQ"].as<String>().c_str(), NULL, 16);
-    MOTOR_STARTUP1.IPD_CURR_THR = strtoul(doc["IPD_CURR_THR"].as<String>().c_str(), NULL, 16);
-    MOTOR_STARTUP1.IPD_RLS_MODE = strtoul(doc["IPD_RLS_MODE"].as<String>().c_str(), NULL, 16);
-    MOTOR_STARTUP1.IPD_ADV_ANGLE = strtoul(doc["IPD_ADV_ANGLE"].as<String>().c_str(), NULL, 16);
-    MOTOR_STARTUP1.IPD_REPEAT = strtoul(doc["IPD_REPEAT"].as<String>().c_str(), NULL, 16);
-    MOTOR_STARTUP1.OL_ILIMIT_CONFIG = strtoul(doc["OL_ILIMIT_CONFIG"].as<String>().c_str(), NULL, 16);
-    MOTOR_STARTUP1.IQ_RAMP_EN = strtoul(doc["IQ_RAMP_EN"].as<String>().c_str(), NULL, 16);
-    MOTOR_STARTUP1.ACTIVE_BRAKE_EN = strtoul(doc["ACTIVE_BRAKE_EN"].as<String>().c_str(), NULL, 16);
-    MOTOR_STARTUP1.REV_DRV_CONFIG = strtoul(doc["REV_DRV_CONFIG"].as<String>().c_str(), NULL, 16);
-
-    // 📌 Register değerini sıfırla ve yeni değerleri yaz
-    register_value = 0;
-    WRITE_BITS(register_value, 0, 31, 31);
-    WRITE_BITS(register_value, MOTOR_STARTUP1.MTR_STARTUP, 30, 29);
-    WRITE_BITS(register_value, MOTOR_STARTUP1.ALIGN_SLOW_RAMP_RATE, 28, 25);
-    WRITE_BITS(register_value, MOTOR_STARTUP1.ALIGN_TIME, 24, 21);
-    WRITE_BITS(register_value, MOTOR_STARTUP1.ALIGN_OR_SLOW_CURRENT_ILIMIT, 20, 17);
-    WRITE_BITS(register_value, MOTOR_STARTUP1.IPD_CLK_FREQ, 16, 14);
-    WRITE_BITS(register_value, MOTOR_STARTUP1.IPD_CURR_THR, 13, 9);
-    WRITE_BITS(register_value, MOTOR_STARTUP1.IPD_RLS_MODE, 8, 8);
-    WRITE_BITS(register_value, MOTOR_STARTUP1.IPD_ADV_ANGLE, 7, 6);
-    WRITE_BITS(register_value, MOTOR_STARTUP1.IPD_REPEAT, 5, 4);
-    WRITE_BITS(register_value, MOTOR_STARTUP1.OL_ILIMIT_CONFIG, 3, 3);
-    WRITE_BITS(register_value, MOTOR_STARTUP1.IQ_RAMP_EN, 2, 2);
-    WRITE_BITS(register_value, MOTOR_STARTUP1.ACTIVE_BRAKE_EN, 1, 1);
-    WRITE_BITS(register_value, MOTOR_STARTUP1.REV_DRV_CONFIG, 0, 0);
-
-    // 📌 I2C register'a yaz
-    write32(MOTOR_STARTUP1_REG, register_value);
-
-    // 📌 JSON formatında başarı mesajı gönder
-    doc.clear();
-    doc["status"] = "success";
-
-    String response;
-    serializeJson(doc, response);
-    server.send(200, "application/json", response);
+        {"MTR_STARTUP", {30, 29}},
+        {"ALIGN_SLOW_RAMP_RATE", {28, 25}},
+        {"ALIGN_TIME", {24, 21}},
+        {"ALIGN_OR_SLOW_CURRENT_ILIMIT", {20, 17}},
+        {"IPD_CLK_FREQ", {16, 14}},
+        {"IPD_CURR_THR", {13, 9}},
+        {"IPD_RLS_MODE", {8, 8}},
+        {"IPD_ADV_ANGLE", {7, 6}},
+        {"IPD_REPEAT", {5, 4}},
+        {"OL_ILIMIT_CONFIG", {3, 3}},
+        {"IQ_RAMP_EN", {2, 2}},
+        {"ACTIVE_BRAKE_EN", {1, 1}},
+        {"REV_DRV_CONFIG", {0, 0}}
+    });
 }
+
+/////////////////////////////////////////////////////////////////////////////////
+
+void ReadMotorStartup2()
+{
+    readRegister(MOTOR_STARTUP2_REG,
+    {
+        {"OL_LIMIT", {30, 27}},       // Open loop current limit
+        {"OL_ACC_A1", {26, 23}},      // Open loop acceleration coefficient A1
+        {"OL_ACC_A2", {22, 19}},      // Open loop acceleration coefficient A2
+        {"AUTO_HANDOFF_EN", {18, 18}}, // Auto handoff enable
+        {"OPN_CL_HANDOFF_THR", {17, 13}}, // Open to close loop handoff threshold
+        {"ALIGN_ANGLE", {12, 8}},     // Align angle
+        {"SLOW_FIRST_CYC_FREQ", {7, 4}}, // First cycle frequency in close loop startup
+        {"FIRST_CYCLE_FREQ_SEL", {3, 3}}, // First cycle frequency selection
+        {"THETA_ERROR_RAMP_RATE", {2, 0}} // Theta error ramp rate
+    });
+}
+
+void WriteMotorStartup2()
+{
+    writeRegister(MOTOR_STARTUP2_REG,
+    {
+        {"OL_LIMIT", {30, 27}},       // Open loop current limit
+        {"OL_ACC_A1", {26, 23}},      // Open loop acceleration coefficient A1
+        {"OL_ACC_A2", {22, 19}},      // Open loop acceleration coefficient A2
+        {"AUTO_HANDOFF_EN", {18, 18}}, // Auto handoff enable
+        {"OPN_CL_HANDOFF_THR", {17, 13}}, // Open to close loop handoff threshold
+        {"ALIGN_ANGLE", {12, 8}},     // Align angle
+        {"SLOW_FIRST_CYC_FREQ", {7, 4}}, // First cycle frequency in close loop startup
+        {"FIRST_CYCLE_FREQ_SEL", {3, 3}}, // First cycle frequency selection
+        {"THETA_ERROR_RAMP_RATE", {2, 0}} // Theta error ramp rate
+    });
+}
+
+/////////////////////////////////////////////////////////////////////////////////
+
+void ReadClosedLoop1()
+{
+    readRegister(CLOSED_LOOP1_REG,
+    {
+        {"PARITY", {31, 31}},
+        {"OVERMODULATION_ENABLE", {30, 30}},
+        {"CL_ACC", {29, 25}},
+        {"CL_DEC_CONFIG", {24, 24}},
+        {"CL_DEC", {23, 19}},
+        {"PWM_FREQ_OUT", {18, 15}},
+        {"PWM_MODE", {14, 14}},
+        {"FG_SEL", {13, 12}},
+        {"FG_DIV", {11, 8}},
+        {"FG_CONFIG", {7, 7}},
+        {"FG_BEMF_THR", {6, 4}},
+        {"AVS_EN", {3, 3}},
+        {"DEADTIME_COMP_EN", {2, 2}},
+        {"SPEED_LOOP_DIS", {1, 1}},
+        {"LOW_SPEED_RECIRC_BRAKE_EN", {0, 0}}
+    });
+}
+
+void WriteClosedLoop1()
+{
+    writeRegister(CLOSED_LOOP1_REG,
+    {
+        {"PARITY", {31, 31}},
+        {"OVERMODULATION_ENABLE", {30, 30}},
+        {"CL_ACC", {29, 25}},
+        {"CL_DEC_CONFIG", {24, 24}},
+        {"CL_DEC", {23, 19}},
+        {"PWM_FREQ_OUT", {18, 15}},
+        {"PWM_MODE", {14, 14}},
+        {"FG_SEL", {13, 12}},
+        {"FG_DIV", {11, 8}},
+        {"FG_CONFIG", {7, 7}},
+        {"FG_BEMF_THR", {6, 4}},
+        {"AVS_EN", {3, 3}},
+        {"DEADTIME_COMP_EN", {2, 2}},
+        {"SPEED_LOOP_DIS", {1, 1}},
+        {"LOW_SPEED_RECIRC_BRAKE_EN", {0, 0}}
+    });
+}
+
+/////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+
 
 void ReadPinConfig()
 {
-    register_value = 0;
-    read32(PIN_CONFIG_REG);
-
-    // 📌 JSON nesnesini temizle
-    doc.clear();
-
-    // 📌 Register bitlerini JSON nesnesine **hex formatında** ekle
-    doc["BRAKE_PIN_MODE"] = toUpperCaseHex(READ_BITS(register_value, 5, 5));
-    doc["ALIGN_BRAKE_ANGLE_SEL"] = toUpperCaseHex(READ_BITS(register_value, 4, 4));
-    doc["BRAKE_INPUT"] = toUpperCaseHex(READ_BITS(register_value, 3, 2));
-    doc["SPEED_MODE"] = toUpperCaseHex(READ_BITS(register_value, 1, 0));
-
-    // 📌 JSON string olarak oluştur
-    String response;
-    serializeJson(doc, response);
-
-    // 📌 JSON formatında yanıt gönder
-    server.send(200, "application/json", response);
+    readRegister(PIN_CONFIG_REG,
+    {
+        {"BRAKE_PIN_MODE", {5, 5}},
+        {"ALIGN_BRAKE_ANGLE_SEL", {4, 4}},
+        {"BRAKE_INPUT", {3, 2}},
+        {"SPEED_MODE", {1, 0}}
+    });
 }
 
 void WritePinConfig()
 {
-    if (!server.hasArg("plain"))
+    writeRegister(PIN_CONFIG_REG,
     {
-        server.send(400, "application/json", "{\"error\":\"Bad Request\"}");
-        return;
-    }
-
-    // 📌 JSON nesnesini temizle
-    doc.clear();
-
-    // 📌 JSON stringini parse et
-    DeserializationError error = deserializeJson(doc, server.arg("plain"));
-    if (error)
-    {
-        server.send(400, "application/json", "{\"error\":\"JSON Parse Failed\"}");
-        return;
-    }
-
-    // 📌 JSON içindeki değerleri çek ve **HEX formatında çevir**
-    PIN_CONFIG.BRAKE_PIN_MODE = strtoul(doc["BRAKE_PIN_MODE"].as<String>().c_str(), NULL, 16);
-    PIN_CONFIG.ALIGN_BRAKE_ANGLE_SEL = strtoul(doc["ALIGN_BRAKE_ANGLE_SEL"].as<String>().c_str(), NULL, 16);
-    PIN_CONFIG.BRAKE_INPUT = strtoul(doc["BRAKE_INPUT"].as<String>().c_str(), NULL, 16);
-    PIN_CONFIG.SPEED_MODE = strtoul(doc["SPEED_MODE"].as<String>().c_str(), NULL, 16);
-
-    // 📌 Register değerini sıfırla ve yeni değerleri yaz
-    register_value = 0;
-    WRITE_BITS(register_value, PIN_CONFIG.BRAKE_PIN_MODE, 5, 5);
-    WRITE_BITS(register_value, PIN_CONFIG.ALIGN_BRAKE_ANGLE_SEL, 4, 4);
-    WRITE_BITS(register_value, PIN_CONFIG.BRAKE_INPUT, 3, 2);
-    WRITE_BITS(register_value, PIN_CONFIG.SPEED_MODE, 1, 0);
-
-    // 📌 I2C register'a yaz
-    write32(PIN_CONFIG_REG, register_value);
-
-    // 📌 JSON formatında başarı mesajı gönder
-    doc.clear();
-    doc["status"] = "success";
-
-    String response;
-    serializeJson(doc, response);
-    server.send(200, "application/json", response);
+        {"BRAKE_PIN_MODE", {5, 5}},
+        {"ALIGN_BRAKE_ANGLE_SEL", {4, 4}},
+        {"BRAKE_INPUT", {3, 2}},
+        {"SPEED_MODE", {1, 0}}
+    });
 }
+
+/////////////////////////////////////////////////////////////////////////////////
 
 void ReadAlgoCtrl1()
 {
-    register_value = 0;
-    read32(ALGO_CTRL1_REG);
-
-    // 📌 JSON nesnesini temizle
-    doc.clear();
-
-    // 📌 Register bitlerini JSON nesnesine **hex formatında** ekle
-    doc["OVERRIDE"] = toUpperCaseHex(READ_BITS(register_value, 31, 31));
-    doc["DIGITAL_SPEED_CTRL"] = toUpperCaseHex(READ_BITS(register_value, 30, 16));
-    doc["CLOSED_LOOP_DIS"] = toUpperCaseHex(READ_BITS(register_value, 15, 15));
-    doc["FORCE_ALIGN_EN"] = toUpperCaseHex(READ_BITS(register_value, 14, 14));
-    doc["FORCE_SLOW_FIRST_CYCLE_EN"] = toUpperCaseHex(READ_BITS(register_value, 13, 13));
-    doc["FORCE_IPD_EN"] = toUpperCaseHex(READ_BITS(register_value, 12, 12));
-    doc["FORCE_ISD_EN"] = toUpperCaseHex(READ_BITS(register_value, 11, 11));
-    doc["FORCE_ALIGN_ANGLE_SRC_SEL"] = toUpperCaseHex(READ_BITS(register_value, 10, 10));
-    doc["FORCE_IQ_REF_SPEED_LOOP_DIS"] = toUpperCaseHex(READ_BITS(register_value, 9, 0));
-
-    // 📌 JSON string olarak oluştur
-    String response;
-    serializeJson(doc, response);
-
-    // 📌 JSON formatında yanıt gönder
-    server.send(200, "application/json", response);
+    readRegister(ALGO_CTRL1_REG,
+    {
+        {"OVERRIDE", {31, 31}},
+        {"DIGITAL_SPEED_CTRL", {30, 16}},
+        {"CLOSED_LOOP_DIS", {15, 15}},
+        {"FORCE_ALIGN_EN", {14, 14}},
+        {"FORCE_SLOW_FIRST_CYCLE_EN", {13, 13}},
+        {"FORCE_IPD_EN", {12, 12}},
+        {"FORCE_ISD_EN", {11, 11}},
+        {"FORCE_ALIGN_ANGLE_SRC_SEL", {10, 10}},
+        {"FORCE_IQ_REF_SPEED_LOOP_DIS", {9, 0}}
+    });
 }
 
 void WriteAlgoCtrl1()
 {
-    if (!server.hasArg("plain"))
+    writeRegister(ALGO_CTRL1_REG,
     {
-        server.send(400, "application/json", "{\"error\":\"Bad Request\"}");
-        return;
-    }
-
-    // 📌 JSON nesnesini temizle
-    doc.clear();
-
-    // 📌 JSON stringini parse et
-    DeserializationError error = deserializeJson(doc, server.arg("plain"));
-    if (error)
-    {
-        server.send(400, "application/json", "{\"error\":\"JSON Parse Failed\"}");
-        return;
-    }
-
-    // 📌 JSON içindeki değerleri çek ve **HEX formatında çevir**
-    ALGO_CTRL1.OVERRIDE = strtoul(doc["OVERRIDE"].as<String>().c_str(), NULL, 16);
-    ALGO_CTRL1.DIGITAL_SPEED_CTRL = strtoul(doc["DIGITAL_SPEED_CTRL"].as<String>().c_str(), NULL, 16);
-    ALGO_CTRL1.CLOSED_LOOP_DIS = strtoul(doc["CLOSED_LOOP_DIS"].as<String>().c_str(), NULL, 16);
-    ALGO_CTRL1.FORCE_ALIGN_EN = strtoul(doc["FORCE_ALIGN_EN"].as<String>().c_str(), NULL, 16);
-    ALGO_CTRL1.FORCE_SLOW_FIRST_CYCLE_EN = strtoul(doc["FORCE_SLOW_FIRST_CYCLE_EN"].as<String>().c_str(), NULL, 16);
-    ALGO_CTRL1.FORCE_IPD_EN = strtoul(doc["FORCE_IPD_EN"].as<String>().c_str(), NULL, 16);
-    ALGO_CTRL1.FORCE_ISD_EN = strtoul(doc["FORCE_ISD_EN"].as<String>().c_str(), NULL, 16);
-    ALGO_CTRL1.FORCE_ALIGN_ANGLE_SRC_SEL = strtoul(doc["FORCE_ALIGN_ANGLE_SRC_SEL"].as<String>().c_str(), NULL, 16);
-    ALGO_CTRL1.FORCE_IQ_REF_SPEED_LOOP_DIS = strtoul(doc["FORCE_IQ_REF_SPEED_LOOP_DIS"].as<String>().c_str(), NULL, 16);
-
-    // 📌 Register değerini sıfırla ve yeni değerleri yaz
-    register_value = 0;
-    WRITE_BITS(register_value, ALGO_CTRL1.OVERRIDE, 31, 31);
-    WRITE_BITS(register_value, ALGO_CTRL1.DIGITAL_SPEED_CTRL, 30, 16);
-    WRITE_BITS(register_value, ALGO_CTRL1.CLOSED_LOOP_DIS, 15, 15);
-    WRITE_BITS(register_value, ALGO_CTRL1.FORCE_ALIGN_EN, 14, 14);
-    WRITE_BITS(register_value, ALGO_CTRL1.FORCE_SLOW_FIRST_CYCLE_EN, 13, 13);
-    WRITE_BITS(register_value, ALGO_CTRL1.FORCE_IPD_EN, 12, 12);
-    WRITE_BITS(register_value, ALGO_CTRL1.FORCE_ISD_EN, 11, 11);
-    WRITE_BITS(register_value, ALGO_CTRL1.FORCE_ALIGN_ANGLE_SRC_SEL, 10, 10);
-    WRITE_BITS(register_value, ALGO_CTRL1.FORCE_IQ_REF_SPEED_LOOP_DIS, 9, 0);
-
-    // 📌 I2C register'a yaz
-    write32(ALGO_CTRL1_REG, register_value);
-
-    // 📌 JSON formatında başarı mesajı gönder
-    doc.clear();
-    doc["status"] = "success";
-
-    String response;
-    serializeJson(doc, response);
-    server.send(200, "application/json", response);
+        {"OVERRIDE", {31, 31}},
+        {"DIGITAL_SPEED_CTRL", {30, 16}},
+        {"CLOSED_LOOP_DIS", {15, 15}},
+        {"FORCE_ALIGN_EN", {14, 14}},
+        {"FORCE_SLOW_FIRST_CYCLE_EN", {13, 13}},
+        {"FORCE_IPD_EN", {12, 12}},
+        {"FORCE_ISD_EN", {11, 11}},
+        {"FORCE_ALIGN_ANGLE_SRC_SEL", {10, 10}},
+        {"FORCE_IQ_REF_SPEED_LOOP_DIS", {9, 0}}
+    });
 }
+
+/////////////////////////////////////////////////////////////////////////////////
 
 void ReadDevCtrl()
 {
-    register_value = 0;
-    read32(DEV_CTRL_REG);
-
-    // 📌 JSON nesnesini temizle
-    doc.clear();
-
-    // 📌 Register bitlerini JSON nesnesine **hex formatında** ekle
-    doc["EEPROM_WRT"] = toUpperCaseHex(READ_BITS(register_value, 31, 31));
-    doc["EEPROM_READ"] = toUpperCaseHex(READ_BITS(register_value, 30, 30));
-    doc["CLR_FLT"] = toUpperCaseHex(READ_BITS(register_value, 29, 29));
-    doc["CLR_FLT_RETRY_COUNT"] = toUpperCaseHex(READ_BITS(register_value, 28, 28));
-    doc["EEPROM_WRITE_ACCESS_KEY"] = toUpperCaseHex(READ_BITS(register_value, 27, 20));
-    doc["FORCED_ALIGN_ANGLE"] = toUpperCaseHex(READ_BITS(register_value, 19, 11));
-    doc["WATCHDOG_TICKLE"] = toUpperCaseHex(READ_BITS(register_value, 10, 10));
-
-    // 📌 JSON string olarak oluştur
-    String response;
-    serializeJson(doc, response);
-
-    // 📌 JSON formatında yanıt gönder
-    server.send(200, "application/json", response);
+    readRegister(DEV_CTRL_REG,
+    {
+        {"EEPROM_WRT", {31, 31}},
+        {"EEPROM_READ", {30, 30}},
+        {"CLR_FLT", {29, 29}},
+        {"CLR_FLT_RETRY_COUNT", {28, 28}},
+        {"EEPROM_WRITE_ACCESS_KEY", {27, 20}},
+        {"FORCED_ALIGN_ANGLE", {19, 11}},
+        {"WATCHDOG_TICKLE", {10, 10}}
+    });
 }
 
 void WriteDevCtrl()
 {
-    if (!server.hasArg("plain"))
+    writeRegister(DEV_CTRL_REG,
     {
-        server.send(400, "application/json", "{\"error\":\"Bad Request\"}");
-        return;
-    }
-
-    // 📌 JSON nesnesini temizle
-    doc.clear();
-
-    // 📌 JSON stringini parse et
-    DeserializationError error = deserializeJson(doc, server.arg("plain"));
-    if (error)
-    {
-        server.send(400, "application/json", "{\"error\":\"JSON Parse Failed\"}");
-        return;
-    }
-
-    // 📌 JSON içindeki değerleri çek ve **HEX formatında çevir**
-    DEV_CTRL.EEPROM_WRT = strtoul(doc["EEPROM_WRT"].as<String>().c_str(), NULL, 16);
-    DEV_CTRL.EEPROM_READ = strtoul(doc["EEPROM_READ"].as<String>().c_str(), NULL, 16);
-    DEV_CTRL.CLR_FLT = strtoul(doc["CLR_FLT"].as<String>().c_str(), NULL, 16);
-    DEV_CTRL.CLR_FLT_RETRY_COUNT = strtoul(doc["CLR_FLT_RETRY_COUNT"].as<String>().c_str(), NULL, 16);
-    DEV_CTRL.EEPROM_WRITE_ACCESS_KEY = strtoul(doc["EEPROM_WRITE_ACCESS_KEY"].as<String>().c_str(), NULL, 16);
-    DEV_CTRL.FORCED_ALIGN_ANGLE = strtoul(doc["FORCED_ALIGN_ANGLE"].as<String>().c_str(), NULL, 16);
-    DEV_CTRL.WATCHDOG_TICKLE = strtoul(doc["WATCHDOG_TICKLE"].as<String>().c_str(), NULL, 16);
-
-    // 📌 Register değerini sıfırla ve yeni değerleri yaz
-    register_value = 0;
-    WRITE_BITS(register_value, DEV_CTRL.EEPROM_WRT, 31, 31);
-    WRITE_BITS(register_value, DEV_CTRL.EEPROM_READ, 30, 30);
-    WRITE_BITS(register_value, DEV_CTRL.CLR_FLT, 29, 29);
-    WRITE_BITS(register_value, DEV_CTRL.CLR_FLT_RETRY_COUNT, 28, 28);
-    WRITE_BITS(register_value, DEV_CTRL.EEPROM_WRITE_ACCESS_KEY, 27, 20);
-    WRITE_BITS(register_value, DEV_CTRL.FORCED_ALIGN_ANGLE, 19, 11);
-    WRITE_BITS(register_value, DEV_CTRL.WATCHDOG_TICKLE, 10, 10);
-
-    // 📌 I2C register'a yaz
-    write32(DEV_CTRL_REG, register_value);
-
-    // 📌 JSON formatında başarı mesajı gönder
-    doc.clear();
-    doc["status"] = "success";
-
-    String response;
-    serializeJson(doc, response);
-    server.send(200, "application/json", response);
+        {"EEPROM_WRT", {31, 31}},
+        {"EEPROM_READ", {30, 30}},
+        {"CLR_FLT", {29, 29}},
+        {"CLR_FLT_RETRY_COUNT", {28, 28}},
+        {"EEPROM_WRITE_ACCESS_KEY", {27, 20}},
+        {"FORCED_ALIGN_ANGLE", {19, 11}},
+        {"WATCHDOG_TICKLE", {10, 10}}
+    });
 }
+
+
 
 void WriteEEPROM()
 {
