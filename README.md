@@ -4,4 +4,4 @@ This project provides a simple and effective way to read and write MCF8316A moto
 
 With this setup, you can easily configure and monitor the MCF8316A without needing a full microcontroller firmware redesign. Ideal for testing, tuning, and development purposes.
 
-![MCF8316A Demo](images/mcf8316a_gui.png)
+![MCF8316A Demo](mcf8316a_gui.png)
