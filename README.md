@@ -11,7 +11,7 @@ With this setup, you can easily configure and monitor the MCF8316A without needi
 This section of the project allows users to **manually read and write** registers of the **MCF8316A** device.
 
 - **Register Address**: Enter the target register address (in hexadecimal format).
-- **Register Value**: Enter the desired 32-bit value for writing.
+- **Register Value**: Enter the desired value for writing.
 - **Read Register**: Fetches the current value from the specified register.
 - **Write Register**: Writes the given value to the specified register.
 
