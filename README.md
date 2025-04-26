@@ -4,6 +4,10 @@ This project provides a simple and effective way to read and write MCF8316A moto
 
 With this setup, you can easily configure and monitor the MCF8316A without needing a full microcontroller firmware redesign. Ideal for testing, tuning, and development purposes.
 
+> **Note:**  
+> This interface does not have predefined support for all register addresses.  
+> However, you can still manually input and access any register you need.
+
 ![MCF8316A Demo](mcf8316a_gui.png)
 
 ![MCF8316A Demo](mcf8316a_read_write.png)
